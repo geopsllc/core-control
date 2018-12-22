@@ -18,19 +18,19 @@ start () {
     local fstatus=$(pm2status "ark-core-forger" | awk '{print $13}')
     local rstatus=$(pm2status "ark-core-relay" | awk '{print $13}')
     if [ "$rstatus" != "online" ]; then
-      pm2 --name 'ark-core-relay' start ~/ark-core/packages/core/dist/index.js -- relay --config ~/.ark/config --network $2 > /dev/null 2>&1
+      pm2 --name 'ark-core-relay' start $HOME/ark-core/packages/core/dist/index.js -- relay --config $HOME/.ark/config --network $2 > /dev/null 2>&1
     else
       echo "Relay already running!"
     fi
     if [ "$fstatus" != "online" ]; then
-      pm2 --name 'ark-core-forger' start ~/ark-core/packages/core/dist/index.js -- forger --config ~/.ark/config --network $2 > /dev/null 2>&1
+      pm2 --name 'ark-core-forger' start $HOME/ark-core/packages/core/dist/index.js -- forger --config $HOME/.ark/config --network $2 > /dev/null 2>&1
     else
       echo "Forger already running!"
     fi
   else
     local status=$(pm2status "ark-core-$1" | awk '{print $13}')
     if [ "$status" != "online" ]; then
-      pm2 --name 'ark-core-$1' start ~/ark-core/packages/core/dist/index.js -- $1 --config ~/.ark/config --network $2 > /dev/null 2>&1
+      pm2 --name 'ark-core-$1' start $HOME/ark-core/packages/core/dist/index.js -- $1 --config $HOME/.ark/config --network $2 > /dev/null 2>&1
     else
       echo "Process already running!"
     fi
@@ -75,14 +75,14 @@ install_db () {
 
 install_core () {
   if [ "$1" = "mainnet" ]; then
-    git clone https://github.com/ArkEcosystem/core.git ~/ark-core > /dev/null 2>&1
+    git clone https://github.com/ArkEcosystem/core.git $HOME/ark-core > /dev/null 2>&1
   else
-    git clone https://github.com/ArkEcosystem/core.git ~/ark-core -b develop > /dev/null 2>&1
+    git clone https://github.com/ArkEcosystem/core.git $HOME/ark-core -b develop > /dev/null 2>&1
   fi
-  cd ~/ark-core && yarn setup > /dev/null 2>&1
-  mkdir ~/.ark && mkdir ~/.ark/config > /dev/null 2>&1
-  cp -rf "~/ark-core/packages/core/src/config/$1" "~/.ark/config"
-  local envFile="~/.ark/.env"
+  cd $HOME/ark-core && yarn setup > /dev/null 2>&1
+  mkdir $HOME/.ark && mkdir $HOME/.ark/config > /dev/null 2>&1
+  cp -rf "$HOME/ark-core/packages/core/src/config/$1" "$HOME/.ark/config"
+  local envFile="$HOME/.ark/.env"
   touch "$envFile"
   grep -q '^ARK_LOG_LEVEL' "$envFile" 2>&1 || echo 'ARK_LOG_LEVEL=info' >> "$envFile" 2>&1
   grep -q '^ARK_DB_HOST' "$envFile" 2>&1 || echo 'ARK_DB_HOST=localhost' >> "$envFile" 2>&1
@@ -108,6 +108,6 @@ install_core () {
 
 uninstall () {
   pm2 delete ark-core-forger ark-core-relay > /dev/null 2>&1
-  rm -rf ~/ark-core && rm -rf ~/.ark > /dev/null 2>&1
+  rm -rf $HOME/ark-core && rm -rf $HOME/.ark > /dev/null 2>&1
   dropdb ark_$1 > /dev/null 2>&1
 }
