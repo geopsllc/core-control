@@ -17,20 +17,26 @@ start () {
   if [ "$1" = "all" ]; then
     local fstatus=$(pm2status "ark-core-forger" | awk '{print $13}')
     local rstatus=$(pm2status "ark-core-relay" | awk '{print $13}')
-    if [ "$rstatus" != "online" ]; then
-      pm2 --name 'ark-core-relay' start $HOME/ark-core/packages/core/dist/index.js -- relay --config $HOME/.ark/config --network $2 > /dev/null 2>&1
+    if [[ "$rstatus" != "online" && "$2" = "mainnet" ]]; then
+      pm2 --name "ark-core-relay" start $HOME/ark-core/packages/core/bin/ark -- relay --config $HOME/.ark/config --network $2 > /dev/null 2>&1
+    elif [[ "$rstatus" != "online" && "$2" = "devnet" ]]; then
+      pm2 --name "ark-core-relay" start $HOME/ark-core/packages/core/dist/index.js -- relay --config $HOME/.ark/config --network $2 > /dev/null 2>&1
     else
       echo "Relay already running!"
     fi
-    if [ "$fstatus" != "online" ]; then
-      pm2 --name 'ark-core-forger' start $HOME/ark-core/packages/core/dist/index.js -- forger --config $HOME/.ark/config --network $2 > /dev/null 2>&1
+    if [[ "$fstatus" != "online" && "$2" = "mainnet" ]]; then
+      pm2 --name "ark-core-forger" start $HOME/ark-core/packages/core/bin/ark -- forger --config $HOME/.ark/config --network $2 > /dev/null 2>&1
+    elif [[ "$fstatus" != "online" && "$2" = "devnet" ]]; then
+      pm2 --name "ark-core-forger" start $HOME/ark-core/packages/core/dist/index.js -- forger --config $HOME/.ark/config --network $2 > /dev/null 2>&1
     else
       echo "Forger already running!"
     fi
   else
     local status=$(pm2status "ark-core-$1" | awk '{print $13}')
-    if [ "$status" != "online" ]; then
-      pm2 --name 'ark-core-$1' start $HOME/ark-core/packages/core/dist/index.js -- $1 --config $HOME/.ark/config --network $2 > /dev/null 2>&1
+    if [[ "$status" != "online" && "$2" = "mainnet"]]; then
+      pm2 --name "ark-core-$1" start $HOME/ark-core/packages/core/bin/ark -- $1 --config $HOME/.ark/config --network $2 > /dev/null 2>&1
+    elif [[ "$status" != "online" && "$2" = "devnet" ]]; then
+      pm2 --name "ark-core-$1" start $HOME/ark-core/packages/core/dist/index.js -- $1 --config $HOME/.ark/config --network $2 > /dev/null 2>&1
     else
       echo "Process already running!"
     fi
@@ -82,7 +88,14 @@ install_core () {
   fi
   cd $HOME/ark-core && yarn setup > /dev/null 2>&1
   mkdir $HOME/.ark > /dev/null 2>&1
-  cp -rf "$HOME/ark-core/packages/core/src/config/$1" "$HOME/.ark/"
+  if [ "$1" = "mainnet" ]; then
+    cd $HOME/ark-core && lerna clean -y && lerna bootstrap > /dev/null 2>&1
+    cp -rf "$HOME/ark-core/packages/core/lib/config/$1" "$HOME/.ark/"
+    cp "$HOME/ark-core/packages/crypto/lib/networks/ark/$1.json" "$HOME/.ark/$1/network.json"
+  else
+    cd $HOME/ark-core && yarn setup > /dev/null 2>&1
+    cp -rf "$HOME/ark-core/packages/core/src/config/$1" "$HOME/.ark/"
+  fi
   mv "$HOME/.ark/$1" "$HOME/.ark/config"
   local envFile="$HOME/.ark/.env"
   touch "$envFile"
