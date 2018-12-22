@@ -110,7 +110,7 @@ install_core () {
   echo "${token}_DB_PORT=5432" >> "$envFile" 2>&1
   echo "${token}_DB_USERNAME=$USER" >> "$envFile" 2>&1
   echo "${token}_DB_PASSWORD=password" >> "$envFile" 2>&1
-  echo "${token}_DB_DATABASE=$name_$1" >> "$envFile" 2>&1
+  echo "${token}_DB_DATABASE=${name}_$1" >> "$envFile" 2>&1
   echo "${token}_P2P_HOST=0.0.0.0" >> "$envFile" 2>&1
   if [ "$1" = "mainnet" ]; then
     echo "${token}_P2P_PORT=$mainnet_port" >> "$envFile" 2>&1
