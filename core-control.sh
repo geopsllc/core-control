@@ -1,5 +1,6 @@
 #!/bin/bash
 
+. "config.conf"
 . "functions.sh"
 
 main ()
@@ -12,21 +13,21 @@ main ()
     sudo apt update > /dev/null 2>&1
 
     install_deps &
-    echo -ne "Installing dependencies...  "
+    echo -ne "Installing Dependencies...  "
     while [ -d /proc/$! ]; do
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
     done
     echo -e "\bDone"
 
     install_db $2 &
-    echo -ne "Setting up database...  "
+    echo -ne "Installing Database...  "
     while [ -d /proc/$! ]; do
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
     done
     echo -e "\bDone"
 
     install_core $2 &
-    echo -ne "Settng up core...  "
+    echo -ne "Settng up Core...  "
     while [ -d /proc/$! ]; do
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
     done
@@ -35,7 +36,7 @@ main ()
   elif [[ ( "$1" == "uninstall" ) && ( "$2" = "mainnet" || "$2" = "devnet" ) ]]; then
 
     uninstall "$2" &
-    echo -ne "Uninstalling core...  "
+    echo -ne "Removing Core...  "
     while [ -d /proc/$! ]; do
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
     done
