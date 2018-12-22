@@ -33,7 +33,7 @@ start () {
     fi
   else
     local status=$(pm2status "ark-core-$1" | awk '{print $13}')
-    if [[ "$status" != "online" && "$2" = "mainnet"]]; then
+    if [[ "$status" != "online" && "$2" = "mainnet" ]]; then
       pm2 --name "ark-core-$1" start $HOME/ark-core/packages/core/bin/ark -- $1 --config $HOME/.ark/config --network $2 > /dev/null 2>&1
     elif [[ "$status" != "online" && "$2" = "devnet" ]]; then
       pm2 --name "ark-core-$1" start $HOME/ark-core/packages/core/dist/index.js -- $1 --config $HOME/.ark/config --network $2 > /dev/null 2>&1
