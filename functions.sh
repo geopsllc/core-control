@@ -83,6 +83,7 @@ install_core () {
   cd $HOME/ark-core && yarn setup > /dev/null 2>&1
   mkdir $HOME/.ark > /dev/null 2>&1
   cp -rf "$HOME/ark-core/packages/core/src/config/$1" "$HOME/.ark/"
+  mv "$HOME/.ark/$1" "$HOME/.ark/config"
   local envFile="$HOME/.ark/.env"
   touch "$envFile"
   grep -q '^ARK_LOG_LEVEL' "$envFile" 2>&1 || echo "ARK_LOG_LEVEL=info" >> "$envFile" 2>&1
@@ -91,20 +92,20 @@ install_core () {
   grep -q '^ARK_DB_USERNAME' "$envFile" 2>&1 || echo "ARK_DB_USERNAME=$USER" >> "$envFile" 2>&1
   grep -q '^ARK_DB_PASSWORD' "$envFile" 2>&1 || echo "ARK_DB_PASSWORD=password" >> "$envFile" 2>&1
   grep -q '^ARK_DB_DATABASE' "$envFile" 2>&1 || echo "ARK_DB_DATABASE=ark_$1" >> "$envFile" 2>&1
-  grep -q '^ARK_P2P_HOST' "$envFile" 2>&1 || echo 'ARK_P2P_HOST=0.0.0.0' >> "$envFile" 2>&1
+  grep -q '^ARK_P2P_HOST' "$envFile" 2>&1 || echo "ARK_P2P_HOST=0.0.0.0" >> "$envFile" 2>&1
   if [ "$1" = "mainnet" ]; then
-    grep -q '^ARK_P2P_PORT' "$envFile" 2>&1 || echo 'ARK_P2P_PORT=4001' >> "$envFile" 2>&1
+    grep -q '^ARK_P2P_PORT' "$envFile" 2>&1 || echo "ARK_P2P_PORT=4001" >> "$envFile" 2>&1
   else
-    grep -q '^ARK_P2P_PORT' "$envFile" 2>&1 || echo 'ARK_P2P_PORT=4002' >> "$envFile" 2>&1
+    grep -q '^ARK_P2P_PORT' "$envFile" 2>&1 || echo "ARK_P2P_PORT=4002" >> "$envFile" 2>&1
   fi
-  grep -q '^ARK_API_HOST' "$envFile" 2>&1 || echo 'ARK_API_HOST=0.0.0.0' >> "$envFile" 2>&1
-  grep -q '^ARK_API_PORT' "$envFile" 2>&1 || echo 'ARK_API_PORT=4003' >> "$envFile" 2>&1
-  grep -q '^ARK_WEBHOOKS_HOST' "$envFile" 2>&1 || echo 'ARK_WEBHOOKS_HOST=0.0.0.0' >> "$envFile" 2>&1
-  grep -q '^ARK_WEBHOOKS_PORT' "$envFile" 2>&1 || echo 'ARK_WEBHOOKS_PORT=4004' >> "$envFile" 2>&1
-  grep -q '^ARK_GRAPHQL_HOST' "$envFile" 2>&1 || echo 'ARK_GRAPHQL_HOST=0.0.0.0' >> "$envFile" 2>&1
-  grep -q '^ARK_GRAPHQL_PORT' "$envFile" 2>&1 || echo 'ARK_GRAPHQL_PORT=4005' >> "$envFile" 2>&1
-  grep -q '^ARK_JSONRPC_HOST' "$envFile" 2>&1 || echo 'ARK_JSONRPC_HOST=0.0.0.0' >> "$envFile" 2>&1
-  grep -q '^ARK_JSONRPC_PORT' "$envFile" 2>&1 || echo 'ARK_JSONRPC_PORT=8080' >> "$envFile" 2>&1
+  grep -q '^ARK_API_HOST' "$envFile" 2>&1 || echo "ARK_API_HOST=0.0.0.0" >> "$envFile" 2>&1
+  grep -q '^ARK_API_PORT' "$envFile" 2>&1 || echo "ARK_API_PORT=4003" >> "$envFile" 2>&1
+  grep -q '^ARK_WEBHOOKS_HOST' "$envFile" 2>&1 || echo "ARK_WEBHOOKS_HOST=0.0.0.0" >> "$envFile" 2>&1
+  grep -q '^ARK_WEBHOOKS_PORT' "$envFile" 2>&1 || echo "ARK_WEBHOOKS_PORT=4004" >> "$envFile" 2>&1
+  grep -q '^ARK_GRAPHQL_HOST' "$envFile" 2>&1 || echo "ARK_GRAPHQL_HOST=0.0.0.0" >> "$envFile" 2>&1
+  grep -q '^ARK_GRAPHQL_PORT' "$envFile" 2>&1 || echo "ARK_GRAPHQL_PORT=4005" >> "$envFile" 2>&1
+  grep -q '^ARK_JSONRPC_HOST' "$envFile" 2>&1 || echo "ARK_JSONRPC_HOST=0.0.0.0" >> "$envFile" 2>&1
+  grep -q '^ARK_JSONRPC_PORT' "$envFile" 2>&1 || echo "ARK_JSONRPC_PORT=8080" >> "$envFile" 2>&1
 }
 
 uninstall () {
