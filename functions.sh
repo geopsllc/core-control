@@ -127,7 +127,8 @@ install_core () {
 }
 
 uninstall () {
-  pm2 delete $name-core-forger $name-core-relay > /dev/null 2>&1
+  pm2 delete $name-core-forger > /dev/null 2>&1
+  pm2 delete $name-core-relay > /dev/null 2>&1
   rm -rf $core && rm -rf $data > /dev/null 2>&1
   dropdb $name_$1 > /dev/null 2>&1
 }
