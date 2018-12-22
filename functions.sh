@@ -70,8 +70,7 @@ install_deps () {
 install_db () {
   sudo apt install -y postgresql postgresql-contrib > /dev/null 2>&1
   sudo -u postgres psql -c "CREATE USER $USER WITH PASSWORD 'password' CREATEDB;" > /dev/null 2>&1
-  dropdb ark_$1
-  createdb ark_$1
+  dropdb ark_$1 && createdb ark_$1 > /dev/null 2>&1
 }
 
 install_core () {
@@ -110,5 +109,5 @@ install_core () {
 uninstall () {
   pm2 delete ark-core-forger ark-core-relay > /dev/null 2>&1
   rm -rf ~/ark-core && rm -rf ~/.ark > /dev/null 2>&1
-  dropdb ark_$1
+  dropdb ark_$1 > /dev/null 2>&1
 }
