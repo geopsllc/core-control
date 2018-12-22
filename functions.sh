@@ -89,6 +89,7 @@ install_core () {
   cd $HOME/ark-core && yarn setup > /dev/null 2>&1
   mkdir $HOME/.ark > /dev/null 2>&1
   if [ "$1" = "mainnet" ]; then
+    sudo npm -g install lerna > /dev/null 2>&1
     cd $HOME/ark-core && lerna clean -y && lerna bootstrap > /dev/null 2>&1
     cp -rf "$HOME/ark-core/packages/core/lib/config/$1" "$HOME/.ark/"
     cp "$HOME/ark-core/packages/crypto/lib/networks/ark/$1.json" "$HOME/.ark/$1/network.json"
