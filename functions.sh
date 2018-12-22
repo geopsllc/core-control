@@ -4,6 +4,7 @@ wrong_arguments () {
 
   echo "Possible arguments:"
   echo "install mainnet|devnet"
+  echo "update mainnet|devnet"
   echo "uninstall mainnet|devnet"
   echo "start relay|forger|all mainnet|devnet"
   echo "stop relay|forger|all"
@@ -155,6 +156,32 @@ install_core () {
   echo "${token}_GRAPHQL_PORT=4005" >> "$envFile" 2>&1
   echo "${token}_JSONRPC_HOST=0.0.0.0" >> "$envFile" 2>&1
   echo "${token}_JSONRPC_PORT=8080" >> "$envFile" 2>&1
+}
+
+update () {
+
+  if [ "$1" = "mainnet" ]; then
+    cd $core > /dev/null 2>&1
+    git pull > /dev/null 2>&1
+    lerna clean -y > /dev/null 2>&1
+    lerna bootstrap > /dev/null 2>&1
+  else
+    cd $core > /dev/null 2>&1
+    git pull > /dev/null 2>&1
+    yarn setup > /dev/null 2>&1
+  fi
+
+  local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
+  local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
+
+  if [ "$rstatus" = "online" ]; then
+    pm2 restart ${name}-core-relay > /dev/null 2>&1
+  fi
+
+  if [ "$fstatus" = "online" ]; then
+    pm2 restart ${name}-core-forger > /dev/null 2>&1
+  fi
+
 }
 
 uninstall () {
