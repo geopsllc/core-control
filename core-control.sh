@@ -10,6 +10,11 @@ main ()
 
   if [[ ( "$1" == "install" ) && ( "$2" = "mainnet" || "$2" = "devnet" ) ]]; then
 
+    if [[ -d $data || -d $core ]]; then
+      echo "Core already installed. Please uninstall first."
+      exit 1
+    fi
+
     sudo apt update > /dev/null 2>&1
 
     install_deps &
