@@ -70,7 +70,8 @@ install_deps () {
 install_db () {
   sudo apt install -y postgresql postgresql-contrib > /dev/null 2>&1
   sudo -u postgres psql -c "CREATE USER $USER WITH PASSWORD 'password' CREATEDB;" > /dev/null 2>&1
-  dropdb ark_$1 && createdb ark_$1 > /dev/null 2>&1
+  dropdb ark_$1 > /dev/null 2>&1
+  createdb ark_$1 > /dev/null 2>&1
 }
 
 install_core () {
@@ -80,16 +81,16 @@ install_core () {
     git clone https://github.com/ArkEcosystem/core.git $HOME/ark-core -b develop > /dev/null 2>&1
   fi
   cd $HOME/ark-core && yarn setup > /dev/null 2>&1
-  mkdir $HOME/.ark && mkdir $HOME/.ark/config > /dev/null 2>&1
-  cp -rf "$HOME/ark-core/packages/core/src/config/$1" "$HOME/.ark/config"
+  mkdir $HOME/.ark > /dev/null 2>&1
+  cp -rf "$HOME/ark-core/packages/core/src/config/$1" "$HOME/.ark/"
   local envFile="$HOME/.ark/.env"
   touch "$envFile"
-  grep -q '^ARK_LOG_LEVEL' "$envFile" 2>&1 || echo 'ARK_LOG_LEVEL=info' >> "$envFile" 2>&1
-  grep -q '^ARK_DB_HOST' "$envFile" 2>&1 || echo 'ARK_DB_HOST=localhost' >> "$envFile" 2>&1
-  grep -q '^ARK_DB_PORT' "$envFile" 2>&1 || echo 'ARK_DB_PORT=5432' >> "$envFile" 2>&1
-  grep -q '^ARK_DB_USERNAME' "$envFile" 2>&1 || echo 'ARK_DB_USERNAME=$USER' >> "$envFile" 2>&1
-  grep -q '^ARK_DB_PASSWORD' "$envFile" 2>&1 || echo 'ARK_DB_PASSWORD=password' >> "$envFile" 2>&1
-  grep -q '^ARK_DB_DATABASE' "$envFile" 2>&1 || echo 'ARK_DB_DATABASE=ark_$1' >> "$envFile" 2>&1
+  grep -q '^ARK_LOG_LEVEL' "$envFile" 2>&1 || echo "ARK_LOG_LEVEL=info" >> "$envFile" 2>&1
+  grep -q '^ARK_DB_HOST' "$envFile" 2>&1 || echo "ARK_DB_HOST=localhost" >> "$envFile" 2>&1
+  grep -q '^ARK_DB_PORT' "$envFile" 2>&1 || echo "ARK_DB_PORT=5432" >> "$envFile" 2>&1
+  grep -q '^ARK_DB_USERNAME' "$envFile" 2>&1 || echo "ARK_DB_USERNAME=$USER" >> "$envFile" 2>&1
+  grep -q '^ARK_DB_PASSWORD' "$envFile" 2>&1 || echo "ARK_DB_PASSWORD=password" >> "$envFile" 2>&1
+  grep -q '^ARK_DB_DATABASE' "$envFile" 2>&1 || echo "ARK_DB_DATABASE=ark_$1" >> "$envFile" 2>&1
   grep -q '^ARK_P2P_HOST' "$envFile" 2>&1 || echo 'ARK_P2P_HOST=0.0.0.0' >> "$envFile" 2>&1
   if [ "$1" = "mainnet" ]; then
     grep -q '^ARK_P2P_PORT' "$envFile" 2>&1 || echo 'ARK_P2P_PORT=4001' >> "$envFile" 2>&1
