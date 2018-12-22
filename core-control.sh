@@ -49,6 +49,11 @@ main () {
 
   elif [[ ( "$1" == "update" ) && ( "$2" = "mainnet" || "$2" = "devnet" ) ]]; then
 
+    if [[ ! -d $data || ! -d $core ]]; then
+      echo "Core not installed. Please install first."
+      exit 1
+    fi
+
     update "$2" &
 
     echo -ne "Updating Core...  "
