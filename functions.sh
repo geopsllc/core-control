@@ -207,7 +207,12 @@ system () {
   w | head -n1
 
   echo -e "\nCPUs: ${sockets}x ${cpu}with $cps Cores and $[cps*tpc] Threads"
-  echo -e " Total: $[sockets*cps] Cores and $[sockets*cps*tpc] Threads @ ${mhz}MHz"
+  echo -ne " Total: $[sockets*cps] Cores and $[sockets*cps*tpc] Threads"
+  if [ -z "$mhz" ]; then
+    echo -e ""
+  else
+    echo -e " @ ${mhz}MHz"
+  fi
 
   echo -e "\nMemory:"
   free -h
