@@ -11,7 +11,7 @@ main () {
   if [[ ( "$1" == "install" ) && ( "$2" = "mainnet" || "$2" = "devnet" ) ]]; then
 
     if [[ -d $data || -d $core ]]; then
-      echo "Core already installed. Please uninstall first."
+      echo -e "\nCore already installed. Please uninstall first.\n"
       exit 1
     fi
 
@@ -47,12 +47,12 @@ main () {
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
     done
 
-    echo -e "\bDone"
+    echo -e "\bDone\n"
 
   elif [[ ( "$1" == "update" ) && ( "$2" = "mainnet" || "$2" = "devnet" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
-      echo "Core not installed. Please install first."
+      echo "\nCore not installed. Please install first.\n"
       exit 1
     fi
 
@@ -66,7 +66,7 @@ main () {
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
     done
 
-    echo -e "\bDone"
+    echo -e "\bDone\n"
 
   elif [[ ( "$1" == "uninstall" ) && ( "$2" = "mainnet" || "$2" = "devnet" ) ]]; then
 
@@ -80,19 +80,19 @@ main () {
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
     done
 
-    echo -e "\bDone"
+    echo -e "\bDone\n"
 
   elif [[ ( "$1" == "start" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" ) && ( "$3" = "mainnet" || "$3" = "devnet" ) ]]; then
 
     start "$2" "$3"
 
-    echo "All Done!"
+    echo -e "\nAll Done!\n"
 
   elif [[ ( "$1" == "stop" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" ) ]]; then
 
     stop "$2"
 
-    echo "All Done!"
+    echo -e "\nAll Done!\n"
 
   elif [ "$1" == "system" ]; then
 
