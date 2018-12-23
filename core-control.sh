@@ -39,7 +39,7 @@ main () {
 
     install_core $2 &
 
-    echo -ne "Settng up Core...  "
+    echo -ne "Setting up Core...  "
 
     while [ -d /proc/$! ]; do
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
