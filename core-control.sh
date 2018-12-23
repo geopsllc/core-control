@@ -15,6 +15,8 @@ main () {
       exit 1
     fi
 
+    system
+
     sudo apt update > /dev/null 2>&1
 
     install_deps &
@@ -54,6 +56,8 @@ main () {
       exit 1
     fi
 
+    system
+
     update "$2" &
 
     echo -ne "Updating Core...  "
@@ -65,6 +69,8 @@ main () {
     echo -e "\bDone"
 
   elif [[ ( "$1" == "uninstall" ) && ( "$2" = "mainnet" || "$2" = "devnet" ) ]]; then
+
+    system
 
     uninstall "$2" &
 
@@ -87,6 +93,10 @@ main () {
     stop "$2"
 
     echo "All Done!"
+
+  elif [ "$1" == "system" ]; then
+
+    system
 
   else
 

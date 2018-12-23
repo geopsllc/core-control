@@ -3,11 +3,12 @@
 wrong_arguments () {
 
   echo "Possible arguments:"
-  echo "install mainnet|devnet"
-  echo "update mainnet|devnet"
-  echo "uninstall mainnet|devnet"
-  echo "start relay|forger|all mainnet|devnet"
-  echo "stop relay|forger|all"
+  echo "install mainnet|devnet (Install Core)"
+  echo "update mainnet|devnet (Update Core)"
+  echo "uninstall mainnet|devnet (Uninstall Core)"
+  echo "start relay|forger|all mainnet|devnet (Start Core Services)"
+  echo "stop relay|forger|all (Stop Core Services)"
+  echo "system (Show System Information)"
   exit 1
 
 }
@@ -192,3 +193,29 @@ uninstall () {
   dropdb ${name}_$1 > /dev/null 2>&1
 
 }
+
+system () {
+
+  sockets="$(lscpu | grep "Socket(s):" | head -n1 | awk '{ printf $2 }')"
+  cps="$(lscpu | grep "Core(s) per socket:" | awk '{ printf $4 }')"
+  tpc="$(lscpu | grep "Thread(s) per core:" | awk '{ printf $4 }')"
+  os="$(lsb_release -d | awk '{ for (i=2;i<=NF;++i) printf $i " " }')"
+  cpu="$(lscpu | grep "Model name" | awk '{ for (i=3;i<=NF;++i) printf $i " " }')"
+  mhz="$(lscpu | grep "CPU max MHz:" | awk '{ printf $4 }' | cut -f1 -d".")"
+
+  echo -e "\nOS: $os"
+  w | head -n1
+
+  echo -e "\nCPUs: ${sockets}x ${cpu}with $cps Cores and $[cps*tpc] Threads"
+  echo -e " Total: $[sockets*cps] Cores and $[sockets*cps*tpc] Threads @ ${mhz}MHz"
+
+  echo -e "\nMemory:"
+  free -h
+
+  echo -e "\nStorage:"
+  df -h /
+
+  echo -e ""
+
+}
+
