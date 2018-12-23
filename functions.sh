@@ -196,12 +196,12 @@ uninstall () {
 
 system () {
 
-  sockets="$(lscpu | grep "Socket(s):" | head -n1 | awk '{ printf $2 }')"
-  cps="$(lscpu | grep "Core(s) per socket:" | awk '{ printf $4 }')"
-  tpc="$(lscpu | grep "Thread(s) per core:" | awk '{ printf $4 }')"
-  os="$(lsb_release -d | awk '{ for (i=2;i<=NF;++i) printf $i " " }')"
-  cpu="$(lscpu | grep "Model name" | awk '{ for (i=3;i<=NF;++i) printf $i " " }')"
-  mhz="$(lscpu | grep "CPU max MHz:" | awk '{ printf $4 }' | cut -f1 -d".")"
+  local sockets="$(lscpu | grep "Socket(s):" | head -n1 | awk '{ printf $2 }')"
+  local cps="$(lscpu | grep "Core(s) per socket:" | awk '{ printf $4 }')"
+  local tpc="$(lscpu | grep "Thread(s) per core:" | awk '{ printf $4 }')"
+  local os="$(lsb_release -d | awk '{ for (i=2;i<=NF;++i) printf $i " " }')"
+  local cpu="$(lscpu | grep "Model name" | awk '{ for (i=3;i<=NF;++i) printf $i " " }')"
+  local mhz="$(lscpu | grep "CPU max MHz:" | awk '{ printf $4 }' | cut -f1 -d".")"
 
   echo -e "\nOS: $os"
   w | head -n1
