@@ -8,6 +8,7 @@ wrong_arguments () {
   echo "remove (Uninstall Core)"
   echo "start relay|forger|all (Start Core Services)"
   echo "stop relay|forger|all (Stop Core Services)"
+  echo "system update (Run System Update)"
   echo "system (Show System Information)"
   exit 1
 
@@ -224,3 +225,10 @@ system () {
 
 }
 
+sysupdate () {
+
+  sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade -y > /dev/null 2>&1
+  sudo apt-get autoremove -y > /dev/null 2>&1
+  sudo apt-get autoclean -y > /dev/null 2>&1
+
+}

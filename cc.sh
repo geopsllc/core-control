@@ -21,9 +21,9 @@ main () {
       exit 1
     fi
 
-    system
-
     sudo apt update > /dev/null 2>&1
+
+    system
 
     install_deps &
 
@@ -118,6 +118,22 @@ main () {
   elif [[ ( "$1" == "system" ) && ( -z "$2" ) ]]; then
 
     system
+
+  elif [[ ( "$1" == "system" ) && ( "$2" = "update"  ) && ( -z "$3" ) ]]; then
+
+    sudo apt update > /dev/null 2>&1
+
+    system
+
+    sysupdate &
+
+    echo -ne "Updating System...  "
+
+    while [ -d /proc/$! ]; do
+      printf "\b${sp:i++%${#sp}:1}" && sleep .1
+    done
+
+    echo -e "\bDone"
 
   else
 
