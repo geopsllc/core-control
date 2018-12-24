@@ -4,9 +4,9 @@ wrong_arguments () {
 
   echo "Possible arguments:"
   echo "install mainnet|devnet (Install Core)"
-  echo "update mainnet|devnet (Update Core)"
-  echo "uninstall mainnet|devnet (Uninstall Core)"
-  echo "start relay|forger|all mainnet|devnet (Start Core Services)"
+  echo "update (Update Core)"
+  echo "uninstall (Uninstall Core)"
+  echo "start relay|forger|all (Start Core Services)"
   echo "stop relay|forger|all (Stop Core Services)"
   echo "system (Show System Information)"
   exit 1
@@ -113,7 +113,7 @@ install_core () {
   if [ "$1" = "mainnet" ]; then
     git clone $repo $core > /dev/null 2>&1
   else
-    git clone $repo $core -b develop > /dev/null 2>&1
+    git clone $repo $core -b $devbranch > /dev/null 2>&1
   fi
 
   mkdir $data > /dev/null 2>&1
@@ -221,6 +221,17 @@ system () {
   df -h /
 
   echo -e ""
+
+}
+
+git_check () {
+
+  local git_update="$(git pull)"
+
+  if [ "$git_update" != "Already up-to-date." ]; then
+    echo -e "\nThe tool needed to be updated. Please re-run your command.\n"
+    exit 0
+  fi
 
 }
 

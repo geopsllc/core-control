@@ -4,13 +4,13 @@
 
 ```sh
 git clone https://github.com/geopsllc/core-control
-cd ~/core-control/
-./core-control.sh [arguments]
+cd ~/core-control
+./cc.sh [arguments]
 Possible arguments:
 install mainnet|devnet (Install Core)
-update mainnet|devnet (Update Core)
-uninstall mainnet|devnet (Uninstall Core)
-start relay|forger|all mainnet|devnet (Start Core Services)
+update (Update Core)
+uninstall (Uninstall Core)
+start relay|forger|all (Start Core Services)
 stop relay|forger|all (Stop Core Services)
 system (Show System Information)
 ```
@@ -22,6 +22,12 @@ It contains coin-specific variables and should only be changed if you plan to us
 Using the system argument will now show you system information.
 
 ## Changelog
+
+### 0.5
+- network name is now pulled from .env for simpler commands
+- renamed main script to cc.sh
+- added devbranch variable in config.conf
+- added automatic tool update from git
 
 ### 0.4
 - added system information
