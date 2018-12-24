@@ -224,14 +224,3 @@ system () {
 
 }
 
-git_check () {
-
-  local git_update="$(git pull)"
-
-  if [ "$git_update" != "Already up-to-date." ]; then
-    echo -e "\nThe tool needed to be updated. Please re-run your command.\n"
-    exit 0
-  fi
-
-}
-

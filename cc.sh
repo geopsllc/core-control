@@ -5,7 +5,7 @@
 
 main () {
 
-  git_check
+  git update > /dev/null 2>&1
 
   i=1
   sp="/-\|"
