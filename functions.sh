@@ -35,7 +35,7 @@ start () {
     elif [[ "$rstatus" != "online" && "$2" = "devnet" ]]; then
       pm2 --name "${name}-core-relay" start $core/packages/core/dist/index.js -- relay --config $data/config --network $2 > /dev/null 2>&1
     else
-      echo "Relay already running!"
+      echo -e "\nRelay already running!"
     fi
 
     if [[ "$fstatus" != "online" && "$2" = "mainnet" ]]; then
@@ -43,7 +43,7 @@ start () {
     elif [[ "$fstatus" != "online" && "$2" = "devnet" ]]; then
       pm2 --name "${name}-core-forger" start $core/packages/core/dist/index.js -- forger --config $data/config --network $2 > /dev/null 2>&1
     else
-      echo "Forger already running!"
+      echo -e "\nForger already running!"
     fi
 
   else
@@ -55,7 +55,7 @@ start () {
     elif [[ "$status" != "online" && "$2" = "devnet" ]]; then
       pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --config $data/config --network $2 > /dev/null 2>&1
     else
-      echo "Process already running!"
+      echo -e "\nProcess already running!"
     fi
 
   fi
@@ -72,13 +72,13 @@ stop () {
     if [ "$rstatus" = "online" ]; then
       pm2 stop ${name}-core-relay > /dev/null 2>&1
     else
-      echo "Relay already stopped!"
+      echo -e "\nRelay already stopped!"
     fi
 
     if [ "$fstatus" = "online" ]; then
       pm2 stop ${name}-core-forger > /dev/null 2>&1
     else
-      echo "Forger already stopped!"
+      echo -e "\nForger already stopped!"
     fi
 
   else
@@ -88,7 +88,7 @@ stop () {
     if [ "$status" = "online" ]; then
       pm2 stop ${name}-core-$1 > /dev/null 2>&1
     else
-      echo "Process already stopped!"
+      echo -e "\nProcess already stopped!"
     fi
 
   fi
