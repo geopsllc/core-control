@@ -81,11 +81,11 @@ main () {
 
     echo -e "\bDone\n"
 
-  elif [[ ( "$1" == "uninstall" ) && ( -z "$2" ) ]]; then
+  elif [[ ( "$1" == "remove" ) && ( -z "$2" ) ]]; then
 
     system
 
-    uninstall $network &
+    remove $network &
 
     echo -ne "Removing Core...  "
 

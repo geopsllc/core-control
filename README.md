@@ -9,7 +9,7 @@ cd ~/core-control
 Possible arguments:
 install mainnet|devnet (Install Core)
 update (Update Core)
-uninstall (Uninstall Core)
+remove (Uninstall Core)
 start relay|forger|all (Start Core Services)
 stop relay|forger|all (Stop Core Services)
 system (Show System Information)
@@ -28,6 +28,7 @@ Using the system argument will now show you system information.
 - renamed main script to cc.sh
 - added devbranch variable in config.conf
 - added automatic tool update from git
+- renamed uninstall to remove
 
 ### 0.4
 - added system information

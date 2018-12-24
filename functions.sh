@@ -5,7 +5,7 @@ wrong_arguments () {
   echo "Possible arguments:"
   echo "install mainnet|devnet (Install Core)"
   echo "update (Update Core)"
-  echo "uninstall (Uninstall Core)"
+  echo "remove (Uninstall Core)"
   echo "start relay|forger|all (Start Core Services)"
   echo "stop relay|forger|all (Stop Core Services)"
   echo "system (Show System Information)"
@@ -185,7 +185,7 @@ update () {
 
 }
 
-uninstall () {
+remove () {
 
   pm2 delete ${name}-core-forger > /dev/null 2>&1
   pm2 delete ${name}-core-relay > /dev/null 2>&1
