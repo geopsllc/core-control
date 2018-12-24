@@ -58,7 +58,7 @@ main () {
   elif [[ ( "$1" == "update" ) && ( -z "$2" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
-      echo "\nCore not installed. Please install first.\n"
+      echo -e "\nCore not installed. Please install first.\n"
       exit 1
     fi
 
@@ -77,7 +77,7 @@ main () {
   elif [[ ( "$1" == "remove" ) && ( -z "$2" ) ]]; then
 
     if [[ ! -d $data && ! -d $core ]]; then
-      echo "\nCore not installed.\n"
+      echo -e "\nCore not installed.\n"
       exit 1
     fi
 
@@ -96,7 +96,7 @@ main () {
   elif [[ ( "$1" == "start" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
-      echo "\nCore not installed. Please install first.\n"
+      echo -e "\nCore not installed. Please install first.\n"
       exit 1
     fi
 
@@ -107,7 +107,7 @@ main () {
   elif [[ ( "$1" == "stop" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
-      echo "\nCore not installed. Please install first.\n"
+      echo -e "\nCore not installed. Please install first.\n"
       exit 1
     fi
 
