@@ -5,7 +5,7 @@
 
 main () {
 
-  git update > /dev/null 2>&1
+  git pull > /dev/null 2>&1
 
   i=1
   sp="/-\|"
