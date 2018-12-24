@@ -133,7 +133,7 @@ main () {
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
     done
 
-    echo -e "\bDone"
+    echo -e "\bDone\n"
 
   else
 
