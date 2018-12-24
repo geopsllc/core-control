@@ -2,7 +2,7 @@
 
 wrong_arguments () {
 
-  echo "./cc.sh arg1 [arg2]"
+  echo "Execute: ./cc.sh arg1 [arg2]"
   echo "Available args:"
   echo "install mainnet|devnet (Install Core)"
   echo "update (Update Core)"
