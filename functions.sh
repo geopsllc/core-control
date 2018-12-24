@@ -11,8 +11,7 @@ wrong_arguments () {
   echo -e "| remove  |                      | Remove Core             |"
   echo -e "| start   | relay / forger / all | Start Core Services     |"
   echo -e "| stop    | relay / forger / all | Stop Core Services      |"
-  echo -e "| system  | update               | Run System Update       |"
-  echo -e "| system  |                      | Show System Information |"
+  echo -e "| system  | info / update        | System Info / Update    |"
   echo -e " ----------------------------------------------------------\n"
   exit 1
 
@@ -199,7 +198,7 @@ remove () {
 
 }
 
-system () {
+sysinfo () {
 
   local sockets="$(lscpu | grep "Socket(s):" | head -n1 | awk '{ printf $2 }')"
   local cps="$(lscpu | grep "Core(s) per socket:" | awk '{ printf $4 }')"

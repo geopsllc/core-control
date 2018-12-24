@@ -23,7 +23,7 @@ main () {
 
     sudo apt update > /dev/null 2>&1
 
-    system
+    sysinfo
 
     install_deps &
 
@@ -62,7 +62,7 @@ main () {
       exit 1
     fi
 
-    system
+    sysinfo
 
     update $network &
 
@@ -81,7 +81,7 @@ main () {
       exit 1
     fi
 
-    system
+    sysinfo
 
     remove $network &
 
@@ -115,15 +115,15 @@ main () {
 
     echo -e "\nAll Done!\n"
 
-  elif [[ ( "$1" == "system" ) && ( -z "$2" ) ]]; then
+  elif [[ ( "$1" == "system" ) && ( "$2" = "info"  )&& ( -z "$3" ) ]]; then
 
-    system
+    sysinfo
 
   elif [[ ( "$1" == "system" ) && ( "$2" = "update"  ) && ( -z "$3" ) ]]; then
 
     sudo apt update > /dev/null 2>&1
 
-    system
+    sysinfo
 
     sysupdate &
 
