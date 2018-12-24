@@ -2,15 +2,18 @@
 
 wrong_arguments () {
 
-  echo "Execute: ./cc.sh arg1 [arg2]"
-  echo "Available args:"
-  echo "install mainnet|devnet (Install Core)"
-  echo "update (Update Core)"
-  echo "remove (Uninstall Core)"
-  echo "start relay|forger|all (Start Core Services)"
-  echo "stop relay|forger|all (Stop Core Services)"
-  echo "system update (Run System Update)"
-  echo "system (Show System Information)"
+  echo -e "\nExecute: ./cc.sh arg1 [arg2]\n"
+  echo -e " ----------------------------------------------------------"
+  echo -e "| arg1    | arg2                 | Description             |"
+  echo -e " ----------------------------------------------------------"
+  echo -e "| install | mainnet / devnet     | Install Core            |"
+  echo -e "| update  |                      | Update Core             |"
+  echo -e "| remove  |                      | Remove Core             |"
+  echo -e "| start   | relay / forger / all | Start Core Services     |"
+  echo -e "| stop    | relay / forger / all | Stop Core Services      |"
+  echo -e "| system  | update               | Run System Update       |"
+  echo -e "| system  |                      | Show System Information |"
+  echo -e " ----------------------------------------------------------\n"
   exit 1
 
 }
