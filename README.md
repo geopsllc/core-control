@@ -16,6 +16,10 @@ system update (Run System Update)
 system (Show System Information)
 ```
 
+| arg1 | arg2 | Description |
+| --- | --- | --- |
+| 'install' | 'mainnet'/'devnet' | Install Core |
+
 ## General
 This is a simple streamlined cli-based core v2 management script. It can install/update/remove ark core v2 for both mainnet and 
 devnet. It can also start/stop the relay/forger or both. There is a config.conf file that you normally wouldn't need to touch.
