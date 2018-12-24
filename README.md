@@ -5,20 +5,18 @@
 ```sh
 git clone https://github.com/geopsllc/core-control
 cd ~/core-control
-./cc.sh argument1 [argument2]
-Possible arguments:
-install mainnet|devnet (Install Core)
-update (Update Core)
-remove (Uninstall Core)
-start relay|forger|all (Start Core Services)
-stop relay|forger|all (Stop Core Services)
-system update (Run System Update)
-system (Show System Information)
+./cc.sh arg1 [arg2]
 ```
 
 | arg1 | arg2 | Description |
 | --- | --- | --- |
 | `install` | `mainnet`/`devnet` | Install Core |
+| `update` | | Install Core |
+| `remove` | | Install Core |
+| `start` | `relay`/`forger`/`all` | Install Core |
+| `stop` | `relay`/`forger`/`all` | Install Core |
+| `system` | `update` | Install Core |
+| `system` | | Install Core |
 
 ## General
 This is a simple streamlined cli-based core v2 management script. It can install/update/remove ark core v2 for both mainnet and 
