@@ -18,7 +18,7 @@ system (Show System Information)
 
 | arg1 | arg2 | Description |
 | --- | --- | --- |
-| 'install' | 'mainnet'/'devnet' | Install Core |
+| `install` | `mainnet`/`devnet` | Install Core |
 
 ## General
 This is a simple streamlined cli-based core v2 management script. It can install/update/remove ark core v2 for both mainnet and 
