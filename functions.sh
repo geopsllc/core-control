@@ -81,13 +81,13 @@ stop () {
     if [ "$rstatus" = "online" ]; then
       pm2 stop ${name}-core-relay > /dev/null 2>&1
     else
-      echo -e "\nRelay already stopped!"
+      echo -e "\nRelay not running!"
     fi
 
     if [ "$fstatus" = "online" ]; then
       pm2 stop ${name}-core-forger > /dev/null 2>&1
     else
-      echo -e "\nForger already stopped!"
+      echo -e "\nForger not running!"
     fi
 
   else
@@ -97,7 +97,7 @@ stop () {
     if [ "$status" = "online" ]; then
       pm2 stop ${name}-core-$1 > /dev/null 2>&1
     else
-      echo -e "\nProcess already stopped!"
+      echo -e "\nProcess not running!"
     fi
 
   fi

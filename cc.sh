@@ -105,22 +105,30 @@ main () {
 
     echo -e "\bDone\n"
 
-  elif [[ ( "$1" == "start" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" ) && ( -z "$3" ) ]]; then
+  elif [[ ( "$1" == "start" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\nCore not installed. Please install first.\n"
       exit 1
     fi
 
+    if [ -z "$2" ]; then
+      set -- "$1" "all"
+    fi
+
     start $2 $network
 
     echo -e "\nAll Done!\n"
 
-  elif [[ ( "$1" == "stop" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" ) && ( -z "$3" ) ]]; then
+  elif [[ ( "$1" == "stop" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\nCore not installed. Please install first.\n"
       exit 1
+    fi
+
+    if [ -z "$2" ]; then
+      set -- "$1" "all"
     fi
 
     stop "$2"
@@ -147,7 +155,11 @@ main () {
 
     echo -e "\bDone\n"
 
-  elif [[ ( "$1" == "logs" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" ) && ( -z "$3" ) ]]; then
+  elif [[ ( "$1" == "logs" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
+
+    if [ -z "$2" ]; then
+      set -- "$1" "all"
+    fi
 
     logs $2
 

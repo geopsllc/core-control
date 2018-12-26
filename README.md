@@ -21,7 +21,8 @@ cd ~/core-control
 ## General
 This is a simple streamlined cli-based core v2 management script. It can install/update/remove ark core v2 for both mainnet and 
 devnet. It can also start/stop the relay/forger or both, and display logs. Using "system info" will show you system information. 
-Using "system update" will perform a system dist-upgrade. There is a config.conf file that you normally wouldn't need to touch.
+Using "system update" will perform a system dist-upgrade. For start/stop/logs you can also skip the "all" argument as it's the default.
+There is a config.conf file that you normally wouldn't need to touch.
 It contains coin-specific variables and should only be changed if you plan to use the tool for a non-ARK core v2 chain.
 - Warning: Do not run this tool as root!
 
