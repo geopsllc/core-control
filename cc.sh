@@ -147,6 +147,10 @@ main () {
 
     echo -e "\bDone\n"
 
+  elif [[ ( "$1" == "logs" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" ) && ( -z "$3" ) ]]; then
+
+    logs $2
+
   else
 
     wrong_arguments

@@ -11,6 +11,7 @@ wrong_arguments () {
   echo -e "| remove  |                      | Remove Core             |"
   echo -e "| start   | relay / forger / all | Start Core Services     |"
   echo -e "| stop    | relay / forger / all | Stop Core Services      |"
+  echo -e "| logs    | relay / forger / all | Show Core Logs          |"
   echo -e "| system  | info / update        | System Info / Update    |"
   echo -e " ----------------------------------------------------------\n"
   exit 1
@@ -257,5 +258,15 @@ sysupdate () {
   sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade -y > /dev/null 2>&1
   sudo apt-get autoremove -y > /dev/null 2>&1
   sudo apt-get autoclean -y > /dev/null 2>&1
+
+}
+
+logs () {
+
+  if [ "$1" = "all" ]; then
+    pm2 logs
+  else
+    pm2 logs ${name}-core-$1
+  fi
 
 }
