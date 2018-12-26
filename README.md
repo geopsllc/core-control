@@ -32,6 +32,8 @@ It contains coin-specific variables and should only be changed if you plan to us
 - added devbranch variable in config.conf
 - added automatic tool update from git
 - renamed uninstall to remove
+- added fail2ban (with default ssh protection)
+- added ufw with configuration for ssh and the core ports in use
 
 ### 0.4
 - added system information

@@ -97,9 +97,17 @@ stop () {
 
 install_deps () {
 
-  sudo apt install -y htop curl build-essential python git nodejs npm libpq-dev ntp > /dev/null 2>&1
+  sudo apt install -y htop curl build-essential python git nodejs npm libpq-dev ntp ufw fail2ban > /dev/null 2>&1
   sudo npm install -g n grunt-cli pm2 yarn lerna > /dev/null 2>&1
   sudo n 10 > /dev/null 2>&1
+  sudo ufw allow 22/tcp > /dev/null 2>&1
+  sudo ufw allow ${api_port}/tcp > /dev/null 2>&1
+  if [ "$1" = "mainnet" ]; then
+    sudo ufw allow ${mainnet_port}/tcp > /dev/null 2>&1
+  else
+    sudo ufw allow ${devnet_port}/tcp > /dev/null 2>&1
+  fi
+  sudo ufw --force enable > /dev/null 2>&1
 
 }
 
@@ -195,6 +203,12 @@ remove () {
   pm2 delete ${name}-core-relay > /dev/null 2>&1
   rm -rf $core && rm -rf $data > /dev/null 2>&1
   dropdb ${name}_$1 > /dev/null 2>&1
+  sudo ufw delete allow ${api_port}/tcp > /dev/null 2>&1
+  if [ "$1" = "mainnet" ]; then
+    sudo ufw delete allow ${mainnet_port}/tcp > /dev/null 2>&1
+  else
+    sudo ufw delete allow ${devnet_port}/tcp > /dev/null 2>&1
+  fi
 
 }
 

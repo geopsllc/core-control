@@ -25,7 +25,7 @@ main () {
 
     sysinfo
 
-    install_deps &
+    install_deps $2 &
 
     echo -ne "Installing Dependencies...  "
 
@@ -80,6 +80,8 @@ main () {
       echo -e "\nCore not installed.\n"
       exit 1
     fi
+
+    sudo apt update > /dev/null 2>&1
 
     sysinfo
 
