@@ -137,6 +137,7 @@ install_core () {
   fi
 
   mkdir $data > /dev/null 2>&1
+  sudo rm -rf $HOME/.config > /dev/null 2>&1
 
   if [ "$1" = "mainnet" ]; then
     cd $core > /dev/null 2>&1
