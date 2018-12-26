@@ -22,6 +22,7 @@ This is a simple streamlined cli-based core v2 management script. It can install
 devnet. It can also start/stop the relay/forger or both. Using "system info" will show you system information. 
 Using "system update" will perform a system dist-upgrade. There is a config.conf file that you normally wouldn't need to touch.
 It contains coin-specific variables and should only be changed if you plan to use the tool for a non-ARK core v2 chain.
+- Warning: Do not run this tool as root!
 
 ## Changelog
 
@@ -34,6 +35,7 @@ It contains coin-specific variables and should only be changed if you plan to us
 - renamed uninstall to remove
 - added fail2ban (with default ssh protection)
 - added ufw with configuration for ssh and the core ports in use
+- reconfigure sshd_config with PermitRootLogin prohibit-password
 
 ### 0.4
 - added system information

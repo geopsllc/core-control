@@ -25,9 +25,19 @@ main () {
 
     sysinfo
 
-    install_deps $2 &
+    install_deps &
 
     echo -ne "Installing Dependencies...  "
+
+    while [ -d /proc/$! ]; do
+      printf "\b${sp:i++%${#sp}:1}" && sleep .1
+    done
+
+    echo -e "\bDone"
+
+    secure $2 &
+
+    echo -ne "Securing System...  "
 
     while [ -d /proc/$! ]; do
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
