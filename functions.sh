@@ -26,6 +26,8 @@ pm2status () {
 
 start () {
 
+  local secrets=$(cat $data/config/delegates.json | jq -r '.secrets')
+
   if [ "$1" = "all" ]; then
 
     local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
@@ -39,7 +41,9 @@ start () {
       echo -e "\nRelay already running!"
     fi
 
-    if [[ "$fstatus" != "online" && "$2" = "mainnet" ]]; then
+    if [ "$secrets" = "[]" ]; then
+      echo -e "\nDelegate secret is missing. Forger start aborted!"
+    elif [[ "$fstatus" != "online" && "$2" = "mainnet" ]]; then
       pm2 --name "${name}-core-forger" start $core/packages/core/bin/$name -- forger --config $data/config --network $2 > /dev/null 2>&1
     elif [[ "$fstatus" != "online" && "$2" = "devnet" ]]; then
       pm2 --name "${name}-core-forger" start $core/packages/core/dist/index.js -- forger --config $data/config --network $2 > /dev/null 2>&1
@@ -51,7 +55,9 @@ start () {
 
     local status=$(pm2status "${name}-core-$1" | awk '{print $13}')
 
-    if [[ "$status" != "online" && "$2" = "mainnet" ]]; then
+    if [[ "$secrets" = "[]" && "$1" = "forger" ]]; then
+      echo -e "\nDelegate secret is missing. Forger start aborted!"
+    elif [[ "$status" != "online" && "$2" = "mainnet" ]]; then
       pm2 --name "${name}-core-$1" start $core/packages/core/bin/$name -- $1 --config $data/config --network $2 > /dev/null 2>&1
     elif [[ "$status" != "online" && "$2" = "devnet" ]]; then
       pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --config $data/config --network $2 > /dev/null 2>&1
@@ -102,7 +108,7 @@ stop () {
 
 install_deps () {
 
-  sudo apt install -y htop curl build-essential python git nodejs npm libpq-dev ntp > /dev/null 2>&1
+  sudo apt install -y htop curl build-essential python git nodejs npm libpq-dev ntp gawk jq > /dev/null 2>&1
   sudo npm install -g n grunt-cli pm2 yarn lerna > /dev/null 2>&1
   sudo n 10 > /dev/null 2>&1
   pm2 install pm2-logrotate > /dev/null 2>&1
