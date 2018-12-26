@@ -38,6 +38,8 @@ It contains coin-specific variables and should only be changed if you plan to us
 - added fail2ban (with default ssh protection)
 - added ufw with configuration for ssh and the core ports in use
 - reconfigure sshd_config with PermitRootLogin prohibit-password
+- added pm2 logrotate module
+- pm2 now starts on boot and saves process state after start/stop
 
 ### 0.4
 - added system information

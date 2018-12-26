@@ -61,6 +61,8 @@ start () {
 
   fi
 
+  pm2 save > /dev/null 2>&1
+
 }
 
 stop () {
@@ -94,6 +96,8 @@ stop () {
 
   fi
 
+  pm2 save > /dev/null 2>&1
+
 }
 
 install_deps () {
@@ -101,6 +105,11 @@ install_deps () {
   sudo apt install -y htop curl build-essential python git nodejs npm libpq-dev ntp > /dev/null 2>&1
   sudo npm install -g n grunt-cli pm2 yarn lerna > /dev/null 2>&1
   sudo n 10 > /dev/null 2>&1
+  pm2 install pm2-logrotate > /dev/null 2>&1
+
+  local pm2startup="$(pm2 startup | tail -n1)"
+  eval $pm2startup > /dev/null 2>&1
+  pm2 save > /dev/null 2>&1
 
 }
 
