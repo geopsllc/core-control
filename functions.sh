@@ -210,6 +210,7 @@ remove () {
   pm2 delete ${name}-core-forger > /dev/null 2>&1
   pm2 delete ${name}-core-relay > /dev/null 2>&1
   rm -rf $core && rm -rf $data > /dev/null 2>&1
+  sudo rm -rf $HOME/.config > /dev/null 2>&1
   dropdb ${name}_$1 > /dev/null 2>&1
   sudo ufw delete allow ${api_port}/tcp > /dev/null 2>&1
   if [ "$1" = "mainnet" ]; then
