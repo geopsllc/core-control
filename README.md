@@ -24,6 +24,7 @@ cd ~/core-control
 This is a Streamlined CLI-Based Core v2 Management Tool. For start/stop/logs you can skip the "all" argument as it's the default.
 When setting a delegate secret just paste your secret after the "set" argument without quotes.
 The snapshot is stored in the "snapshots" folder in your home directory using the database name, e.g. ark_mainnet. 
+If you're using an external snapshot make sure to rename it accordingly and put in the "snapshots" folder.
 - Warning: Do not run this tool as root!
 
 ## Changelog
