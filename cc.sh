@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. "config.conf"
+. "project.conf"
 . "functions.sh"
 
 main () {

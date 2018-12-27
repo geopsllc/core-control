@@ -36,7 +36,7 @@ When setting a delegate secret just paste your secret after the "set" argument. 
 - added logs display
 - network name is now pulled from .env for simpler commands
 - renamed main script to cc.sh
-- added devbranch variable in config.conf
+- added devbranch variable to project.conf
 - added automatic tool update from git
 - renamed uninstall to remove
 - added fail2ban (with default ssh protection)
