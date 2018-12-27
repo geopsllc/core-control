@@ -20,8 +20,7 @@ cd ~/core-control
 | `system` | `info`/`update` | System Info / Update |
 
 ## General
-This is a simple streamlined cli-based core v2 management script. It can install/update/remove ark core v2 for both mainnet and 
-devnet. It can also start/stop the relay/forger or both, and display logs. Using "system info" will show you system information. 
+This is a Streamlined CLI-Based Core v2 Management Tool. Using "system info" will show you system information. 
 Using "system update" will perform a system dist-upgrade. For start/stop/logs you can also skip the "all" argument as it's the default.
 When setting a delegate secret just paste your secret after the "set" argument. You can remove the set secret with the "clear" argument.
 - Warning: Do not run this tool as root!
