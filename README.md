@@ -21,7 +21,7 @@ cd ~/core-control
 
 ## General
 This is a Streamlined CLI-Based Core v2 Management Tool. For start/stop/logs you can skip the "all" argument as it's the default.
-When setting a delegate secret just paste your secret after the "set" argument. You can remove the set secret with the "clear" argument.
+When setting a delegate secret just paste your secret after the "set" argument without quotes. 
 - Warning: Do not run this tool as root!
 
 ## Changelog
