@@ -3,17 +3,18 @@
 wrong_arguments () {
 
   echo -e "\nExecute: ./cc.sh arg1 [arg2]\n"
-  echo -e " ----------------------------------------------------------"
-  echo -e "| arg1    | arg2                 | Description             |"
-  echo -e " ----------------------------------------------------------"
-  echo -e "| install | mainnet / devnet     | Install Core            |"
-  echo -e "| update  |                      | Update Core             |"
-  echo -e "| remove  |                      | Remove Core             |"
-  echo -e "| start   | relay / forger / all | Start Core Services     |"
-  echo -e "| stop    | relay / forger / all | Stop Core Services      |"
-  echo -e "| logs    | relay / forger / all | Show Core Logs          |"
-  echo -e "| system  | info / update        | System Info / Update    |"
-  echo -e " ----------------------------------------------------------\n"
+  echo -e " --------------------------------------------------------------"
+  echo -e "| arg1    | arg2                 | Description                 |"
+  echo -e " --------------------------------------------------------------"
+  echo -e "| install | mainnet / devnet     | Install Core                |"
+  echo -e "| update  |                      | Update Core                 |"
+  echo -e "| remove  |                      | Remove Core                 |"
+  echo -e "| secret  | set / clear          | Delegate Secret Set / Clear |"
+  echo -e "| start   | relay / forger / all | Start Core Services         |"
+  echo -e "| stop    | relay / forger / all | Stop Core Services          |"
+  echo -e "| logs    | relay / forger / all | Show Core Logs              |"
+  echo -e "| system  | info / update        | System Info / Update        |"
+  echo -e " --------------------------------------------------------------\n"
   exit 1
 
 }
@@ -284,5 +285,18 @@ logs () {
   else
     pm2 logs ${name}-core-$1
   fi
+
+}
+
+secret () {
+
+  if [ "$1" = "set" ]; then
+    local scrt="$2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}"
+    jq --arg scrt "$scrt" '.secrets = [$scrt]' $data/config/delegates.json > delegates.tmp
+  else
+    jq '.secrets = []' $data/config/delegates.json > delegates.tmp
+  fi
+
+  mv delegates.tmp $data/config/delegates.json
 
 }

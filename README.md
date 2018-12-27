@@ -13,6 +13,7 @@ cd ~/core-control
 | `install` | `mainnet`/`devnet` | Install Core |
 | `update` | | Update Core |
 | `remove` | | Remove Core |
+| `secret` | `set`/`clear` | Delegate Secret Set / Clear |
 | `start` | `relay`/`forger`/`all` | Start Core Services |
 | `stop` | `relay`/`forger`/`all` | Stop Core Services |
 | `logs` | `relay`/`forger`/`all` | Show Core Logs |
@@ -22,11 +23,13 @@ cd ~/core-control
 This is a simple streamlined cli-based core v2 management script. It can install/update/remove ark core v2 for both mainnet and 
 devnet. It can also start/stop the relay/forger or both, and display logs. Using "system info" will show you system information. 
 Using "system update" will perform a system dist-upgrade. For start/stop/logs you can also skip the "all" argument as it's the default.
-There is a config.conf file that you normally wouldn't need to touch.
-It contains coin-specific variables and should only be changed if you plan to use the tool for a non-ARK core v2 chain.
+When setting a delegate secret just paste your secret after the "set" argument. You can remove the set secret with the "clear" argument.
 - Warning: Do not run this tool as root!
 
 ## Changelog
+
+### 0.6
+- added delegate secret management
 
 ### 0.5
 - added system update

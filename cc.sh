@@ -131,7 +131,7 @@ main () {
       set -- "$1" "all"
     fi
 
-    stop "$2"
+    stop $2
 
     echo -e "\nAll Done!\n"
 
@@ -162,6 +162,17 @@ main () {
     fi
 
     logs $2
+
+  elif [[ ( "$1" == "secret" ) && ( ( "$2" = "set" && ! -z "${14}" && -z "${15}" ) || ( "$2" = "clear" && -z "$3" ) ) ]]; then
+
+    if [[ ! -d $data || ! -d $core ]]; then
+      echo -e "\nCore not installed. Please install first.\n"
+      exit 1
+    fi
+
+    secret $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14}
+
+    echo -e "\nAll Done!\n"
 
   else
 
