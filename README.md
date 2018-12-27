@@ -17,17 +17,20 @@ cd ~/core-control
 | `start` | `relay`/`forger`/`all` | Start Core Services |
 | `stop` | `relay`/`forger`/`all` | Stop Core Services |
 | `logs` | `relay`/`forger`/`all` | Show Core Logs |
+| `snapshot` | `create`/`restore` | Snapshot Create / Restore |
 | `system` | `info`/`update` | System Info / Update |
 
 ## General
 This is a Streamlined CLI-Based Core v2 Management Tool. For start/stop/logs you can skip the "all" argument as it's the default.
-When setting a delegate secret just paste your secret after the "set" argument without quotes. 
+When setting a delegate secret just paste your secret after the "set" argument without quotes.
+The snapshot is stored in the "snapshots" folder in your home directory using the database name, e.g. ark_mainnet. 
 - Warning: Do not run this tool as root!
 
 ## Changelog
 
 ### 0.6
 - added delegate secret management
+- added local snapshot management
 
 ### 0.5
 - added system update

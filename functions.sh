@@ -3,18 +3,19 @@
 wrong_arguments () {
 
   echo -e "\nExecute: ./cc.sh arg1 [arg2]\n"
-  echo -e " --------------------------------------------------------------"
-  echo -e "| arg1    | arg2                 | Description                 |"
-  echo -e " --------------------------------------------------------------"
-  echo -e "| install | mainnet / devnet     | Install Core                |"
-  echo -e "| update  |                      | Update Core                 |"
-  echo -e "| remove  |                      | Remove Core                 |"
-  echo -e "| secret  | set / clear          | Delegate Secret Set / Clear |"
-  echo -e "| start   | relay / forger / all | Start Core Services         |"
-  echo -e "| stop    | relay / forger / all | Stop Core Services          |"
-  echo -e "| logs    | relay / forger / all | Show Core Logs              |"
-  echo -e "| system  | info / update        | System Info / Update        |"
-  echo -e " --------------------------------------------------------------\n"
+  echo -e " ---------------------------------------------------------------"
+  echo -e "| arg1     | arg2                 | Description                 |"
+  echo -e " ---------------------------------------------------------------"
+  echo -e "| install  | mainnet / devnet     | Install Core                |"
+  echo -e "| update   |                      | Update Core                 |"
+  echo -e "| remove   |                      | Remove Core                 |"
+  echo -e "| secret   | set / clear          | Delegate Secret Set / Clear |"
+  echo -e "| start    | relay / forger / all | Start Core Services         |"
+  echo -e "| stop     | relay / forger / all | Stop Core Services          |"
+  echo -e "| logs     | relay / forger / all | Show Core Logs              |"
+  echo -e "| snapshot | create / restore     | Snapshot Create / Restore   |"
+  echo -e "| system   | info / update        | System Info / Update        |"
+  echo -e " ---------------------------------------------------------------\n"
   exit 1
 
 }
@@ -54,13 +55,13 @@ start () {
 
   else
 
-    local status=$(pm2status "${name}-core-$1" | awk '{print $13}')
+    local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
 
     if [[ "$secrets" = "[]" && "$1" = "forger" ]]; then
       echo -e "\nDelegate secret is missing. Forger start aborted!"
-    elif [[ "$status" != "online" && "$2" = "mainnet" ]]; then
+    elif [[ "$pstatus" != "online" && "$2" = "mainnet" ]]; then
       pm2 --name "${name}-core-$1" start $core/packages/core/bin/$name -- $1 --config $data/config --network $2 > /dev/null 2>&1
-    elif [[ "$status" != "online" && "$2" = "devnet" ]]; then
+    elif [[ "$pstatus" != "online" && "$2" = "devnet" ]]; then
       pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --config $data/config --network $2 > /dev/null 2>&1
     else
       echo -e "\nProcess already running!"
@@ -93,9 +94,9 @@ stop () {
 
   else
 
-    local status=$(pm2status "${name}-core-$1" | awk '{print $13}')
+    local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
 
-    if [ "$status" = "online" ]; then
+    if [ "$pstatus" = "online" ]; then
       pm2 stop ${name}-core-$1 > /dev/null 2>&1
     else
       echo -e "\nProcess not running!"
@@ -298,5 +299,27 @@ secret () {
   fi
 
   mv delegates.tmp $data/config/delegates.json
+
+}
+
+snapshot () {
+
+  if [ "$1" = "restore" ]; then
+
+    stop all > /dev/null 2>&1
+    dropdb ${name}_$network > /dev/null 2>&1
+    createdb ${name}_$network > /dev/null 2>&1
+    pg_restore -n public -O -j 8 -d ${name}_$network $HOME/snapshots/${name}_$network
+    start all $network > /dev/null 2>&1
+
+  else
+
+    if [ ! -d $HOME/snapshots ]; then
+      mkdir $HOME/snapshots
+    fi
+
+    pg_dump -Fc ${name}_$network > $HOME/snapshots/${name}_${network}
+
+  fi
 
 }

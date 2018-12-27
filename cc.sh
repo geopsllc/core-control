@@ -174,6 +174,30 @@ main () {
 
     echo -e "\nAll Done!\n"
 
+  elif [[ ( "$1" == "snapshot" ) && ( "$2" = "create" || "$2" = "restore" ) && ( -z "$3" ) ]]; then
+
+    if [[ ! -d $data || ! -d $core ]]; then
+      echo -e "\nCore not installed. Please install first.\n"
+      exit 1
+    fi
+
+    if [[ "$2" = "restore" && ! -f $HOME/snapshots/${name}_$network ]]; then
+      echo -e "\nFile $HOME/snapshots/${name}_$network Not Found!\n"
+      exit 1
+    fi
+
+    sysinfo
+
+    snapshot $2 &
+
+    echo -ne "Processing Snapshot...  "
+
+    while [ -d /proc/$! ]; do
+      printf "\b${sp:i++%${#sp}:1}" && sleep .1
+    done
+
+    echo -e "\bDone\n"
+
   else
 
     wrong_arguments
