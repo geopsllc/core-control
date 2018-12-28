@@ -306,11 +306,22 @@ snapshot () {
 
   if [ "$1" = "restore" ]; then
 
+    local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
+    local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
+
     stop all > /dev/null 2>&1
+
     dropdb ${name}_$network > /dev/null 2>&1
     createdb ${name}_$network > /dev/null 2>&1
     pg_restore -n public -O -j 8 -d ${name}_$network $HOME/snapshots/${name}_$network
-    start all $network > /dev/null 2>&1
+
+    if [ "$rstatus" = "online" ]; then
+      start relay $network > /dev/null 2>&1
+    fi
+
+    if [ "$fstatus" = "online" ]; then
+      start forger $network > /dev/null 2>&1
+    fi
 
   else
 
