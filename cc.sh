@@ -127,6 +127,21 @@ main () {
 
     echo -e "\nAll Done!\n"
 
+  elif [[ ( "$1" == "restart" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
+
+    if [[ ! -d $data || ! -d $core ]]; then
+      echo -e "\nCore not installed. Please install first.\n"
+      exit 1
+    fi
+
+    if [ -z "$2" ]; then
+      set -- "$1" "all"
+    fi
+
+    restart $2
+
+    echo -e "\nAll Done!\n"
+
   elif [[ ( "$1" == "stop" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then

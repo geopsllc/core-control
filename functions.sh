@@ -11,6 +11,7 @@ wrong_arguments () {
   echo -e "| remove   |                      | Remove Core                 |"
   echo -e "| secret   | set / clear          | Delegate Secret Set / Clear |"
   echo -e "| start    | relay / forger / all | Start Core Services         |"
+  echo -e "| restart  | relay / forger / all | Restart Core Services       |"
   echo -e "| stop     | relay / forger / all | Stop Core Services          |"
   echo -e "| logs     | relay / forger / all | Show Core Logs              |"
   echo -e "| snapshot | create / restore     | Snapshot Create / Restore   |"
@@ -73,6 +74,39 @@ start () {
 
 }
 
+restart () {
+
+  if [ "$1" = "all" ]; then
+
+    local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
+    local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
+
+    if [ "$rstatus" = "online" ]; then
+      pm2 restart ${name}-core-relay > /dev/null 2>&1
+    else
+      echo -e "\nRelay not online!"
+    fi
+
+    if [ "$fstatus" = "online" ]; then
+      pm2 restart ${name}-core-forger > /dev/null 2>&1
+    else
+      echo -e "\nForger not online!"
+    fi
+
+  else
+
+    local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
+
+    if [ "$pstatus" = "online" ]; then
+      pm2 restart ${name}-core-$1 > /dev/null 2>&1
+    else
+      echo -e "\nProcess not online!"
+    fi
+
+  fi
+
+}
+
 stop () {
 
   if [ "$1" = "all" ]; then
@@ -83,13 +117,13 @@ stop () {
     if [ "$rstatus" = "online" ]; then
       pm2 stop ${name}-core-relay > /dev/null 2>&1
     else
-      echo -e "\nRelay not running!"
+      echo -e "\nRelay not online!"
     fi
 
     if [ "$fstatus" = "online" ]; then
       pm2 stop ${name}-core-forger > /dev/null 2>&1
     else
-      echo -e "\nForger not running!"
+      echo -e "\nForger not online!"
     fi
 
   else
@@ -99,7 +133,7 @@ stop () {
     if [ "$pstatus" = "online" ]; then
       pm2 stop ${name}-core-$1 > /dev/null 2>&1
     else
-      echo -e "\nProcess not running!"
+      echo -e "\nProcess not online!"
     fi
 
   fi
