@@ -11,6 +11,12 @@ main () {
   i=1
   sp="/-\|"
 
+  local als="$(cat $HOME/.bashrc | grep core-control)"
+  if [ -z "$als" ]; then
+    echo "alias control='bash $HOME/core-control/cc.sh'" >> $HOME/.bashrc
+    source $HOME/.bashrc
+  fi
+
   if [ -f $data/.env ]; then
     network="$(cat $data/.env | grep DATA | awk -F"_" '{print $4}')"
   fi
