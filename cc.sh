@@ -1,7 +1,7 @@
 #!/bin/bash
 
-. "project.conf"
-. "functions.sh"
+. "$HOME/core-control/project.conf"
+. "$HOME/core-control/functions.sh"
 
 main () {
 

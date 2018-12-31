@@ -3,6 +3,7 @@
 ## Installation
 
 ```sh
+cd ~
 git clone https://github.com/geopsllc/core-control
 cd ~/core-control
 ./cc.sh arg1 [arg2]
