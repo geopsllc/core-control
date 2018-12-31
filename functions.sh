@@ -2,7 +2,7 @@
 
 wrong_arguments () {
 
-  echo -e "\nExecute: ./cc.sh arg1 [arg2]\n"
+  echo -e "\nMissing: arg1 [arg2]\n"
   echo -e " ---------------------------------------------------------------"
   echo -e "| arg1     | arg2                 | Description                 |"
   echo -e " ---------------------------------------------------------------"
