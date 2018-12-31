@@ -1,6 +1,7 @@
 #!/bin/bash
 
-cd $HOME/core-control
+cd $HOME/core-control > /dev/null 2>&1
+
 . "project.conf"
 . "functions.sh"
 
@@ -14,7 +15,6 @@ main () {
   local als="$(cat $HOME/.bashrc | grep core-control)"
   if [ -z "$als" ]; then
     echo "alias control='bash $HOME/core-control/cc.sh'" >> $HOME/.bashrc
-    source $HOME/.bashrc
   fi
 
   if [ -f $data/.env ]; then
