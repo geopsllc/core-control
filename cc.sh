@@ -1,7 +1,6 @@
 #!/bin/bash
 
 cd $HOME/core-control > /dev/null 2>&1
-
 . "project.conf"
 . "functions.sh"
 
