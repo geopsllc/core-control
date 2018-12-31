@@ -26,8 +26,8 @@ This is a Streamlined CLI-Based Core v2 Management Tool. For start/stop/logs you
 When setting a delegate secret just paste your secret after the "set" argument without quotes.
 The snapshot is stored in the "snapshots" folder in your home directory using the database name, e.g. ark_mainnet. 
 If you're using an external snapshot make sure to rename it accordingly and put in the "snapshots" folder.
-The script adds an alias called control on first run. On your next shell login you'll be able to call the script from anywhere
-using control arg1 [arg2].
+The script adds an alias named 'control' on first run. On your next shell login you'll be able to call the script from anywhere
+using: control arg1 [arg2].
 - Warning: Do not run this tool as root!
 
 ## Changelog
