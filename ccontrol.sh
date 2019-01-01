@@ -1,6 +1,9 @@
 #!/bin/bash
 
-cd $HOME/core-control > /dev/null 2>&1
+basedir="$(dirname "$(cat $HOME/.bashrc | grep ccontrol | awk -F"=" '{print $2}')")"
+if [ "$basedir" != "." ]; then
+  cd $basedir
+fi
 
 . "project.conf"
 . "functions.sh"
@@ -12,9 +15,9 @@ main () {
   i=1
   sp="/-\|"
 
-  local als="$(cat $HOME/.bashrc | grep core-control)"
+  local als="$(cat $HOME/.bashrc | grep ccontrol)"
   if [ -z "$als" ]; then
-    echo "alias control='bash $HOME/core-control/cc.sh'" >> $HOME/.bashrc
+    echo "alias ccontrol=$PWD/ccontrol.sh" >> $HOME/.bashrc
   fi
 
   if [ -f $data/.env ]; then

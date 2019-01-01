@@ -3,10 +3,9 @@
 ## Installation
 
 ```sh
-cd ~
 git clone https://github.com/geopsllc/core-control
-cd ~/core-control
-./cc.sh arg1 [arg2]
+cd core-control
+./ccontrol.sh arg1 [arg2]
 ```
 
 | arg1 | arg2 | Description |
@@ -27,8 +26,8 @@ This is a Streamlined CLI-Based Core v2 Management Tool. For start/restart/stop/
 When setting a delegate secret just paste your secret after the "set" argument without quotes.
 The snapshot is stored in the "snapshots" folder in your home directory using the database name, e.g. ark_mainnet. 
 If you're using an external snapshot make sure to rename it accordingly and put in the "snapshots" folder.
-The script adds an alias named 'control' on first run. On your next shell login you'll be able to call the script from anywhere
-using: control arg1 [arg2].
+The script adds an alias named 'ccontrol' on first run. On your next shell login you'll be able to call the script from anywhere
+using: ccontrol arg1 [arg2].
 - Warning: Do not run this tool as root!
 
 ## Changelog
@@ -37,7 +36,8 @@ using: control arg1 [arg2].
 - added delegate secret management
 - added local snapshot management
 - added process restart capability
-- automatically adds alias 'control' on first run
+- automatically adds alias 'ccontrol' on first run
+- standardize the script name and alias to 'ccontrol'
 
 ### 0.5
 - added system update
