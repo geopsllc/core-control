@@ -27,6 +27,8 @@ This is a Streamlined CLI-Based Core v2 Management Tool.
 - When setting a delegate secret just paste your secret after the 'set' argument without quotes.
 - The snapshot is stored in the 'snapshots' folder in your home directory using the database name, e.g. ark_mainnet. 
 If you're using an external snapshot make sure to rename it accordingly and put in the 'snapshots' folder.
+- Running with the 'remove' argument does not delete the 'snapshots' folder and the stored snapshot to allow you to take a snapshot 
+and restore it after a clean reinstall.
 - The script adds an alias named 'ccontrol' on first run. On your next shell login you'll be able to call the script from anywhere
 using the following: ccontrol arg1 [arg2]
 - Do not run as root!
