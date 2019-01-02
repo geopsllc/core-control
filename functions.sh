@@ -287,19 +287,19 @@ sysinfo () {
   local hn="$(hostname --fqdn)"
   local ips="$(hostname --all-ip-address)"
 
-  echo -e "\nHostname: $hn"
-  echo -e " IP(s): $ips"
   echo -e "\nSystem: $os"
   w | head -n1
 
-  echo -e "\nCPUs: ${sockets}x ${cpu}with $cps Cores and $[cps*tpc] Threads"
+  echo -e "\nCPU(s): ${sockets}x ${cpu}with $cps Cores and $[cps*tpc] Threads"
   echo -ne " Total: $[sockets*cps] Cores and $[sockets*cps*tpc] Threads"
-
   if [ -z "$maxmhz" ]; then
     echo -e " @ ${mhz}MHz"
   else
     echo -e " @ ${maxmhz}MHz"
   fi
+
+  echo -e "\nHostname: $hn"
+  echo -e " IP(s): $ips"
 
   echo -e "\nMemory:"
   free -h

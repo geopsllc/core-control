@@ -41,6 +41,7 @@ using the following: ccontrol arg1 [arg2]
 - added process restart capability
 - automatically adds alias 'ccontrol' on first run
 - standardize the script name and alias to 'ccontrol'
+- added hostname and IP data to system info
 
 ### 0.5
 - added system update
