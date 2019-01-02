@@ -301,10 +301,10 @@ sysinfo () {
   echo -e "\nHostname: $hn"
   echo -e " IP(s): $ips"
 
-  echo -e "\nMemory:"
+  echo -e ""
   free -h
 
-  echo -e "\nStorage:"
+  echo -e ""
   df -h /
 
   echo -e ""
