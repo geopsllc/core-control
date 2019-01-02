@@ -284,8 +284,12 @@ sysinfo () {
   local cpu="$(lscpu | grep "Model name" | awk '{ for (i=3;i<=NF;++i) printf $i " " }')"
   local mhz="$(lscpu | grep "CPU MHz:" | awk '{ printf $3 }' | cut -f1 -d".")"
   local maxmhz="$(lscpu | grep "CPU max MHz:" | awk '{ printf $4 }' | cut -f1 -d".")"
+  local hn="$(hostname --fqdn)"
+  local ips="$(hostname --all-ip-address)"
 
-  echo -e "\nOS: $os"
+  echo -e "\nHostname: $hn"
+  echo -e " IP(s): $ips"
+  echo -e "\nSystem: $os"
   w | head -n1
 
   echo -e "\nCPUs: ${sockets}x ${cpu}with $cps Cores and $[cps*tpc] Threads"
