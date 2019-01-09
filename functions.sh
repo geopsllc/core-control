@@ -3,20 +3,21 @@
 wrong_arguments () {
 
   echo -e "\nMissing: arg1 [arg2]\n"
-  echo -e " ---------------------------------------------------------------"
-  echo -e "| arg1     | arg2                 | Description                 |"
-  echo -e " ---------------------------------------------------------------"
-  echo -e "| install  | mainnet / devnet     | Install Core                |"
-  echo -e "| update   |                      | Update Core                 |"
-  echo -e "| remove   |                      | Remove Core                 |"
-  echo -e "| secret   | set / clear          | Delegate Secret Set / Clear |"
-  echo -e "| start    | relay / forger / all | Start Core Services         |"
-  echo -e "| restart  | relay / forger / all | Restart Core Services       |"
-  echo -e "| stop     | relay / forger / all | Stop Core Services          |"
-  echo -e "| logs     | relay / forger / all | Show Core Logs              |"
-  echo -e "| snapshot | create / restore     | Snapshot Create / Restore   |"
-  echo -e "| system   | info / update        | System Info / Update        |"
-  echo -e " ---------------------------------------------------------------\n"
+  echo -e " ------------------------------------------------------------------"
+  echo -e "| arg1     | arg2                 | Description                    |"
+  echo -e " ------------------------------------------------------------------"
+  echo -e "| install  | mainnet / devnet     | Install Core                   |"
+  echo -e "| update   |                      | Update Core                    |"
+  echo -e "| remove   |                      | Remove Core                    |"
+  echo -e "| secret   | set / clear          | Delegate Secret Set / Clear    |"
+  echo -e "| start    | relay / forger / all | Start Core Services            |"
+  echo -e "| restart  | relay / forger / all | Restart Core Services          |"
+  echo -e "| stop     | relay / forger / all | Stop Core Services             |"
+  echo -e "| logs     | relay / forger / all | Show Core Logs                 |"
+  echo -e "| snapshot | create / restore     | Snapshot Create / Restore      |"
+  echo -e "| system   | info / update        | System Info / Update           |"
+  echo -e "| config   | reset                | Reset Config Files to Defaults |"
+  echo -e " ------------------------------------------------------------------\n"
   exit 1
 
 }
@@ -36,20 +37,20 @@ start () {
     local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
     local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
 
-    if [[ "$rstatus" != "online" && "$2" = "mainnet" ]]; then
-      pm2 --name "${name}-core-relay" start $core/packages/core/bin/$name -- relay --config $data/config --network $2 > /dev/null 2>&1
-    elif [[ "$rstatus" != "online" && "$2" = "devnet" ]]; then
-      pm2 --name "${name}-core-relay" start $core/packages/core/dist/index.js -- relay --config $data/config --network $2 > /dev/null 2>&1
+    if [[ "$rstatus" != "online" && "$network" = "mainnet" ]]; then
+      pm2 --name "${name}-core-relay" start $core/packages/core/bin/$name -- relay --config $data/config --network $network > /dev/null 2>&1
+    elif [[ "$rstatus" != "online" && "$network" = "devnet" ]]; then
+      pm2 --name "${name}-core-relay" start $core/packages/core/dist/index.js -- relay --config $data/config --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess relay already running. Skipping..."
     fi
 
     if [ "$secrets" = "[]" ]; then
       echo -e "\nDelegate secret is missing. Forger start aborted!"
-    elif [[ "$fstatus" != "online" && "$2" = "mainnet" ]]; then
-      pm2 --name "${name}-core-forger" start $core/packages/core/bin/$name -- forger --config $data/config --network $2 > /dev/null 2>&1
-    elif [[ "$fstatus" != "online" && "$2" = "devnet" ]]; then
-      pm2 --name "${name}-core-forger" start $core/packages/core/dist/index.js -- forger --config $data/config --network $2 > /dev/null 2>&1
+    elif [[ "$fstatus" != "online" && "$network" = "mainnet" ]]; then
+      pm2 --name "${name}-core-forger" start $core/packages/core/bin/$name -- forger --config $data/config --network $network > /dev/null 2>&1
+    elif [[ "$fstatus" != "online" && "$network" = "devnet" ]]; then
+      pm2 --name "${name}-core-forger" start $core/packages/core/dist/index.js -- forger --config $data/config --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess forger already running. Skipping..."
     fi
@@ -60,10 +61,10 @@ start () {
 
     if [[ "$secrets" = "[]" && "$1" = "forger" ]]; then
       echo -e "\nDelegate secret is missing. Forger start aborted!"
-    elif [[ "$pstatus" != "online" && "$2" = "mainnet" ]]; then
-      pm2 --name "${name}-core-$1" start $core/packages/core/bin/$name -- $1 --config $data/config --network $2 > /dev/null 2>&1
-    elif [[ "$pstatus" != "online" && "$2" = "devnet" ]]; then
-      pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --config $data/config --network $2 > /dev/null 2>&1
+    elif [[ "$pstatus" != "online" && "$network" = "mainnet" ]]; then
+      pm2 --name "${name}-core-$1" start $core/packages/core/bin/$name -- $1 --config $data/config --network $network > /dev/null 2>&1
+    elif [[ "$pstatus" != "online" && "$network" = "devnet" ]]; then
+      pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --config $data/config --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess $1 already running. Skipping..."
     fi
@@ -190,15 +191,14 @@ install_core () {
 
   mkdir $data > /dev/null 2>&1
   sudo rm -rf $HOME/.config > /dev/null 2>&1
+  cd $core > /dev/null 2>&1
 
   if [ "$1" = "mainnet" ]; then
-    cd $core > /dev/null 2>&1
     lerna clean -y > /dev/null 2>&1
     lerna bootstrap > /dev/null 2>&1
     cp -rf "$core/packages/core/lib/config/$1" "$data" > /dev/null 2>&1
     cp "$core/packages/crypto/lib/networks/$name/$1.json" "$data/$1/network.json" > /dev/null 2>&1
   else
-    cd $core > /dev/null 2>&1
     yarn setup > /dev/null 2>&1
     cp -rf "$core/packages/core/src/config/$1" "$data" > /dev/null 2>&1
   fi
@@ -234,13 +234,13 @@ install_core () {
 
 update () {
 
-  if [ "$1" = "mainnet" ]; then
-    cd $core > /dev/null 2>&1
+  cd $core > /dev/null 2>&1
+
+  if [ "$network" = "mainnet" ]; then
     git pull > /dev/null 2>&1
     lerna clean -y > /dev/null 2>&1
     lerna bootstrap > /dev/null 2>&1
   else
-    cd $core > /dev/null 2>&1
     git pull > /dev/null 2>&1
     yarn setup > /dev/null 2>&1
   fi
@@ -265,13 +265,29 @@ remove () {
   pm2 save > /dev/null 2>&1
   rm -rf $core && rm -rf $data > /dev/null 2>&1
   sudo rm -rf $HOME/.config > /dev/null 2>&1
-  dropdb ${name}_$1 > /dev/null 2>&1
+  dropdb ${name}_$network > /dev/null 2>&1
   sudo ufw delete allow ${api_port}/tcp > /dev/null 2>&1
-  if [ "$1" = "mainnet" ]; then
+  if [ "$network" = "mainnet" ]; then
     sudo ufw delete allow ${mainnet_port}/tcp > /dev/null 2>&1
   else
     sudo ufw delete allow ${devnet_port}/tcp > /dev/null 2>&1
   fi
+
+}
+
+config_reset () {
+
+  stop all > /dev/null 2>&1
+  rm -rf $data/config > /dev/null 2>&1
+
+  if [ "$network" = "mainnet" ]; then
+    cp -rf "$core/packages/core/lib/config/$network" "$data" > /dev/null 2>&1
+    cp "$core/packages/crypto/lib/networks/$name/$network.json" "$data/$network/network.json" > /dev/null 2>&1
+  else
+    cp -rf "$core/packages/core/src/config/$network" "$data" > /dev/null 2>&1
+  fi
+
+  mv "$data/$network" "$data/config" > /dev/null 2>&1
 
 }
 

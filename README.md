@@ -20,6 +20,7 @@ cd core-control
 | `logs` | `relay`/`forger`/`all` | Show Core Logs |
 | `snapshot` | `create`/`restore` | Snapshot Create / Restore |
 | `system` | `info`/`update` | System Info / Update |
+| `config` | `reset` | Reset Config Files to Defaults |
 
 ## General
 This is a Streamlined CLI-Based Core v2 Management Tool. 
@@ -31,6 +32,8 @@ If you're using an external snapshot make sure to rename it accordingly and put 
 to take a snapshot, do remove/install and restore it afterwards.
 - The script adds an alias named 'ccontrol' on first run. On your next shell login you'll be able to call the script from anywhere
 using the following: ccontrol arg1 [arg2]
+- Using the 'config reset' arguments will stop the core processes, delete your existing configs and replace them with the defaults.
+If you're running a forger and/or have custom settings, you should add them again.
 - Do not run as root!
 
 ## Changelog
@@ -43,6 +46,7 @@ using the following: ccontrol arg1 [arg2]
 - standardize the script name and alias to 'ccontrol'
 - added hostname and IP data to system info
 - Made error messages easier to understand
+- added config reset capability
 
 ### 0.5
 - added system update

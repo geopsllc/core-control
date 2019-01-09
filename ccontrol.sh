@@ -84,7 +84,7 @@ main () {
 
     sysinfo
 
-    update $network &
+    update &
 
     echo -ne "Updating Core...  "
 
@@ -105,7 +105,7 @@ main () {
 
     sysinfo
 
-    remove $network &
+    remove &
 
     echo -ne "Removing Core...  "
 
@@ -114,6 +114,21 @@ main () {
     done
 
     echo -e "\bDone\n"
+
+  elif [[ ( "$1" == "config" ) && ( "$2" = "reset"  )&& ( -z "$3" ) ]]; then
+
+    if [[ ! -d $data || ! -d $core ]]; then
+      echo -e "\nCore not installed. Please install first.\n"
+      exit 1
+    fi
+
+    config_reset &
+
+    sleep 1
+    echo -e "\nProcesses Stopped..."
+    sleep 1
+    echo -e "Configs Replaced with Defaults..."
+    echo -e "All Done!\n"
 
   elif [[ ( "$1" == "start" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
 
@@ -126,7 +141,7 @@ main () {
       set -- "$1" "all"
     fi
 
-    start $2 $network
+    start $2
 
     echo -e "\nAll Done!\n"
 
