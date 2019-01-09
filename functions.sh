@@ -225,11 +225,11 @@ install_core () {
   echo "${token}_API_HOST=0.0.0.0" >> "$envFile" 2>&1
   echo "${token}_API_PORT=$api_port" >> "$envFile" 2>&1
   echo "${token}_WEBHOOKS_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "${token}_WEBHOOKS_PORT=4004" >> "$envFile" 2>&1
+  echo "${token}_WEBHOOKS_PORT=$wh_port" >> "$envFile" 2>&1
   echo "${token}_GRAPHQL_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "${token}_GRAPHQL_PORT=4005" >> "$envFile" 2>&1
+  echo "${token}_GRAPHQL_PORT=$gql_port" >> "$envFile" 2>&1
   echo "${token}_JSONRPC_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "${token}_JSONRPC_PORT=8080" >> "$envFile" 2>&1
+  echo "${token}_JSONRPC_PORT=$rpc_port" >> "$envFile" 2>&1
 }
 
 update () {
