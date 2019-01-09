@@ -41,7 +41,7 @@ start () {
     elif [[ "$rstatus" != "online" && "$2" = "devnet" ]]; then
       pm2 --name "${name}-core-relay" start $core/packages/core/dist/index.js -- relay --config $data/config --network $2 > /dev/null 2>&1
     else
-      echo -e "\nRelay already running!"
+      echo -e "\nProcess relay already running. Skipping..."
     fi
 
     if [ "$secrets" = "[]" ]; then
@@ -51,7 +51,7 @@ start () {
     elif [[ "$fstatus" != "online" && "$2" = "devnet" ]]; then
       pm2 --name "${name}-core-forger" start $core/packages/core/dist/index.js -- forger --config $data/config --network $2 > /dev/null 2>&1
     else
-      echo -e "\nForger already running!"
+      echo -e "\nProcess forger already running. Skipping..."
     fi
 
   else
@@ -65,7 +65,7 @@ start () {
     elif [[ "$pstatus" != "online" && "$2" = "devnet" ]]; then
       pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --config $data/config --network $2 > /dev/null 2>&1
     else
-      echo -e "\nProcess already running!"
+      echo -e "\nProcess $1 already running. Skipping..."
     fi
 
   fi
@@ -84,13 +84,13 @@ restart () {
     if [ "$rstatus" = "online" ]; then
       pm2 restart ${name}-core-relay > /dev/null 2>&1
     else
-      echo -e "\nRelay not online!"
+      echo -e "\nProcess relay not running. Skipping..."
     fi
 
     if [ "$fstatus" = "online" ]; then
       pm2 restart ${name}-core-forger > /dev/null 2>&1
     else
-      echo -e "\nForger not online!"
+      echo -e "\nProcess forger not running. Skipping..."
     fi
 
   else
@@ -100,7 +100,7 @@ restart () {
     if [ "$pstatus" = "online" ]; then
       pm2 restart ${name}-core-$1 > /dev/null 2>&1
     else
-      echo -e "\nProcess not online!"
+      echo -e "\nProcess $1 not running. Skipping..."
     fi
 
   fi
@@ -117,13 +117,13 @@ stop () {
     if [ "$rstatus" = "online" ]; then
       pm2 stop ${name}-core-relay > /dev/null 2>&1
     else
-      echo -e "\nRelay not online!"
+      echo -e "\nProcess relay not running. Skipping..."
     fi
 
     if [ "$fstatus" = "online" ]; then
       pm2 stop ${name}-core-forger > /dev/null 2>&1
     else
-      echo -e "\nForger not online!"
+      echo -e "\nProcess forger not running. Skipping..."
     fi
 
   else
@@ -133,7 +133,7 @@ stop () {
     if [ "$pstatus" = "online" ]; then
       pm2 stop ${name}-core-$1 > /dev/null 2>&1
     else
-      echo -e "\nProcess not online!"
+      echo -e "\nProcess $1 not running. Skipping..."
     fi
 
   fi
