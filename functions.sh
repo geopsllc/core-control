@@ -190,7 +190,7 @@ install_db () {
 install_core () {
 
   if [ "$1" = "mainnet" ]; then
-    git clone $repo $core > /dev/null 2>&1
+    git clone $repo $core -b $devbranch > /dev/null 2>&1
   else
     git clone $repo $core -b $devbranch > /dev/null 2>&1
   fi
@@ -233,15 +233,8 @@ install_core () {
 update () {
 
   cd $core > /dev/null 2>&1
-
-  if [ "$network" = "mainnet" ]; then
-    git pull > /dev/null 2>&1
-    lerna clean -y > /dev/null 2>&1
-    lerna bootstrap > /dev/null 2>&1
-  else
-    git pull > /dev/null 2>&1
-    yarn setup > /dev/null 2>&1
-  fi
+  git pull > /dev/null 2>&1
+  yarn setup > /dev/null 2>&1
 
   local fstatus=$(pm2status "core-forger" | awk '{print $13}')
   local rstatus=$(pm2status "core-relay" | awk '{print $13}')
