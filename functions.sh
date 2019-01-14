@@ -34,28 +34,24 @@ start () {
 
   if [ "$1" = "all" ]; then
 
-    local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
-    local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
+    local fstatus=$(pm2status "core-forger" | awk '{print $13}')
+    local rstatus=$(pm2status "core-relay" | awk '{print $13}')
 
-    if [[ "$rstatus" != "online" && "$network" = "mainnet" ]]; then
-      pm2 --name "${name}-core-relay" start $core/packages/core/bin/$name -- relay --config $data/config --network $network > /dev/null 2>&1
-    elif [[ "$rstatus" != "online" && "$network" = "devnet" ]]; then
-      pm2 --name "${name}-core-relay" start $core/packages/core/dist/index.js -- relay --config $data/config --network $network > /dev/null 2>&1
+    if [ "$rstatus" != "online" ]; then
+      pm2 --name "core-relay" start $core/packages/core/dist/index.js -- relay --config $data/config --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess relay already running. Skipping..."
     fi
 
     if [ "$secrets" = "[]" ]; then
       echo -e "\nDelegate secret is missing. Forger start aborted!"
-    elif [[ "$fstatus" != "online" && "$network" = "mainnet" ]]; then
-      pm2 --name "${name}-core-forger" start $core/packages/core/bin/$name -- forger --config $data/config --network $network > /dev/null 2>&1
-    elif [[ "$fstatus" != "online" && "$network" = "devnet" ]]; then
-      pm2 --name "${name}-core-forger" start $core/packages/core/dist/index.js -- forger --config $data/config --network $network > /dev/null 2>&1
+    elif [ "$fstatus" != "online" ]; then
+      pm2 --name "$core-forger" start $core/packages/core/dist/index.js -- forger --config $data/config --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess forger already running. Skipping..."
     fi
 
-    local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
+    local rstatus=$(pm2status "core-relay" | awk '{print $13}')
 
     if [ "$rstatus" != "online" ]; then
       echo -e "\nProcess startup failed."
@@ -63,19 +59,17 @@ start () {
 
   else
 
-    local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
+    local pstatus=$(pm2status "core-$1" | awk '{print $13}')
 
     if [[ "$secrets" = "[]" && "$1" = "forger" ]]; then
       echo -e "\nDelegate secret is missing. Forger start aborted!"
-    elif [[ "$pstatus" != "online" && "$network" = "mainnet" ]]; then
-      pm2 --name "${name}-core-$1" start $core/packages/core/bin/$name -- $1 --config $data/config --network $network > /dev/null 2>&1
-    elif [[ "$pstatus" != "online" && "$network" = "devnet" ]]; then
-      pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --config $data/config --network $network > /dev/null 2>&1
+    elif [ "$pstatus" != "online" ]; then
+      pm2 --name "core-$1" start $core/packages/core/dist/index.js -- $1 --config $data/config --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess $1 already running. Skipping..."
     fi
 
-    local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
+    local pstatus=$(pm2status "core-$1" | awk '{print $13}')
 
     if [[ "$pstatus" != "online" && "$1" = "relay" ]]; then
       echo -e "\nProcess startup failed."
@@ -91,27 +85,27 @@ restart () {
 
   if [ "$1" = "all" ]; then
 
-    local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
-    local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
+    local fstatus=$(pm2status "core-forger" | awk '{print $13}')
+    local rstatus=$(pm2status "core-relay" | awk '{print $13}')
 
     if [ "$rstatus" = "online" ]; then
-      pm2 restart ${name}-core-relay > /dev/null 2>&1
+      pm2 restart core-relay > /dev/null 2>&1
     else
       echo -e "\nProcess relay not running. Skipping..."
     fi
 
     if [ "$fstatus" = "online" ]; then
-      pm2 restart ${name}-core-forger > /dev/null 2>&1
+      pm2 restart core-forger > /dev/null 2>&1
     else
       echo -e "\nProcess forger not running. Skipping..."
     fi
 
   else
 
-    local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
+    local pstatus=$(pm2status "core-$1" | awk '{print $13}')
 
     if [ "$pstatus" = "online" ]; then
-      pm2 restart ${name}-core-$1 > /dev/null 2>&1
+      pm2 restart core-$1 > /dev/null 2>&1
     else
       echo -e "\nProcess $1 not running. Skipping..."
     fi
@@ -124,27 +118,27 @@ stop () {
 
   if [ "$1" = "all" ]; then
 
-    local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
-    local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
+    local fstatus=$(pm2status "core-forger" | awk '{print $13}')
+    local rstatus=$(pm2status "core-relay" | awk '{print $13}')
 
     if [ "$rstatus" = "online" ]; then
-      pm2 stop ${name}-core-relay > /dev/null 2>&1
+      pm2 stop core-relay > /dev/null 2>&1
     else
       echo -e "\nProcess relay not running. Skipping..."
     fi
 
     if [ "$fstatus" = "online" ]; then
-      pm2 stop ${name}-core-forger > /dev/null 2>&1
+      pm2 stop core-forger > /dev/null 2>&1
     else
       echo -e "\nProcess forger not running. Skipping..."
     fi
 
   else
 
-    local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
+    local pstatus=$(pm2status "core-$1" | awk '{print $13}')
 
     if [ "$pstatus" = "online" ]; then
-      pm2 stop ${name}-core-$1 > /dev/null 2>&1
+      pm2 stop core-$1 > /dev/null 2>&1
     else
       echo -e "\nProcess $1 not running. Skipping..."
     fi
@@ -188,8 +182,8 @@ install_db () {
 
   sudo apt install -y postgresql postgresql-contrib > /dev/null 2>&1
   sudo -u postgres psql -c "CREATE USER $USER WITH PASSWORD 'password' CREATEDB;" > /dev/null 2>&1
-  dropdb ${name}_$1 > /dev/null 2>&1
-  createdb ${name}_$1 > /dev/null 2>&1
+  dropdb core_$1 > /dev/null 2>&1
+  createdb core_$1 > /dev/null 2>&1
 
 }
 
@@ -205,43 +199,35 @@ install_core () {
   sudo rm -rf $HOME/.config > /dev/null 2>&1
   cd $core > /dev/null 2>&1
 
-  if [ "$1" = "mainnet" ]; then
-    lerna clean -y > /dev/null 2>&1
-    lerna bootstrap > /dev/null 2>&1
-    cp -rf "$core/packages/core/lib/config/$1" "$data" > /dev/null 2>&1
-    cp "$core/packages/crypto/lib/networks/$name/$1.json" "$data/$1/network.json" > /dev/null 2>&1
-  else
-    yarn setup > /dev/null 2>&1
-    cp -rf "$core/packages/core/src/config/$1" "$data" > /dev/null 2>&1
-  fi
-
+  yarn setup > /dev/null 2>&1
+  cp -rf "$core/packages/core/src/config/$1" "$data" > /dev/null 2>&1
   mv "$data/$1" "$data/config" > /dev/null 2>&1
 
   local envFile="$data/.env"
   touch "$envFile"
 
-  echo "${token}_LOG_LEVEL=$log_level" >> "$envFile" 2>&1
-  echo "${token}_DB_HOST=localhost" >> "$envFile" 2>&1
-  echo "${token}_DB_PORT=5432" >> "$envFile" 2>&1
-  echo "${token}_DB_USERNAME=$USER" >> "$envFile" 2>&1
-  echo "${token}_DB_PASSWORD=password" >> "$envFile" 2>&1
-  echo "${token}_DB_DATABASE=${name}_$1" >> "$envFile" 2>&1
-  echo "${token}_P2P_HOST=0.0.0.0" >> "$envFile" 2>&1
+  echo "CORE_LOG_LEVEL=$log_level" >> "$envFile" 2>&1
+  echo "CORE_DB_HOST=localhost" >> "$envFile" 2>&1
+  echo "CORE_DB_PORT=5432" >> "$envFile" 2>&1
+  echo "CORE_DB_USERNAME=$USER" >> "$envFile" 2>&1
+  echo "CORE_DB_PASSWORD=password" >> "$envFile" 2>&1
+  echo "CORE_DB_DATABASE=core_$1" >> "$envFile" 2>&1
+  echo "CORE_P2P_HOST=0.0.0.0" >> "$envFile" 2>&1
 
   if [ "$1" = "mainnet" ]; then
-    echo "${token}_P2P_PORT=$mainnet_port" >> "$envFile" 2>&1
+    echo "CORE_P2P_PORT=$mainnet_port" >> "$envFile" 2>&1
   else
-    echo "${token}_P2P_PORT=$devnet_port" >> "$envFile" 2>&1
+    echo "CORE_P2P_PORT=$devnet_port" >> "$envFile" 2>&1
   fi
 
-  echo "${token}_API_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "${token}_API_PORT=$api_port" >> "$envFile" 2>&1
-  echo "${token}_WEBHOOKS_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "${token}_WEBHOOKS_PORT=$wh_port" >> "$envFile" 2>&1
-  echo "${token}_GRAPHQL_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "${token}_GRAPHQL_PORT=$gql_port" >> "$envFile" 2>&1
-  echo "${token}_JSONRPC_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "${token}_JSONRPC_PORT=$rpc_port" >> "$envFile" 2>&1
+  echo "CORE_API_HOST=0.0.0.0" >> "$envFile" 2>&1
+  echo "CORE_API_PORT=$api_port" >> "$envFile" 2>&1
+  echo "CORE_WEBHOOKS_HOST=0.0.0.0" >> "$envFile" 2>&1
+  echo "CORE_WEBHOOKS_PORT=$wh_port" >> "$envFile" 2>&1
+  echo "CORE_GRAPHQL_HOST=0.0.0.0" >> "$envFile" 2>&1
+  echo "CORE_GRAPHQL_PORT=$gql_port" >> "$envFile" 2>&1
+  echo "CORE_JSONRPC_HOST=0.0.0.0" >> "$envFile" 2>&1
+  echo "CORE_JSONRPC_PORT=$rpc_port" >> "$envFile" 2>&1
 }
 
 update () {
@@ -257,27 +243,27 @@ update () {
     yarn setup > /dev/null 2>&1
   fi
 
-  local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
-  local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
+  local fstatus=$(pm2status "core-forger" | awk '{print $13}')
+  local rstatus=$(pm2status "core-relay" | awk '{print $13}')
 
   if [ "$rstatus" = "online" ]; then
-    pm2 restart ${name}-core-relay > /dev/null 2>&1
+    pm2 restart core-relay > /dev/null 2>&1
   fi
 
   if [ "$fstatus" = "online" ]; then
-    pm2 restart ${name}-core-forger > /dev/null 2>&1
+    pm2 restart core-forger > /dev/null 2>&1
   fi
 
 }
 
 remove () {
 
-  pm2 delete ${name}-core-forger > /dev/null 2>&1
-  pm2 delete ${name}-core-relay > /dev/null 2>&1
+  pm2 delete core-forger > /dev/null 2>&1
+  pm2 delete core-relay > /dev/null 2>&1
   pm2 save > /dev/null 2>&1
   rm -rf $core && rm -rf $data > /dev/null 2>&1
   sudo rm -rf $HOME/.config > /dev/null 2>&1
-  dropdb ${name}_$network > /dev/null 2>&1
+  dropdb core_$network > /dev/null 2>&1
   sudo ufw delete allow ${api_port}/tcp > /dev/null 2>&1
   if [ "$network" = "mainnet" ]; then
     sudo ufw delete allow ${mainnet_port}/tcp > /dev/null 2>&1
@@ -292,13 +278,7 @@ config_reset () {
   stop all > /dev/null 2>&1
   rm -rf $data/config > /dev/null 2>&1
 
-  if [ "$network" = "mainnet" ]; then
-    cp -rf "$core/packages/core/lib/config/$network" "$data" > /dev/null 2>&1
-    cp "$core/packages/crypto/lib/networks/$name/$network.json" "$data/$network/network.json" > /dev/null 2>&1
-  else
-    cp -rf "$core/packages/core/src/config/$network" "$data" > /dev/null 2>&1
-  fi
-
+  cp -rf "$core/packages/core/src/config/$network" "$data" > /dev/null 2>&1
   mv "$data/$network" "$data/config" > /dev/null 2>&1
 
 }
@@ -352,7 +332,7 @@ logs () {
   if [ "$1" = "all" ]; then
     pm2 logs
   else
-    pm2 logs ${name}-core-$1
+    pm2 logs core-$1
   fi
 
 }
@@ -374,14 +354,14 @@ snapshot () {
 
   if [ "$1" = "restore" ]; then
 
-    local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
-    local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
+    local fstatus=$(pm2status "core-forger" | awk '{print $13}')
+    local rstatus=$(pm2status "core-relay" | awk '{print $13}')
 
     stop all > /dev/null 2>&1
 
-    dropdb ${name}_$network > /dev/null 2>&1
-    createdb ${name}_$network > /dev/null 2>&1
-    pg_restore -n public -O -j 8 -d ${name}_$network $HOME/snapshots/${name}_$network
+    dropdb core_$network > /dev/null 2>&1
+    createdb core_$network > /dev/null 2>&1
+    pg_restore -n public -O -j 8 -d core_$network $HOME/snapshots/core_$network
 
     if [ "$rstatus" = "online" ]; then
       start relay $network > /dev/null 2>&1
@@ -397,7 +377,7 @@ snapshot () {
       mkdir $HOME/snapshots
     fi
 
-    pg_dump -Fc ${name}_$network > $HOME/snapshots/${name}_${network}
+    pg_dump -Fc core_$network > $HOME/snapshots/core_${network}
 
   fi
 
