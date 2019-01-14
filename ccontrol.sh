@@ -1,7 +1,9 @@
 #!/bin/bash
 
 basedir="$(dirname "$(cat $HOME/.bashrc | grep ccontrol | awk -F"=" '{print $2}')")"
-if [ "$basedir" != "." ]; then
+execdir="$(dirname "$0")"
+
+if [[ "$basedir" != "." && "$execdir" != "." ]]; then
   cd $basedir
 fi
 
