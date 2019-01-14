@@ -55,6 +55,12 @@ start () {
       echo -e "\nProcess forger already running. Skipping..."
     fi
 
+    local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
+
+    if [ "$rstatus" != "online" ]; then
+      echo -e "\nProcess startup failed."
+    fi
+
   else
 
     local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
@@ -67,6 +73,12 @@ start () {
       pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --config $data/config --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess $1 already running. Skipping..."
+    fi
+
+    local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
+
+    if [[ "$pstatus" != "online" && "$1" = "relay" ]]; then
+      echo -e "\nProcess startup failed."
     fi
 
   fi
