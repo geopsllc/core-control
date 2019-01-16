@@ -80,7 +80,8 @@ If you discover a security vulnerability within this package, please open an iss
 
 ## Credits
 
-- [geopsllc](https://github.com/geopsllc)
+- [All Contributors](../../contributors)
+- [Georgi Stoyanov](https://github.com/geopsllc)
 
 ## License
 
