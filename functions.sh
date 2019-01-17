@@ -34,11 +34,11 @@ start () {
 
   if [ "$1" = "all" ]; then
 
-    local fstatus=$(pm2status "core-forger" | awk '{print $13}')
-    local rstatus=$(pm2status "core-relay" | awk '{print $13}')
+    local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
+    local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
 
     if [ "$rstatus" != "online" ]; then
-      pm2 --name "core-relay" start $core/packages/core/dist/index.js -- relay --config $data/config --network $network > /dev/null 2>&1
+      pm2 --name "${name}-core-relay" start $core/packages/core/dist/index.js -- relay --config $data/config --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess relay already running. Skipping..."
     fi
@@ -46,12 +46,12 @@ start () {
     if [ "$secrets" = "[]" ]; then
       echo -e "\nDelegate secret is missing. Forger start aborted!"
     elif [ "$fstatus" != "online" ]; then
-      pm2 --name "$core-forger" start $core/packages/core/dist/index.js -- forger --config $data/config --network $network > /dev/null 2>&1
+      pm2 --name "${name}-core-forger" start $core/packages/core/dist/index.js -- forger --config $data/config --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess forger already running. Skipping..."
     fi
 
-    local rstatus=$(pm2status "core-relay" | awk '{print $13}')
+    local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
 
     if [ "$rstatus" != "online" ]; then
       echo -e "\nProcess startup failed."
@@ -59,17 +59,17 @@ start () {
 
   else
 
-    local pstatus=$(pm2status "core-$1" | awk '{print $13}')
+    local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
 
     if [[ "$secrets" = "[]" && "$1" = "forger" ]]; then
       echo -e "\nDelegate secret is missing. Forger start aborted!"
     elif [ "$pstatus" != "online" ]; then
-      pm2 --name "core-$1" start $core/packages/core/dist/index.js -- $1 --config $data/config --network $network > /dev/null 2>&1
+      pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --config $data/config --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess $1 already running. Skipping..."
     fi
 
-    local pstatus=$(pm2status "core-$1" | awk '{print $13}')
+    local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
 
     if [[ "$pstatus" != "online" && "$1" = "relay" ]]; then
       echo -e "\nProcess startup failed."
@@ -85,27 +85,27 @@ restart () {
 
   if [ "$1" = "all" ]; then
 
-    local fstatus=$(pm2status "core-forger" | awk '{print $13}')
-    local rstatus=$(pm2status "core-relay" | awk '{print $13}')
+    local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
+    local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
 
     if [ "$rstatus" = "online" ]; then
-      pm2 restart core-relay > /dev/null 2>&1
+      pm2 restart ${name}-core-relay > /dev/null 2>&1
     else
       echo -e "\nProcess relay not running. Skipping..."
     fi
 
     if [ "$fstatus" = "online" ]; then
-      pm2 restart core-forger > /dev/null 2>&1
+      pm2 restart ${name}-core-forger > /dev/null 2>&1
     else
       echo -e "\nProcess forger not running. Skipping..."
     fi
 
   else
 
-    local pstatus=$(pm2status "core-$1" | awk '{print $13}')
+    local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
 
     if [ "$pstatus" = "online" ]; then
-      pm2 restart core-$1 > /dev/null 2>&1
+      pm2 restart ${name}-core-$1 > /dev/null 2>&1
     else
       echo -e "\nProcess $1 not running. Skipping..."
     fi
@@ -118,27 +118,27 @@ stop () {
 
   if [ "$1" = "all" ]; then
 
-    local fstatus=$(pm2status "core-forger" | awk '{print $13}')
-    local rstatus=$(pm2status "core-relay" | awk '{print $13}')
+    local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
+    local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
 
     if [ "$rstatus" = "online" ]; then
-      pm2 stop core-relay > /dev/null 2>&1
+      pm2 stop ${name}-core-relay > /dev/null 2>&1
     else
       echo -e "\nProcess relay not running. Skipping..."
     fi
 
     if [ "$fstatus" = "online" ]; then
-      pm2 stop core-forger > /dev/null 2>&1
+      pm2 stop ${name}-core-forger > /dev/null 2>&1
     else
       echo -e "\nProcess forger not running. Skipping..."
     fi
 
   else
 
-    local pstatus=$(pm2status "core-$1" | awk '{print $13}')
+    local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
 
     if [ "$pstatus" = "online" ]; then
-      pm2 stop core-$1 > /dev/null 2>&1
+      pm2 stop ${name}-core-$1 > /dev/null 2>&1
     else
       echo -e "\nProcess $1 not running. Skipping..."
     fi
@@ -236,23 +236,23 @@ update () {
   git pull > /dev/null 2>&1
   yarn setup > /dev/null 2>&1
 
-  local fstatus=$(pm2status "core-forger" | awk '{print $13}')
-  local rstatus=$(pm2status "core-relay" | awk '{print $13}')
+  local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
+  local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
 
   if [ "$rstatus" = "online" ]; then
-    pm2 restart core-relay > /dev/null 2>&1
+    pm2 restart ${name}-core-relay > /dev/null 2>&1
   fi
 
   if [ "$fstatus" = "online" ]; then
-    pm2 restart core-forger > /dev/null 2>&1
+    pm2 restart ${name}-core-forger > /dev/null 2>&1
   fi
 
 }
 
 remove () {
 
-  pm2 delete core-forger > /dev/null 2>&1
-  pm2 delete core-relay > /dev/null 2>&1
+  pm2 delete ${name}-core-forger > /dev/null 2>&1
+  pm2 delete ${name}-core-relay > /dev/null 2>&1
   pm2 save > /dev/null 2>&1
   rm -rf $core && rm -rf $data > /dev/null 2>&1
   sudo rm -rf $HOME/.config > /dev/null 2>&1
@@ -325,7 +325,7 @@ logs () {
   if [ "$1" = "all" ]; then
     pm2 logs
   else
-    pm2 logs core-$1
+    pm2 logs ${name}-core-$1
   fi
 
 }
@@ -347,8 +347,8 @@ snapshot () {
 
   if [ "$1" = "restore" ]; then
 
-    local fstatus=$(pm2status "core-forger" | awk '{print $13}')
-    local rstatus=$(pm2status "core-relay" | awk '{print $13}')
+    local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
+    local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
 
     stop all > /dev/null 2>&1
 
