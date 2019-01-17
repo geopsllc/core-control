@@ -1,4 +1,4 @@
-# Core v2 Management Tool - Debranded Install
+# Core v2 Management Tool - Ark Devnet (current)
 
 ## Installation
 
