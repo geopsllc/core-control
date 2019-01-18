@@ -12,7 +12,7 @@ cd core-control
 | --- | --- | --- |
 | `install` | `mainnet`/`devnet` | Install Core |
 | `update` |`core`/`self` | Update Core / Core-Control |
-| `remove` | | Remove Core |
+| `remove` |`core`/`self` | Remove Core / Core-Control |
 | `secret` | `set`/`clear` | Delegate Secret Set / Clear |
 | `start` | `relay`/`forger`/`all` | Start Core Services |
 | `restart` | `relay`/`forger`/`all` | Restart Core Services |
@@ -40,6 +40,8 @@ If you're running a forger and/or have custom settings, you should add them agai
 
 ### 0.7
 - refactored some operations for consistency
+- core remove is now done with 'remove core'
+- added self-remove as an otion with 'remove self'
 - moved miscellaneous variables and checks to misc.sh
 - core update is now done with 'update core'
 - added self-update as an otion with 'update self'

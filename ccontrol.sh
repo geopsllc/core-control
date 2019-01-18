@@ -5,6 +5,8 @@ execdir="$(dirname "$0")"
 
 if [[ "$basedir" != "." && "$execdir" != "." ]]; then
   cd $basedir
+elif [[ "$basedir" = "." && "$execdir" != "." ]]; then
+  cd $PWD/$execdir
 fi
 
 . "project.conf"
@@ -83,7 +85,7 @@ main () {
 
     echo -e "\bDone\n"
 
-  elif [[ ( "$1" = "remove" ) && ( -z "$2" ) ]]; then
+  elif [[ ( "$1" = "remove" ) && ( "$2" = "core" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data && ! -d $core ]]; then
       echo -e "\nCore not installed.\n"
@@ -230,6 +232,10 @@ main () {
   elif [[ ( "$1" = "update" ) && ( "$2" = "self" ) && ( -z "$3" ) ]]; then
 
     git pull
+
+  elif [[ ( "$1" = "remove" ) && ( "$2" = "self" ) && ( -z "$3" ) ]]; then
+
+    selfremove
 
   else
 

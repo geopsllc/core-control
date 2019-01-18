@@ -8,7 +8,7 @@ wrong_arguments () {
   echo -e " ------------------------------------------------------------------"
   echo -e "| install  | mainnet / devnet     | Install Core                   |"
   echo -e "| update   | core / self          | Update Core / Core-Control     |"
-  echo -e "| remove   |                      | Remove Core                    |"
+  echo -e "| remove   | core / self          | Remove Core / Core-Control     |"
   echo -e "| secret   | set / clear          | Delegate Secret Set / Clear    |"
   echo -e "| start    | relay / forger / all | Start Core Services            |"
   echo -e "| restart  | relay / forger / all | Restart Core Services          |"
@@ -400,5 +400,13 @@ snapshot () {
     pg_dump -Fc ${name}_$network > $HOME/snapshots/${name}_${network}
 
   fi
+
+}
+
+selfremove () {
+
+  cd $HOME > /dev/null 2>&1
+  rm -rf $basedir > /dev/null 2>&1
+  sed -i '/ccontrol/d' $HOME/.bashrc > /dev/null 2>&1
 
 }
