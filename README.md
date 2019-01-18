@@ -11,7 +11,7 @@ cd core-control
 | arg1 | arg2 | Description |
 | --- | --- | --- |
 | `install` | `mainnet`/`devnet` | Install Core |
-| `update` | | Update Core |
+| `update` |`core`/`self` | Update Core / Core-Control |
 | `remove` | | Remove Core |
 | `secret` | `set`/`clear` | Delegate Secret Set / Clear |
 | `start` | `relay`/`forger`/`all` | Start Core Services |
@@ -37,6 +37,13 @@ If you're running a forger and/or have custom settings, you should add them agai
 - Do not run as root!
 
 ## Changelog
+
+### 0.7
+- refactored some operations for consistency
+- moved miscellaneous variables and checks to misc.sh
+- core update is now done with 'update core'
+- added self-update as an otion with 'update self'
+- removed automatic self-update
 
 ### 0.6
 - added delegate secret management

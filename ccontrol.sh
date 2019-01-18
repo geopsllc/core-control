@@ -9,24 +9,11 @@ fi
 
 . "project.conf"
 . "functions.sh"
+. "misc.sh"
 
 main () {
 
-  git pull > /dev/null 2>&1
-
-  i=1
-  sp="/-\|"
-
-  local als="$(cat $HOME/.bashrc | grep ccontrol)"
-  if [ -z "$als" ]; then
-    echo "alias ccontrol=$PWD/ccontrol.sh" >> $HOME/.bashrc
-  fi
-
-  if [ -f $data/.env ]; then
-    network="$(cat $data/.env | grep DATA | awk -F"_" '{print $4}')"
-  fi
-
-  if [[ ( "$1" == "install" ) && ( "$2" = "mainnet" || "$2" = "devnet" ) && ( -z "$3" ) ]]; then
+  if [[ ( "$1" = "install" ) && ( "$2" = "mainnet" || "$2" = "devnet" ) && ( -z "$3" ) ]]; then
 
     if [[ -d $data || -d $core ]]; then
       echo -e "\nCore already installed. Please uninstall first.\n"
@@ -77,7 +64,7 @@ main () {
 
     echo -e "\bDone\n"
 
-  elif [[ ( "$1" == "update" ) && ( -z "$2" ) ]]; then
+  elif [[ ( "$1" = "update" ) && ( "$2" = "core" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\nCore not installed. Please install first.\n"
@@ -96,7 +83,7 @@ main () {
 
     echo -e "\bDone\n"
 
-  elif [[ ( "$1" == "remove" ) && ( -z "$2" ) ]]; then
+  elif [[ ( "$1" = "remove" ) && ( -z "$2" ) ]]; then
 
     if [[ ! -d $data && ! -d $core ]]; then
       echo -e "\nCore not installed.\n"
@@ -117,7 +104,7 @@ main () {
 
     echo -e "\bDone\n"
 
-  elif [[ ( "$1" == "config" ) && ( "$2" = "reset"  )&& ( -z "$3" ) ]]; then
+  elif [[ ( "$1" = "config" ) && ( "$2" = "reset"  )&& ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\nCore not installed. Please install first.\n"
@@ -132,7 +119,7 @@ main () {
     echo -e "Configs Replaced with Defaults..."
     echo -e "All Done!\n"
 
-  elif [[ ( "$1" == "start" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
+  elif [[ ( "$1" = "start" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\nCore not installed. Please install first.\n"
@@ -147,7 +134,7 @@ main () {
 
     echo -e "\nAll Done!\n"
 
-  elif [[ ( "$1" == "restart" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
+  elif [[ ( "$1" = "restart" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\nCore not installed. Please install first.\n"
@@ -162,7 +149,7 @@ main () {
 
     echo -e "\nAll Done!\n"
 
-  elif [[ ( "$1" == "stop" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
+  elif [[ ( "$1" = "stop" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\nCore not installed. Please install first.\n"
@@ -177,11 +164,11 @@ main () {
 
     echo -e "\nAll Done!\n"
 
-  elif [[ ( "$1" == "system" ) && ( "$2" = "info"  )&& ( -z "$3" ) ]]; then
+  elif [[ ( "$1" = "system" ) && ( "$2" = "info"  ) && ( -z "$3" ) ]]; then
 
     sysinfo
 
-  elif [[ ( "$1" == "system" ) && ( "$2" = "update"  ) && ( -z "$3" ) ]]; then
+  elif [[ ( "$1" = "system" ) && ( "$2" = "update"  ) && ( -z "$3" ) ]]; then
 
     sudo apt update > /dev/null 2>&1
 
@@ -197,7 +184,7 @@ main () {
 
     echo -e "\bDone\n"
 
-  elif [[ ( "$1" == "logs" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
+  elif [[ ( "$1" = "logs" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [ -z "$2" ]; then
       set -- "$1" "all"
@@ -205,7 +192,7 @@ main () {
 
     logs $2
 
-  elif [[ ( "$1" == "secret" ) && ( ( "$2" = "set" && ! -z "${14}" && -z "${15}" ) || ( "$2" = "clear" && -z "$3" ) ) ]]; then
+  elif [[ ( "$1" = "secret" ) && ( ( "$2" = "set" && ! -z "${14}" && -z "${15}" ) || ( "$2" = "clear" && -z "$3" ) ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\nCore not installed. Please install first.\n"
@@ -216,7 +203,7 @@ main () {
 
     echo -e "\nAll Done!\n"
 
-  elif [[ ( "$1" == "snapshot" ) && ( "$2" = "create" || "$2" = "restore" ) && ( -z "$3" ) ]]; then
+  elif [[ ( "$1" = "snapshot" ) && ( "$2" = "create" || "$2" = "restore" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\nCore not installed. Please install first.\n"
@@ -239,6 +226,10 @@ main () {
     done
 
     echo -e "\bDone\n"
+
+  elif [[ ( "$1" = "update" ) && ( "$2" = "self" ) && ( -z "$3" ) ]]; then
+
+    git pull
 
   else
 
