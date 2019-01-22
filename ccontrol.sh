@@ -18,7 +18,7 @@ main () {
   if [[ ( "$1" = "install" ) && ( "$2" = "mainnet" || "$2" = "devnet" ) && ( -z "$3" ) ]]; then
 
     if [[ -d $data || -d $core ]]; then
-      echo -e "\nCore already installed. Please uninstall first.\n"
+      echo -e "\nCore already installed. Please remove first.\n"
       exit 1
     fi
 
