@@ -195,8 +195,13 @@ install_core () {
     git clone $repo $core -b $devbranch > /dev/null 2>&1
   fi
 
+  if [ -d $HOME/.config ]; then
+    sudo chown -R $USER:$USER $HOME/.config > /dev/null 2>&1
+  else
+    mkdir $HOME/.config > /dev/null 2>&1
+  fi
+
   mkdir $data > /dev/null 2>&1
-  sudo rm -rf $HOME/.config > /dev/null 2>&1
   cd $core > /dev/null 2>&1
 
   yarn setup > /dev/null 2>&1
@@ -255,7 +260,6 @@ remove () {
   pm2 delete ${name}-core-relay > /dev/null 2>&1
   pm2 save > /dev/null 2>&1
   rm -rf $core && rm -rf $data > /dev/null 2>&1
-  sudo rm -rf $HOME/.config > /dev/null 2>&1
   dropdb $name_$network > /dev/null 2>&1
   sudo ufw delete allow ${api_port}/tcp > /dev/null 2>&1
   if [ "$network" = "mainnet" ]; then
