@@ -178,8 +178,8 @@ install_db () {
 
   sudo apt install -y postgresql postgresql-contrib > /dev/null 2>&1
   sudo -u postgres psql -c "CREATE USER $USER WITH PASSWORD 'password' CREATEDB;" > /dev/null 2>&1
-  dropdb ${name}_$1 > /dev/null 2>&1
-  createdb ${name}_$1 > /dev/null 2>&1
+  dropdb ${name}_$network > /dev/null 2>&1
+  createdb ${name}_$network > /dev/null 2>&1
 
 }
 
@@ -197,7 +197,7 @@ install_core () {
   cd $core > /dev/null 2>&1
 
   yarn setup > /dev/null 2>&1
-  cp -rf "$core/packages/core/src/config/$1" "$data" > /dev/null 2>&1
+  cp -rf "$core/packages/core/src/config/$network" "$data" > /dev/null 2>&1
 
   local envFile="$data/$network/.env"
   touch "$envFile"
