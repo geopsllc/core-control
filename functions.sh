@@ -182,8 +182,8 @@ install_db () {
 
   sudo apt install -y postgresql postgresql-contrib > /dev/null 2>&1
   sudo -u postgres psql -c "CREATE USER $USER WITH PASSWORD 'password' CREATEDB;" > /dev/null 2>&1
-  dropdb $name_$1 > /dev/null 2>&1
-  createdb $name_$1 > /dev/null 2>&1
+  dropdb ${name}_$1 > /dev/null 2>&1
+  createdb ${name}_$1 > /dev/null 2>&1
 
 }
 
@@ -215,7 +215,7 @@ install_core () {
   echo "CORE_DB_PORT=5432" >> "$envFile" 2>&1
   echo "CORE_DB_USERNAME=$USER" >> "$envFile" 2>&1
   echo "CORE_DB_PASSWORD=password" >> "$envFile" 2>&1
-  echo "CORE_DB_DATABASE=$name_$1" >> "$envFile" 2>&1
+  echo "CORE_DB_DATABASE=${name}_$1" >> "$envFile" 2>&1
   echo "CORE_P2P_HOST=0.0.0.0" >> "$envFile" 2>&1
 
   if [ "$1" = "mainnet" ]; then
@@ -259,12 +259,12 @@ remove () {
   pm2 delete ${name}-core-relay > /dev/null 2>&1
   pm2 save > /dev/null 2>&1
   rm -rf $core && rm -rf $data > /dev/null 2>&1
-  dropdb $name_$network > /dev/null 2>&1
-  sudo ufw delete allow ${api_port}/tcp > /dev/null 2>&1
+  dropdb ${name}_$network > /dev/null 2>&1
+  sudo ufw delete allow $api_port/tcp > /dev/null 2>&1
   if [ "$network" = "mainnet" ]; then
-    sudo ufw delete allow ${mainnet_port}/tcp > /dev/null 2>&1
+    sudo ufw delete allow $mainnet_port/tcp > /dev/null 2>&1
   else
-    sudo ufw delete allow ${devnet_port}/tcp > /dev/null 2>&1
+    sudo ufw delete allow $devnet_port/tcp > /dev/null 2>&1
   fi
 
 }
@@ -355,9 +355,9 @@ snapshot () {
 
     stop all > /dev/null 2>&1
 
-    dropdb $name_$network > /dev/null 2>&1
-    createdb $name_$network > /dev/null 2>&1
-    pg_restore -n public -O -j 8 -d $name_$network $HOME/snapshots/$name_$network
+    dropdb ${name}_$network > /dev/null 2>&1
+    createdb ${name}_$network > /dev/null 2>&1
+    pg_restore -n public -O -j 8 -d ${name}_$network $HOME/snapshots/${name}_$network
 
     if [ "$rstatus" = "online" ]; then
       start relay $network > /dev/null 2>&1
@@ -373,7 +373,7 @@ snapshot () {
       mkdir $HOME/snapshots
     fi
 
-    pg_dump -Fc $name_$network > $HOME/snapshots/$name_${network}
+    pg_dump -Fc ${name}_$network > $HOME/snapshots/${name}_$network
 
   fi
 
