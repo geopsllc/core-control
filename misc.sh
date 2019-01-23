@@ -10,5 +10,5 @@ if [ -z "$als" ]; then
 fi
 
 if [ -f $data/.env ]; then
-  network="$(cat $data/.env | grep DATA | awk -F"_" '{print $4}')"
+  network="$(cat $data/devnet/.env | grep DATA | awk -F"_" '{print $4}')"
 fi
