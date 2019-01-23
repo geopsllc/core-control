@@ -6,7 +6,7 @@ wrong_arguments () {
   echo -e " ------------------------------------------------------------------"
   echo -e "| arg1     | arg2                 | Description                    |"
   echo -e " ------------------------------------------------------------------"
-  echo -e "| install  | mainnet / devnet     | Install Core                   |"
+  echo -e "| install  |                      | Install Core                   |"
   echo -e "| update   | core / self          | Update Core / Core-Control     |"
   echo -e "| remove   | core / self          | Remove Core / Core-Control     |"
   echo -e "| secret   | set / clear          | Delegate Secret Set / Clear    |"
@@ -166,12 +166,8 @@ secure () {
 
   sudo apt install -y ufw fail2ban > /dev/null 2>&1
   sudo ufw allow 22/tcp > /dev/null 2>&1
+  sudo ufw allow ${p2p_port}/tcp > /dev/null 2>&1
   sudo ufw allow ${api_port}/tcp > /dev/null 2>&1
-  if [ "$1" = "mainnet" ]; then
-    sudo ufw allow ${mainnet_port}/tcp > /dev/null 2>&1
-  else
-    sudo ufw allow ${devnet_port}/tcp > /dev/null 2>&1
-  fi
   sudo ufw --force enable > /dev/null 2>&1
   sudo sed -i "/^PermitRootLogin/c PermitRootLogin prohibit-password" /etc/ssh/sshd_config > /dev/null 2>&1
   sudo systemctl restart sshd.service > /dev/null 2>&1
@@ -189,11 +185,7 @@ install_db () {
 
 install_core () {
 
-  if [ "$1" = "mainnet" ]; then
-    git clone $repo $core -b $devbranch > /dev/null 2>&1
-  else
-    git clone $repo $core -b $devbranch > /dev/null 2>&1
-  fi
+  git clone $repo $core -b $branch > /dev/null 2>&1
 
   if [ -d $HOME/.config ]; then
     sudo chown -R $USER:$USER $HOME/.config > /dev/null 2>&1
@@ -207,7 +199,7 @@ install_core () {
   yarn setup > /dev/null 2>&1
   cp -rf "$core/packages/core/src/config/$1" "$data" > /dev/null 2>&1
 
-  local envFile="$data/$1/.env"
+  local envFile="$data/$network/.env"
   touch "$envFile"
 
   echo "CORE_LOG_LEVEL=$log_level" >> "$envFile" 2>&1
@@ -215,15 +207,9 @@ install_core () {
   echo "CORE_DB_PORT=5432" >> "$envFile" 2>&1
   echo "CORE_DB_USERNAME=$USER" >> "$envFile" 2>&1
   echo "CORE_DB_PASSWORD=password" >> "$envFile" 2>&1
-  echo "CORE_DB_DATABASE=${name}_$1" >> "$envFile" 2>&1
+  echo "CORE_DB_DATABASE=${name}_$network" >> "$envFile" 2>&1
   echo "CORE_P2P_HOST=0.0.0.0" >> "$envFile" 2>&1
-
-  if [ "$1" = "mainnet" ]; then
-    echo "CORE_P2P_PORT=$mainnet_port" >> "$envFile" 2>&1
-  else
-    echo "CORE_P2P_PORT=$devnet_port" >> "$envFile" 2>&1
-  fi
-
+  echo "CORE_P2P_PORT=$p2p_port" >> "$envFile" 2>&1
   echo "CORE_API_HOST=0.0.0.0" >> "$envFile" 2>&1
   echo "CORE_API_PORT=$api_port" >> "$envFile" 2>&1
   echo "CORE_WEBHOOKS_HOST=0.0.0.0" >> "$envFile" 2>&1
