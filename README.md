@@ -10,7 +10,7 @@ cd core-control
 
 | arg1 | arg2 | Description |
 | --- | --- | --- |
-| `install` | `mainnet`/`devnet` | Install Core |
+| `install` | | Install Core |
 | `update` |`core`/`self` | Update Core / Core-Control |
 | `remove` |`core`/`self` | Remove Core / Core-Control |
 | `secret` | `set`/`clear` | Delegate Secret Set / Clear |
