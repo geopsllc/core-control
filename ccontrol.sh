@@ -15,7 +15,7 @@ fi
 
 main () {
 
-  if [[ ( "$1" = "install" ) && ( "$2" = "mainnet" || "$2" = "devnet" ) && ( -z "$3" ) ]]; then
+  if [[ ( "$1" = "install" ) && ( -z "$2" ) ]]; then
 
     if [[ -d $data || -d $core ]]; then
       echo -e "\nCore already installed. Please remove first.\n"
@@ -36,7 +36,7 @@ main () {
 
     echo -e "\bDone"
 
-    secure $2 &
+    secure &
 
     echo -ne "Securing System...  "
 
@@ -46,7 +46,7 @@ main () {
 
     echo -e "\bDone"
 
-    install_db $2 &
+    install_db &
 
     echo -ne "Installing Database...  "
 
@@ -56,7 +56,7 @@ main () {
 
     echo -e "\bDone"
 
-    install_core $2 &
+    install_core &
 
     echo -ne "Setting up Core...  "
 
