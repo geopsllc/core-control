@@ -206,9 +206,8 @@ install_core () {
 
   yarn setup > /dev/null 2>&1
   cp -rf "$core/packages/core/src/config/$1" "$data" > /dev/null 2>&1
-  mv "$data/$1" "$data/config" > /dev/null 2>&1
 
-  local envFile="$data/.env"
+  local envFile="$data/$1/.env"
   touch "$envFile"
 
   echo "CORE_LOG_LEVEL=$log_level" >> "$envFile" 2>&1
