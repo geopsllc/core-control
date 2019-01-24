@@ -212,8 +212,8 @@ main () {
       exit 1
     fi
 
-    if [[ "$2" = "restore" && ! -f $HOME/snapshots/$name_$network ]]; then
-      echo -e "\nFile $HOME/snapshots/$name_$network Not Found!\n"
+    if [[ "$2" = "restore" && ! -f $HOME/snapshots/${name}_$network ]]; then
+      echo -e "\nFile $HOME/snapshots/${name}_$network Not Found!\n"
       exit 1
     fi
 
