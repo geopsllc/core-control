@@ -6,7 +6,7 @@ wrong_arguments () {
   echo -e " ------------------------------------------------------------------"
   echo -e "| arg1     | arg2                 | Description                    |"
   echo -e " ------------------------------------------------------------------"
-  echo -e "| install  |                      | Install Core                   |"
+  echo -e "| install  | core                 | Install Core                   |"
   echo -e "| update   | core / self          | Update Core / Core-Control     |"
   echo -e "| remove   | core / self          | Remove Core / Core-Control     |"
   echo -e "| secret   | set / clear          | Delegate Secret Set / Clear    |"

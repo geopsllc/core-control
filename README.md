@@ -10,9 +10,9 @@ cd core-control
 
 | arg1 | arg2 | Description |
 | --- | --- | --- |
-| `install` | | Install Core |
-| `update` |`core`/`self` | Update Core / Core-Control |
-| `remove` |`core`/`self` | Remove Core / Core-Control |
+| `install` | `core` | Install Core |
+| `update` | `core`/`self` | Update Core / Core-Control |
+| `remove` | `core`/`self` | Remove Core / Core-Control |
 | `secret` | `set`/`clear` | Delegate Secret Set / Clear |
 | `start` | `relay`/`forger`/`all` | Start Core Services |
 | `restart` | `relay`/`forger`/`all` | Restart Core Services |
@@ -25,6 +25,7 @@ cd core-control
 ## General
 This is a Streamlined CLI-Based Core v2 Management Tool. 
 - For start/restart/stop/logs you can skip the 'all' argument as it's the default.
+- For install/update/remove you can skip the 'core' argument as it's the default.
 - When setting a delegate secret just paste your secret after the 'set' argument without quotes.
 - The snapshot is stored in the 'snapshots' folder in your home directory using the database name, e.g. ark_mainnet. 
 If you're using an external snapshot make sure to rename it accordingly and put it in the 'snapshots' folder.

@@ -15,7 +15,7 @@ fi
 
 main () {
 
-  if [[ ( "$1" = "install" ) && ( -z "$2" ) ]]; then
+  if [[ ( "$1" = "install" ) && ( "$2" = "core" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ -d $data || -d $core ]]; then
       echo -e "\nCore already installed. Please remove first.\n"
@@ -66,7 +66,7 @@ main () {
 
     echo -e "\bDone\n"
 
-  elif [[ ( "$1" = "update" ) && ( "$2" = "core" ) && ( -z "$3" ) ]]; then
+  elif [[ ( "$1" = "update" ) && ( "$2" = "core" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\nCore not installed. Please install first.\n"
@@ -85,7 +85,7 @@ main () {
 
     echo -e "\bDone\n"
 
-  elif [[ ( "$1" = "remove" ) && ( "$2" = "core" ) && ( -z "$3" ) ]]; then
+  elif [[ ( "$1" = "remove" ) && ( "$2" = "core" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data && ! -d $core ]]; then
       echo -e "\nCore not installed.\n"
