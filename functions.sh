@@ -366,7 +366,7 @@ snapshot () {
       mkdir $HOME/snapshots
     fi
 
-    pg_dump -Fc ${name}_$network > $HOME/snapshots/${name}_$network > /dev/null 2>&1
+    pg_dump -Fc ${name}_$network > $HOME/snapshots/${name}_$network
 
   fi
 
