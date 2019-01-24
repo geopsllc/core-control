@@ -30,7 +30,7 @@ pm2status () {
 
 setefile () {
 
-  local envFile="$data/$network/.env"
+  local envFile="$config/.env"
   touch "$envFile"
 
   echo "CORE_LOG_LEVEL=$log_level" >> "$envFile" 2>&1
@@ -54,7 +54,7 @@ setefile () {
 
 start () {
 
-  local secrets=$(cat $data/$network/delegates.json | jq -r '.secrets')
+  local secrets=$(cat $config/delegates.json | jq -r '.secrets')
 
   if [ "$1" = "all" ]; then
 
@@ -62,7 +62,7 @@ start () {
     local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
 
     if [ "$rstatus" != "online" ]; then
-      pm2 --name "${name}-core-relay" start $core/packages/core/dist/index.js -- relay --config $data/$network --network $network > /dev/null 2>&1
+      pm2 --name "${name}-core-relay" start $core/packages/core/dist/index.js -- relay --config $config --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess relay already running. Skipping..."
     fi
@@ -70,7 +70,7 @@ start () {
     if [ "$secrets" = "[]" ]; then
       echo -e "\nDelegate secret is missing. Forger start aborted!"
     elif [ "$fstatus" != "online" ]; then
-      pm2 --name "${name}-core-forger" start $core/packages/core/dist/index.js -- forger --config $data/$network --network $network > /dev/null 2>&1
+      pm2 --name "${name}-core-forger" start $core/packages/core/dist/index.js -- forger --config $config --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess forger already running. Skipping..."
     fi
@@ -88,7 +88,7 @@ start () {
     if [[ "$secrets" = "[]" && "$1" = "forger" ]]; then
       echo -e "\nDelegate secret is missing. Forger start aborted!"
     elif [ "$pstatus" != "online" ]; then
-      pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --config $data/$network --network $network > /dev/null 2>&1
+      pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --config $config --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess $1 already running. Skipping..."
     fi
@@ -266,7 +266,7 @@ remove () {
 config_reset () {
 
   stop all > /dev/null 2>&1
-  rm -rf $data/$network > /dev/null 2>&1
+  rm -rf $config > /dev/null 2>&1
   cp -rf "$core/packages/core/src/config/$network" "$data" > /dev/null 2>&1 
   setefile
 
@@ -330,12 +330,12 @@ secret () {
 
   if [ "$1" = "set" ]; then
     local scrt="$2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}"
-    jq --arg scrt "$scrt" '.secrets = [$scrt]' $data/$network/delegates.json > delegates.tmp
+    jq --arg scrt "$scrt" '.secrets = [$scrt]' $config/delegates.json > delegates.tmp
   else
-    jq '.secrets = []' $data/$network/delegates.json > delegates.tmp
+    jq '.secrets = []' $config/delegates.json > delegates.tmp
   fi
 
-  mv delegates.tmp $data/$network/delegates.json
+  mv delegates.tmp $config/delegates.json
 
 }
 
