@@ -28,6 +28,30 @@ pm2status () {
 
 }
 
+setefile () {
+
+  local envFile="$data/$network/.env"
+  touch "$envFile"
+
+  echo "CORE_LOG_LEVEL=$log_level" >> "$envFile" 2>&1
+  echo "CORE_DB_HOST=localhost" >> "$envFile" 2>&1
+  echo "CORE_DB_PORT=5432" >> "$envFile" 2>&1
+  echo "CORE_DB_USERNAME=$USER" >> "$envFile" 2>&1
+  echo "CORE_DB_PASSWORD=password" >> "$envFile" 2>&1
+  echo "CORE_DB_DATABASE=${name}_$network" >> "$envFile" 2>&1
+  echo "CORE_P2P_HOST=0.0.0.0" >> "$envFile" 2>&1
+  echo "CORE_P2P_PORT=$p2p_port" >> "$envFile" 2>&1
+  echo "CORE_API_HOST=0.0.0.0" >> "$envFile" 2>&1
+  echo "CORE_API_PORT=$api_port" >> "$envFile" 2>&1
+  echo "CORE_WEBHOOKS_HOST=0.0.0.0" >> "$envFile" 2>&1
+  echo "CORE_WEBHOOKS_PORT=$wh_port" >> "$envFile" 2>&1
+  echo "CORE_GRAPHQL_HOST=0.0.0.0" >> "$envFile" 2>&1
+  echo "CORE_GRAPHQL_PORT=$gql_port" >> "$envFile" 2>&1
+  echo "CORE_JSONRPC_HOST=0.0.0.0" >> "$envFile" 2>&1
+  echo "CORE_JSONRPC_PORT=$rpc_port" >> "$envFile" 2>&1
+
+}
+
 start () {
 
   local secrets=$(cat $data/$network/delegates.json | jq -r '.secrets')
@@ -199,25 +223,8 @@ install_core () {
   yarn setup > /dev/null 2>&1
   cp -rf "$core/packages/core/src/config/$network" "$data" > /dev/null 2>&1
 
-  local envFile="$data/$network/.env"
-  touch "$envFile"
+  setefile
 
-  echo "CORE_LOG_LEVEL=$log_level" >> "$envFile" 2>&1
-  echo "CORE_DB_HOST=localhost" >> "$envFile" 2>&1
-  echo "CORE_DB_PORT=5432" >> "$envFile" 2>&1
-  echo "CORE_DB_USERNAME=$USER" >> "$envFile" 2>&1
-  echo "CORE_DB_PASSWORD=password" >> "$envFile" 2>&1
-  echo "CORE_DB_DATABASE=${name}_$network" >> "$envFile" 2>&1
-  echo "CORE_P2P_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "CORE_P2P_PORT=$p2p_port" >> "$envFile" 2>&1
-  echo "CORE_API_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "CORE_API_PORT=$api_port" >> "$envFile" 2>&1
-  echo "CORE_WEBHOOKS_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "CORE_WEBHOOKS_PORT=$wh_port" >> "$envFile" 2>&1
-  echo "CORE_GRAPHQL_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "CORE_GRAPHQL_PORT=$gql_port" >> "$envFile" 2>&1
-  echo "CORE_JSONRPC_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "CORE_JSONRPC_PORT=$rpc_port" >> "$envFile" 2>&1
 }
 
 update () {
@@ -258,10 +265,9 @@ remove () {
 config_reset () {
 
   stop all > /dev/null 2>&1
-  rm -rf $data/config > /dev/null 2>&1
-
-  cp -rf "$core/packages/core/src/config/$network" "$data" > /dev/null 2>&1
-  mv "$data/$network" "$data/config" > /dev/null 2>&1
+  rm -rf $data/$network > /dev/null 2>&1
+  cp -rf "$core/packages/core/src/config/$network" "$data" > /dev/null 2>&1 
+  setefile
 
 }
 
@@ -323,12 +329,12 @@ secret () {
 
   if [ "$1" = "set" ]; then
     local scrt="$2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}"
-    jq --arg scrt "$scrt" '.secrets = [$scrt]' $data/config/delegates.json > delegates.tmp
+    jq --arg scrt "$scrt" '.secrets = [$scrt]' $data/$network/delegates.json > delegates.tmp
   else
-    jq '.secrets = []' $data/config/delegates.json > delegates.tmp
+    jq '.secrets = []' $data/$network/delegates.json > delegates.tmp
   fi
 
-  mv delegates.tmp $data/config/delegates.json
+  mv delegates.tmp $data/$network/delegates.json
 
 }
 
