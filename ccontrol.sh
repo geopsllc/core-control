@@ -106,7 +106,7 @@ main () {
 
     echo -e "\bDone\n"
 
-  elif [[ ( "$1" = "config" ) && ( "$2" = "reset"  )&& ( -z "$3" ) ]]; then
+  elif [[ ( "$1" = "config" ) && ( "$2" = "reset"  ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\nCore not installed. Please install first.\n"
