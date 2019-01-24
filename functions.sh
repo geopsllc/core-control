@@ -251,14 +251,15 @@ remove () {
   pm2 delete ${name}-core-forger > /dev/null 2>&1
   pm2 delete ${name}-core-relay > /dev/null 2>&1
   pm2 save > /dev/null 2>&1
-  rm -rf $core && rm -rf $data > /dev/null 2>&1
+  rm -rf $core > /dev/null 2>&1
+  rm -rf $data > /dev/null 2>&1
+  rm -rf $HOME/.cache/${name}-core > /dev/null 2>&1
+  rm -rf $HOME/.local/share/${name}-core > /dev/null 2>&1
+  rm -rf $HOME/.local/state/${name}-core > /dev/null 2>&1
+  rm -rf /tmp/$USER/${name}-core > /dev/null 2>&1
   dropdb ${name}_$network > /dev/null 2>&1
+  sudo ufw delete allow $p2p_port/tcp > /dev/null 2>&1
   sudo ufw delete allow $api_port/tcp > /dev/null 2>&1
-  if [ "$network" = "mainnet" ]; then
-    sudo ufw delete allow $mainnet_port/tcp > /dev/null 2>&1
-  else
-    sudo ufw delete allow $devnet_port/tcp > /dev/null 2>&1
-  fi
 
 }
 
