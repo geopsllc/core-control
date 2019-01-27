@@ -5,7 +5,7 @@
 ## Installation
 
 ```sh
-git clone https://github.com/geopsllc/core-control
+git clone https://github.com/qredit/core-control
 cd core-control
 ./ccontrol.sh arg1 [arg2]
 ```
