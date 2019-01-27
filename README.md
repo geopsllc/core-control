@@ -1,9 +1,11 @@
+![Core Control](./banner2.png)
+
 # Core v2 Management Tool - Qredit Mainnet
 
 ## Installation
 
 ```sh
-git clone https://github.com/geopsllc/core-control -b qredit-mainnet
+git clone https://github.com/geopsllc/core-control
 cd core-control
 ./ccontrol.sh arg1 [arg2]
 ```
