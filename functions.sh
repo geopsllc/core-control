@@ -62,7 +62,7 @@ start () {
     local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
 
     if [ "$rstatus" != "online" ]; then
-      pm2 --name "${name}-core-relay" start $core/packages/core/dist/index.js -- relay --config $config --network $network > /dev/null 2>&1
+      pm2 --name "${name}-core-relay" start $core/packages/core/dist/index.js -- relay --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess relay already running. Skipping..."
     fi
@@ -70,7 +70,7 @@ start () {
     if [ "$secrets" = "[]" ]; then
       echo -e "\nDelegate secret is missing. Forger start aborted!"
     elif [ "$fstatus" != "online" ]; then
-      pm2 --name "${name}-core-forger" start $core/packages/core/dist/index.js -- forger --config $config --network $network > /dev/null 2>&1
+      pm2 --name "${name}-core-forger" start $core/packages/core/dist/index.js -- forger --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess forger already running. Skipping..."
     fi
@@ -88,7 +88,7 @@ start () {
     if [[ "$secrets" = "[]" && "$1" = "forger" ]]; then
       echo -e "\nDelegate secret is missing. Forger start aborted!"
     elif [ "$pstatus" != "online" ]; then
-      pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --config $config --network $network > /dev/null 2>&1
+      pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess $1 already running. Skipping..."
     fi
