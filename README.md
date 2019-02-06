@@ -33,7 +33,7 @@ If you're using an external snapshot make sure to rename it accordingly and put 
 - Running with the 'remove' argument does not delete the 'snapshots' folder or the stored snapshot in order to allow you
 to take a snapshot, do remove/install and restore it afterwards.
 - The script adds an alias named 'ccontrol' on first run. On your next shell login you'll be able to call the script from anywhere
-using the following: ccontrol arg1 [arg2]
+using: ccontrol arg1 [arg2]. It also has autocomplete functionality for all possible arguments.
 - Using the 'config reset' arguments will stop the core processes, delete your existing configs and replace them with the defaults.
 If you're running a forger and/or have custom settings, you should add them again.
 - Do not run as root!
@@ -41,6 +41,7 @@ If you're running a forger and/or have custom settings, you should add them agai
 ## Changelog
 
 ### 0.7
+- the ccontrol alias now has autocomplete for all arguments
 - refactored some operations for consistency
 - core remove is now done with 'remove core'
 - added self-remove as an otion with 'remove self'
