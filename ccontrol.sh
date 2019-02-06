@@ -23,9 +23,7 @@ main () {
     fi
 
     sudo apt update > /dev/null 2>&1
-
     sysinfo
-
     install_deps &
 
     echo -ne "Installing Dependencies...  "
@@ -74,7 +72,6 @@ main () {
     fi
 
     sysinfo
-
     update &
 
     echo -ne "Updating Core...  "
@@ -93,9 +90,7 @@ main () {
     fi
 
     sudo apt update > /dev/null 2>&1
-
     sysinfo
-
     remove &
 
     echo -ne "Removing Core...  "
@@ -173,9 +168,7 @@ main () {
   elif [[ ( "$1" = "system" ) && ( "$2" = "update"  ) && ( -z "$3" ) ]]; then
 
     sudo apt update > /dev/null 2>&1
-
     sysinfo
-
     sysupdate &
 
     echo -ne "Updating System...  "
@@ -218,7 +211,6 @@ main () {
     fi
 
     sysinfo
-
     snapshot $2 &
 
     echo -ne "Processing Snapshot...  "
