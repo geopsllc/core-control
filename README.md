@@ -1,9 +1,9 @@
-# Core v2 Management Tool - Ark Devnet
+# Core v2 Management Tool - Qredit Mainnet
 
 ## Installation
 
 ```sh
-git clone https://github.com/geopsllc/core-control -b ark-devnet
+git clone https://github.com/geopsllc/core-control -b qredit-mainnet
 cd core-control
 ./ccontrol.sh arg1 [arg2]
 ```
