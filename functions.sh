@@ -377,5 +377,6 @@ selfremove () {
   cd $HOME > /dev/null 2>&1
   rm -rf $basedir > /dev/null 2>&1
   sed -i '/ccontrol/d' $HOME/.bashrc > /dev/null 2>&1
+  sed -i '/cccomp/d' $HOME/.bashrc > /dev/null 2>&1
 
 }
