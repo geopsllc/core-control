@@ -15,7 +15,10 @@ ccontrol_completions () {
       "install")
         COMPREPLY=( $(compgen -W "core" -- $cur) )
         ;;
-      "update"|"remove")
+      "update")
+        COMPREPLY=( $(compgen -W "core self info" -- $cur) )
+        ;;
+      "remove")
         COMPREPLY=( $(compgen -W "core self" -- $cur) )
         ;;
       "secret")
