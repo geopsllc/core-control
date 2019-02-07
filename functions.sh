@@ -3,21 +3,21 @@
 wrong_arguments () {
 
   echo -e "\nMissing: arg1 [arg2]\n"
-  echo -e " ------------------------------------------------------------------"
-  echo -e "| arg1     | arg2                 | Description                    |"
-  echo -e " ------------------------------------------------------------------"
-  echo -e "| install  | core                 | Install Core                   |"
-  echo -e "| update   | core / self          | Update Core / Core-Control     |"
-  echo -e "| remove   | core / self          | Remove Core / Core-Control     |"
-  echo -e "| secret   | set / clear          | Delegate Secret Set / Clear    |"
-  echo -e "| start    | relay / forger / all | Start Core Services            |"
-  echo -e "| restart  | relay / forger / all | Restart Core Services          |"
-  echo -e "| stop     | relay / forger / all | Stop Core Services             |"
-  echo -e "| logs     | relay / forger / all | Show Core Logs                 |"
-  echo -e "| snapshot | create / restore     | Snapshot Create / Restore      |"
-  echo -e "| system   | info / update        | System Info / Update           |"
-  echo -e "| config   | reset                | Reset Config Files to Defaults |"
-  echo -e " ------------------------------------------------------------------\n"
+  echo -e " ----------------------------------------------------------------------"
+  echo -e "| arg1     | arg2                 | Description                        |"
+  echo -e " ----------------------------------------------------------------------"
+  echo -e "| install  | core                 | Install Core                       |"
+  echo -e "| update   | core / self / check  | Update Core / Core-Control / Check |"
+  echo -e "| remove   | core / self          | Remove Core / Core-Control         |"
+  echo -e "| secret   | set / clear          | Delegate Secret Set / Clear        |"
+  echo -e "| start    | relay / forger / all | Start Core Services                |"
+  echo -e "| restart  | relay / forger / all | Restart Core Services              |"
+  echo -e "| stop     | relay / forger / all | Stop Core Services                 |"
+  echo -e "| logs     | relay / forger / all | Show Core Logs                     |"
+  echo -e "| snapshot | create / restore     | Snapshot Create / Restore          |"
+  echo -e "| system   | info / update        | System Info / Update               |"
+  echo -e "| config   | reset                | Reset Config Files to Defaults     |"
+  echo -e " ----------------------------------------------------------------------\n"
   exit 1
 
 }
@@ -62,7 +62,7 @@ start () {
     local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
 
     if [ "$rstatus" != "online" ]; then
-      pm2 --name "${name}-core-relay" start $core/packages/core/dist/index.js -- relay --config $config --network $network > /dev/null 2>&1
+      pm2 --name "${name}-core-relay" start $core/packages/core/dist/index.js -- relay --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess relay already running. Skipping..."
     fi
@@ -70,7 +70,7 @@ start () {
     if [ "$secrets" = "[]" ]; then
       echo -e "\nDelegate secret is missing. Forger start aborted!"
     elif [ "$fstatus" != "online" ]; then
-      pm2 --name "${name}-core-forger" start $core/packages/core/dist/index.js -- forger --config $config --network $network > /dev/null 2>&1
+      pm2 --name "${name}-core-forger" start $core/packages/core/dist/index.js -- forger --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess forger already running. Skipping..."
     fi
@@ -88,7 +88,7 @@ start () {
     if [[ "$secrets" = "[]" && "$1" = "forger" ]]; then
       echo -e "\nDelegate secret is missing. Forger start aborted!"
     elif [ "$pstatus" != "online" ]; then
-      pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --config $config --network $network > /dev/null 2>&1
+      pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --network $network > /dev/null 2>&1
     else
       echo -e "\nProcess $1 already running. Skipping..."
     fi
@@ -377,5 +377,44 @@ selfremove () {
   cd $HOME > /dev/null 2>&1
   rm -rf $basedir > /dev/null 2>&1
   sed -i '/ccontrol/d' $HOME/.bashrc > /dev/null 2>&1
+  sed -i '/cccomp/d' $HOME/.bashrc > /dev/null 2>&1
+
+}
+
+update_info () {
+
+  git fetch > /dev/null 2>&1
+  local loc=$(git rev-parse --short @)
+  local rem=$(git rev-parse --short @{u})
+
+  echo -e -n "\n${cyan}core-control${nc} v${cyan}${version}${nc} hash: ${cyan}${loc}${nc} status: "
+
+  if [ "$loc" = "$rem" ]; then
+    echo -e "${green}current${nc}"
+  else
+    echo -e "${red}stale${nc}"
+  fi
+
+  echo -e ""
+
+  if [ -d $core ]; then
+
+    cd $core > /dev/null 2>&1
+    git fetch > /dev/null 2>&1
+    local loc=$(git rev-parse --short @)
+    local rem=$(git rev-parse --short @{u})
+    local corever=$(cat packages/core/package.json | jq -r '.version')
+
+    echo -e -n "${cyan}${name}-core${nc} v${cyan}${corever}${nc} hash: ${cyan}${loc}${nc} status: "
+
+    if [ "$loc" = "$rem" ]; then
+      echo -e "${green}current${nc}"
+    else
+      echo -e "${red}stale${nc}"
+    fi
+
+    echo -e ""
+
+  fi
 
 }

@@ -2,9 +2,19 @@
 
 i=1
 sp="/-\|"
+red='\033[0;31m'
+green='\033[0;32m'
+cyan='\033[0;36m'
+nc='\033[0m'
+
 
 als="$(cat $HOME/.bashrc | grep ccontrol)"
+ccc="$(cat $HOME/.bashrc | grep cccomp)"
 
 if [ -z "$als" ]; then
   echo "alias ccontrol=$PWD/ccontrol.sh" >> $HOME/.bashrc
+fi
+
+if [ -z "$ccc" ]; then
+  echo "source $PWD/cccomp.bash" >> $HOME/.bashrc
 fi

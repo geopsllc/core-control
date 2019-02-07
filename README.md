@@ -1,11 +1,12 @@
-![Core Control](./banner2.png)
 
 # Core v2 Management Tool - Qredit Mainnet
 
 ## Installation
 
 ```sh
+
 git clone https://github.com/qredit/core-control
+
 cd core-control
 ./ccontrol.sh arg1 [arg2]
 ```
@@ -13,7 +14,7 @@ cd core-control
 | arg1 | arg2 | Description |
 | --- | --- | --- |
 | `install` | `core` | Install Core |
-| `update` | `core`/`self` | Update Core / Core-Control |
+| `update` | `core`/`self`/`check` | Update Core / Core-Control / Check |
 | `remove` | `core`/`self` | Remove Core / Core-Control |
 | `secret` | `set`/`clear` | Delegate Secret Set / Clear |
 | `start` | `relay`/`forger`/`all` | Start Core Services |
@@ -25,17 +26,19 @@ cd core-control
 | `config` | `reset` | Reset Config Files to Defaults |
 
 ## General
-This is a Streamlined CLI-Based Core v2 Management Tool.
+QreditMainnet
+
 - Installs fail2ban for ssh, and ufw allowing only port 22(ssh) and the cores ports.
 - For start/restart/stop/logs you can skip the 'all' argument as it's the default.
-- For install/update/remove you can skip the 'core' argument as it's the default.
+- For install/remove you can skip the 'core' argument as it's the default.
+- For update you can skip the 'check' argument as it's the default.
 - When setting a delegate secret just paste your secret after the 'set' argument without quotes.
 - The snapshot is stored in the 'snapshots' folder in your home directory using the database name, e.g. ark_mainnet. 
 If you're using an external snapshot make sure to rename it accordingly and put it in the 'snapshots' folder.
 - Running with the 'remove' argument does not delete the 'snapshots' folder or the stored snapshot in order to allow you
 to take a snapshot, do remove/install and restore it afterwards.
 - The script adds an alias named 'ccontrol' on first run. On your next shell login you'll be able to call the script from anywhere
-using the following: ccontrol arg1 [arg2]
+using: ccontrol arg1 [arg2]. It also has autocomplete functionality for all possible arguments.
 - Using the 'config reset' arguments will stop the core processes, delete your existing configs and replace them with the defaults.
 If you're running a forger and/or have custom settings, you should add them again.
 - Do not run as root!
@@ -43,6 +46,8 @@ If you're running a forger and/or have custom settings, you should add them agai
 ## Changelog
 
 ### 0.7
+- added update check to show update availability
+- the ccontrol alias now has autocomplete for all arguments
 - refactored some operations for consistency
 - core remove is now done with 'remove core'
 - added self-remove as an otion with 'remove self'
