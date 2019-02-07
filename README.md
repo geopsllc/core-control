@@ -11,7 +11,7 @@ cd core-control
 | arg1 | arg2 | Description |
 | --- | --- | --- |
 | `install` | `core` | Install Core |
-| `update` | `core`/`self` | Update Core / Core-Control |
+| `update` | `core`/`self`/`check` | Update Core / Core-Control / Check |
 | `remove` | `core`/`self` | Remove Core / Core-Control |
 | `secret` | `set`/`clear` | Delegate Secret Set / Clear |
 | `start` | `relay`/`forger`/`all` | Start Core Services |
@@ -26,7 +26,8 @@ cd core-control
 This is a Streamlined CLI-Based Core v2 Management Tool. 
 - Installs fail2ban for ssh, and ufw allowing only port 22(ssh) and the cores ports.
 - For start/restart/stop/logs you can skip the 'all' argument as it's the default.
-- For install/update/remove you can skip the 'core' argument as it's the default.
+- For install/remove you can skip the 'core' argument as it's the default.
+- For update you can skip the 'check' argument as it's the default.
 - When setting a delegate secret just paste your secret after the 'set' argument without quotes.
 - The snapshot is stored in the 'snapshots' folder in your home directory using the database name, e.g. ark_mainnet. 
 If you're using an external snapshot make sure to rename it accordingly and put it in the 'snapshots' folder.
@@ -41,6 +42,7 @@ If you're running a forger and/or have custom settings, you should add them agai
 ## Changelog
 
 ### 0.7
+- added update check to show update availability
 - the ccontrol alias now has autocomplete for all arguments
 - refactored some operations for consistency
 - core remove is now done with 'remove core'
