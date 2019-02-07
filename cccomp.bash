@@ -16,7 +16,7 @@ ccontrol_completions () {
         COMPREPLY=( $(compgen -W "core" -- $cur) )
         ;;
       "update")
-        COMPREPLY=( $(compgen -W "core self info" -- $cur) )
+        COMPREPLY=( $(compgen -W "core self check" -- $cur) )
         ;;
       "remove")
         COMPREPLY=( $(compgen -W "core self" -- $cur) )
