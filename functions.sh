@@ -64,21 +64,21 @@ start () {
     if [ "$rstatus" != "online" ]; then
       pm2 --name "${name}-core-relay" start $core/packages/core/dist/index.js -- relay --network $network > /dev/null 2>&1
     else
-      echo -e "\nProcess relay already running. Skipping..."
+      echo -e "\n${red}Process relay already running. Skipping..."
     fi
 
     if [ "$secrets" = "[]" ]; then
-      echo -e "\nDelegate secret is missing. Forger start aborted!"
+      echo -e "\n${red}Delegate secret is missing. Forger start aborted!"
     elif [ "$fstatus" != "online" ]; then
       pm2 --name "${name}-core-forger" start $core/packages/core/dist/index.js -- forger --network $network > /dev/null 2>&1
     else
-      echo -e "\nProcess forger already running. Skipping..."
+      echo -e "\n${red}Process forger already running. Skipping..."
     fi
 
     local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
 
     if [ "$rstatus" != "online" ]; then
-      echo -e "\nProcess startup failed."
+      echo -e "\n${red}Process startup failed."
     fi
 
   else
@@ -86,17 +86,17 @@ start () {
     local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
 
     if [[ "$secrets" = "[]" && "$1" = "forger" ]]; then
-      echo -e "\nDelegate secret is missing. Forger start aborted!"
+      echo -e "\n${red}Delegate secret is missing. Forger start aborted!"
     elif [ "$pstatus" != "online" ]; then
       pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --network $network > /dev/null 2>&1
     else
-      echo -e "\nProcess $1 already running. Skipping..."
+      echo -e "\n${red}Process $1 already running. Skipping..."
     fi
 
     local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
 
     if [[ "$pstatus" != "online" && "$1" = "relay" ]]; then
-      echo -e "\nProcess startup failed."
+      echo -e "\n${red}Process startup failed."
     fi
 
   fi
@@ -115,13 +115,13 @@ restart () {
     if [ "$rstatus" = "online" ]; then
       pm2 restart ${name}-core-relay > /dev/null 2>&1
     else
-      echo -e "\nProcess relay not running. Skipping..."
+      echo -e "\n${red}Process relay not running. Skipping..."
     fi
 
     if [ "$fstatus" = "online" ]; then
       pm2 restart ${name}-core-forger > /dev/null 2>&1
     else
-      echo -e "\nProcess forger not running. Skipping..."
+      echo -e "\n${red}Process forger not running. Skipping..."
     fi
 
   else
@@ -131,7 +131,7 @@ restart () {
     if [ "$pstatus" = "online" ]; then
       pm2 restart ${name}-core-$1 > /dev/null 2>&1
     else
-      echo -e "\nProcess $1 not running. Skipping..."
+      echo -e "\n${red}Process $1 not running. Skipping..."
     fi
 
   fi
@@ -148,13 +148,13 @@ stop () {
     if [ "$rstatus" = "online" ]; then
       pm2 stop ${name}-core-relay > /dev/null 2>&1
     else
-      echo -e "\nProcess relay not running. Skipping..."
+      echo -e "\n${red}Process relay not running. Skipping..."
     fi
 
     if [ "$fstatus" = "online" ]; then
       pm2 stop ${name}-core-forger > /dev/null 2>&1
     else
-      echo -e "\nProcess forger not running. Skipping..."
+      echo -e "\n${red}Process forger not running. Skipping..."
     fi
 
   else
@@ -164,7 +164,7 @@ stop () {
     if [ "$pstatus" = "online" ]; then
       pm2 stop ${name}-core-$1 > /dev/null 2>&1
     else
-      echo -e "\nProcess $1 not running. Skipping..."
+      echo -e "\n${red}Process $1 not running. Skipping..."
     fi
 
   fi
@@ -284,27 +284,27 @@ sysinfo () {
   local hn="$(hostname --fqdn)"
   local ips="$(hostname --all-ip-address)"
 
-  echo -e "\nSystem: $os"
+  echo -e "\n${cyan}System: ${nc}$os"
   w | head -n1
 
-  echo -e "\nCPU(s): ${sockets}x ${cpu}with $cps Cores and $[cps*tpc] Threads"
-  echo -ne " Total: $[sockets*cps] Cores and $[sockets*cps*tpc] Threads"
+  echo -e "\n${cyan}CPU(s): ${nc}${sockets}x ${cpu}with $cps Cores and $[cps*tpc] Threads"
+  echo -ne " ${cyan}Total: ${nc}$[sockets*cps] Cores and $[sockets*cps*tpc] Threads"
   if [ -z "$maxmhz" ]; then
     echo -e " @ ${mhz}MHz"
   else
     echo -e " @ ${maxmhz}MHz"
   fi
 
-  echo -e "\nHostname: $hn"
-  echo -e " IP(s): $ips"
+  echo -e "\n${cyan}Hostname: ${nc}$hn"
+  echo -e " ${cyan}IP(s): ${nc}$ips"
 
-  echo -e ""
+  echo -e "${yellow}"
   free -h
 
-  echo -e ""
+  echo -e "${magenta}"
   df -h /
 
-  echo -e ""
+  echo -e "${nc}"
 
 }
 
