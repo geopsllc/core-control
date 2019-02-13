@@ -20,6 +20,7 @@ cd core-control
 | `start` | `relay`/`forger`/`all` | Start Core Services |
 | `restart` | `relay`/`forger`/`all` | Restart Core Services |
 | `stop` | `relay`/`forger`/`all` | Stop Core Services |
+| `status` | `relay`/`forger`/`all` | Show Core Services Status |
 | `logs` | `relay`/`forger`/`all` | Show Core Logs |
 | `snapshot` | `create`/`restore` | Snapshot Create / Restore |
 | `system` | `info`/`update` | System Info / Update |
@@ -29,7 +30,7 @@ cd core-control
 QreditMainnet
 
 - Installs fail2ban for ssh, and ufw allowing only port 22(ssh) and the cores ports.
-- For start/restart/stop/logs you can skip the 'all' argument as it's the default.
+- For start/restart/stop/status/logs you can skip the 'all' argument as it's the default.
 - For install/remove you can skip the 'core' argument as it's the default.
 - For update you can skip the 'check' argument as it's the default.
 - For system you can skip the 'info' argument as it's the default.
@@ -45,6 +46,10 @@ If you're running a forger and/or have custom settings, you should add them agai
 - Do not run as root!
 
 ## Changelog
+
+### 2.1
+- bump version to match core major version
+- added status argument to show process status
 
 ### 0.7
 - added a splash of color
