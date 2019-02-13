@@ -4,9 +4,7 @@
 ## Installation
 
 ```sh
-
-git clone https://github.com/qredit/core-control
-
+git clone https://github.com/geopsllc/core-control -b qredit-mainnet
 cd core-control
 ./ccontrol.sh arg1 [arg2]
 ```
@@ -27,8 +25,6 @@ cd core-control
 | `config` | `reset` | Reset Config Files to Defaults |
 
 ## General
-QreditMainnet
-
 - Installs fail2ban for ssh, and ufw allowing only port 22(ssh) and the cores ports.
 - For start/restart/stop/status/logs you can skip the 'all' argument as it's the default.
 - For install/remove you can skip the 'core' argument as it's the default.
