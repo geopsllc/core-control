@@ -1,9 +1,9 @@
-# Core v2 Management Tool - Ark Mainnet
+# Core v2 Management Tool - Ark Devnet
 
 ## Installation
 
 ```sh
-git clone https://github.com/geopsllc/core-control
+git clone https://github.com/geopsllc/core-control -b ark-devnet
 cd core-control
 ./ccontrol.sh arg1 [arg2]
 ```
