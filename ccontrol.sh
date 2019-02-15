@@ -18,7 +18,7 @@ main () {
   if [[ ( "$1" = "install" ) && ( "$2" = "core" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ -d $data || -d $core ]]; then
-      echo -e "\n${red}Core already installed. Please remove first.\n"
+      echo -e "\n${red}Core already installed. Please remove first.${nc}\n"
       exit 1
     fi
 
@@ -32,7 +32,7 @@ main () {
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
     done
 
-    echo -e "\b${green}Done"
+    echo -e "\b${green}Done${nc}"
 
     secure &
 
@@ -42,7 +42,7 @@ main () {
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
     done
 
-    echo -e "\b${green}Done"
+    echo -e "\b${green}Done${nc}"
 
     install_db &
 
@@ -52,7 +52,7 @@ main () {
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
     done
 
-    echo -e "\b${green}Done"
+    echo -e "\b${green}Done${nc}"
 
     install_core &
 
@@ -62,12 +62,12 @@ main () {
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
     done
 
-    echo -e "\b${green}Done\n"
+    echo -e "\b${green}Done${nc}\n"
 
   elif [[ ( "$1" = "update" ) && ( "$2" = "core" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
-      echo -e "\n${red}Core not installed. Please install first.\n"
+      echo -e "\n${red}Core not installed. Please install first.${nc}\n"
       exit 1
     fi
 
@@ -80,12 +80,12 @@ main () {
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
     done
 
-    echo -e "\b${green}Done\n"
+    echo -e "\b${green}Done${nc}\n"
 
   elif [[ ( "$1" = "remove" ) && ( "$2" = "core" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data && ! -d $core ]]; then
-      echo -e "\n${red}Core not installed.\n"
+      echo -e "\n${red}Core not installed.${nc}\n"
       exit 1
     fi
 
@@ -99,27 +99,27 @@ main () {
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
     done
 
-    echo -e "\b${green}Done\n"
+    echo -e "\b${green}Done${nc}\n"
 
   elif [[ ( "$1" = "config" ) && ( "$2" = "reset"  ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
-      echo -e "\n${red}Core not installed. Please install first.\n"
+      echo -e "\n${red}Core not installed. Please install first.${nc}\n"
       exit 1
     fi
 
     config_reset &
 
     sleep 1
-    echo -e "\n${cyan}Processes Stopped..."
+    echo -e "\n${cyan}Processes Stopped...${nc}"
     sleep 1
-    echo -e "${cyan}Configs Replaced with Defaults..."
-    echo -e "${green}All Done!\n"
+    echo -e "${cyan}Configs Replaced with Defaults...${nc}"
+    echo -e "${green}All Done!${nc}\n"
 
   elif [[ ( "$1" = "start" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
-      echo -e "\n${red}Core not installed. Please install first.\n"
+      echo -e "\n${red}Core not installed. Please install first.${nc}\n"
       exit 1
     fi
 
@@ -129,12 +129,12 @@ main () {
 
     start $2
 
-    echo -e "\n${green}All Done!\n"
+    echo -e "\n${green}All Done!${nc}\n"
 
   elif [[ ( "$1" = "restart" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
-      echo -e "\n${red}Core not installed. Please install first.\n"
+      echo -e "\n${red}Core not installed. Please install first.${nc}\n"
       exit 1
     fi
 
@@ -144,12 +144,12 @@ main () {
 
     restart $2
 
-    echo -e "\n${green}All Done!\n"
+    echo -e "\n${green}All Done!${nc}\n"
 
   elif [[ ( "$1" = "stop" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
-      echo -e "\n${red}Core not installed. Please install first.\n"
+      echo -e "\n${red}Core not installed. Please install first.${nc}\n"
       exit 1
     fi
 
@@ -159,7 +159,20 @@ main () {
 
     stop $2
 
-    echo -e "\nAll Done!\n"
+    echo -e "\nAll Done!${nc}\n"
+
+  elif [[ ( "$1" = "status" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
+
+    if [[ ! -d $data || ! -d $core ]]; then
+      echo -e "\n${red}Core not installed. Please install first.${nc}\n"
+      exit 1
+    fi
+
+    if [ -z "$2" ]; then
+      set -- "$1" "all"
+    fi
+
+    status $2
 
   elif [[ ( "$1" = "system" ) && ( "$2" = "info" || -z "$2" ) && ( -z "$3" ) ]]; then
 
@@ -167,17 +180,9 @@ main () {
 
   elif [[ ( "$1" = "system" ) && ( "$2" = "update" ) && ( -z "$3" ) ]]; then
 
-    sudo apt update > /dev/null 2>&1
     sysinfo
-    sysupdate &
-
-    echo -ne "${cyan}Updating System...  ${red}"
-
-    while [ -d /proc/$! ]; do
-      printf "\b${sp:i++%${#sp}:1}" && sleep .1
-    done
-
-    echo -e "\b${green}Done\n"
+    sudo apt update > /dev/null 2>&1
+    sysupdate
 
   elif [[ ( "$1" = "logs" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
 
@@ -190,23 +195,23 @@ main () {
   elif [[ ( "$1" = "secret" ) && ( ( "$2" = "set" && ! -z "${14}" && -z "${15}" ) || ( "$2" = "clear" && -z "$3" ) ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
-      echo -e "\n${red}Core not installed. Please install first.\n"
+      echo -e "\n${red}Core not installed. Please install first.${nc}\n"
       exit 1
     fi
 
     secret $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14}
 
-    echo -e "\n${green}All Done!\n"
+    echo -e "\n${green}All Done!${nc}\n"
 
   elif [[ ( "$1" = "snapshot" ) && ( "$2" = "create" || "$2" = "restore" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
-      echo -e "\n${red}Core not installed. Please install first.\n"
+      echo -e "\n${red}Core not installed. Please install first.${nc}\n"
       exit 1
     fi
 
     if [[ "$2" = "restore" && ! -f $HOME/snapshots/${name}_$network ]]; then
-      echo -e "\n${red}File $HOME/snapshots/${name}_$network Not Found!\n"
+      echo -e "\n${red}File $HOME/snapshots/${name}_$network Not Found!${nc}\n"
       exit 1
     fi
 
@@ -219,7 +224,7 @@ main () {
       printf "\b${sp:i++%${#sp}:1}" && sleep .1
     done
 
-    echo -e "\b${green}Done\n"
+    echo -e "\b${green}Done${nc}\n"
 
   elif [[ ( "$1" = "update" ) && ( "$2" = "self" ) && ( -z "$3" ) ]]; then
 

@@ -13,6 +13,7 @@ wrong_arguments () {
   echo -e "| start    | relay / forger / all | Start Core Services                |"
   echo -e "| restart  | relay / forger / all | Restart Core Services              |"
   echo -e "| stop     | relay / forger / all | Stop Core Services                 |"
+  echo -e "| status   | relay / forger / all | Show Core Services Status          |"
   echo -e "| logs     | relay / forger / all | Show Core Logs                     |"
   echo -e "| snapshot | create / restore     | Snapshot Create / Restore          |"
   echo -e "| system   | info / update        | System Info / Update               |"
@@ -64,21 +65,21 @@ start () {
     if [ "$rstatus" != "online" ]; then
       pm2 --name "${name}-core-relay" start $core/packages/core/dist/index.js -- relay --network $network > /dev/null 2>&1
     else
-      echo -e "\n${red}Process relay already running. Skipping..."
+      echo -e "\n${red}Process relay already running. Skipping...${nc}"
     fi
 
     if [ "$secrets" = "[]" ]; then
-      echo -e "\n${red}Delegate secret is missing. Forger start aborted!"
+      echo -e "\n${red}Delegate secret is missing. Forger start aborted!${nc}"
     elif [ "$fstatus" != "online" ]; then
       pm2 --name "${name}-core-forger" start $core/packages/core/dist/index.js -- forger --network $network > /dev/null 2>&1
     else
-      echo -e "\n${red}Process forger already running. Skipping..."
+      echo -e "\n${red}Process forger already running. Skipping...${nc}"
     fi
 
     local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
 
     if [ "$rstatus" != "online" ]; then
-      echo -e "\n${red}Process startup failed."
+      echo -e "\n${red}Process startup failed.${nc}"
     fi
 
   else
@@ -86,17 +87,17 @@ start () {
     local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
 
     if [[ "$secrets" = "[]" && "$1" = "forger" ]]; then
-      echo -e "\n${red}Delegate secret is missing. Forger start aborted!"
+      echo -e "\n${red}Delegate secret is missing. Forger start aborted!${nc}"
     elif [ "$pstatus" != "online" ]; then
       pm2 --name "${name}-core-$1" start $core/packages/core/dist/index.js -- $1 --network $network > /dev/null 2>&1
     else
-      echo -e "\n${red}Process $1 already running. Skipping..."
+      echo -e "\n${red}Process $1 already running. Skipping...${nc}"
     fi
 
     local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
 
     if [[ "$pstatus" != "online" && "$1" = "relay" ]]; then
-      echo -e "\n${red}Process startup failed."
+      echo -e "\n${red}Process startup failed.${nc}"
     fi
 
   fi
@@ -115,13 +116,13 @@ restart () {
     if [ "$rstatus" = "online" ]; then
       pm2 restart ${name}-core-relay > /dev/null 2>&1
     else
-      echo -e "\n${red}Process relay not running. Skipping..."
+      echo -e "\n${red}Process relay not running. Skipping...${nc}"
     fi
 
     if [ "$fstatus" = "online" ]; then
       pm2 restart ${name}-core-forger > /dev/null 2>&1
     else
-      echo -e "\n${red}Process forger not running. Skipping..."
+      echo -e "\n${red}Process forger not running. Skipping...${nc}"
     fi
 
   else
@@ -131,7 +132,7 @@ restart () {
     if [ "$pstatus" = "online" ]; then
       pm2 restart ${name}-core-$1 > /dev/null 2>&1
     else
-      echo -e "\n${red}Process $1 not running. Skipping..."
+      echo -e "\n${red}Process $1 not running. Skipping...${nc}"
     fi
 
   fi
@@ -148,13 +149,13 @@ stop () {
     if [ "$rstatus" = "online" ]; then
       pm2 stop ${name}-core-relay > /dev/null 2>&1
     else
-      echo -e "\n${red}Process relay not running. Skipping..."
+      echo -e "\n${red}Process relay not running. Skipping...${nc}"
     fi
 
     if [ "$fstatus" = "online" ]; then
       pm2 stop ${name}-core-forger > /dev/null 2>&1
     else
-      echo -e "\n${red}Process forger not running. Skipping..."
+      echo -e "\n${red}Process forger not running. Skipping...${nc}"
     fi
 
   else
@@ -164,12 +165,47 @@ stop () {
     if [ "$pstatus" = "online" ]; then
       pm2 stop ${name}-core-$1 > /dev/null 2>&1
     else
-      echo -e "\n${red}Process $1 not running. Skipping..."
+      echo -e "\n${red}Process $1 not running. Skipping...${nc}"
     fi
 
   fi
 
   pm2 save > /dev/null 2>&1
+
+}
+
+status () {
+
+  echo -e -n "\n${cyan}${name}-core${nc} v${cyan}${corever}${nc} "
+
+  if [ "$1" = "all" ]; then
+
+    local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
+    local rstatus=$(pm2status "${name}-core-relay" | awk '{print $13}')
+
+    if [ "$rstatus" = "online" ]; then
+      echo -ne "relay: ${green}online${nc} "
+    else
+      echo -ne "relay: ${red}offline${nc} "
+    fi
+
+    if [ "$fstatus" = "online" ]; then
+      echo -e "forger: ${green}online${nc}\n"
+    else
+      echo -e "forger: ${red}offline${nc}\n"
+    fi
+
+  else
+
+    local pstatus=$(pm2status "${name}-core-$1" | awk '{print $13}')
+
+    if [ "$pstatus" = "online" ]; then
+      echo -e "$1: ${green}online${nc}\n"
+    else
+      echo -e "$1: ${red}offline${nc}\n"
+    fi
+
+  fi
 
 }
 
@@ -310,9 +346,9 @@ sysinfo () {
 
 sysupdate () {
 
-  sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade -y > /dev/null 2>&1
-  sudo apt-get autoremove -y > /dev/null 2>&1
-  sudo apt-get autoclean -y > /dev/null 2>&1
+  sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade -y
+  sudo apt-get autoremove -y
+  sudo apt-get autoclean -y
 
 }
 
@@ -390,12 +426,10 @@ update_info () {
   echo -e -n "\n${cyan}core-control${nc} v${cyan}${version}${nc} hash: ${cyan}${loc}${nc} status: "
 
   if [ "$loc" = "$rem" ]; then
-    echo -e "${green}current${nc}"
+    echo -e "${green}current${nc}\n"
   else
-    echo -e "${red}stale${nc}"
+    echo -e "${red}stale${nc}\n"
   fi
-
-  echo -e ""
 
   if [ -d $core ]; then
 
@@ -403,17 +437,14 @@ update_info () {
     git fetch > /dev/null 2>&1
     local loc=$(git rev-parse --short @)
     local rem=$(git rev-parse --short @{u})
-    local corever=$(cat packages/core/package.json | jq -r '.version')
 
     echo -e -n "${cyan}${name}-core${nc} v${cyan}${corever}${nc} hash: ${cyan}${loc}${nc} status: "
 
     if [ "$loc" = "$rem" ]; then
-      echo -e "${green}current${nc}"
+      echo -e "${green}current${nc}\n"
     else
-      echo -e "${red}stale${nc}"
+      echo -e "${red}stale${nc}\n"
     fi
-
-    echo -e ""
 
   fi
 
