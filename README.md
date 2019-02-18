@@ -44,6 +44,7 @@ If you're running a forger and/or have custom settings, you should add them agai
 ## Changelog
 
 ### 2.1
+- made 'update core' a lot smarter
 - bump version to match core major version
 - added status argument to show process status
 
