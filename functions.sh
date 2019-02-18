@@ -29,6 +29,20 @@ pm2status () {
 
 }
 
+git_check () {
+
+  git fetch > /dev/null 2>&1
+  loc=$(git rev-parse --short @)
+  rem=$(git rev-parse --short @{u})
+
+  if [ "$loc" = "$rem" ]; then
+    up2date="yes"
+  else
+    up2date="no"
+  fi
+
+}
+
 setefile () {
 
   local envFile="$config/.env"
@@ -265,8 +279,6 @@ install_core () {
 
 update () {
 
-  cd $core > /dev/null 2>&1
-  git pull > /dev/null 2>&1
   yarn setup > /dev/null 2>&1
 
   local fstatus=$(pm2status "${name}-core-forger" | awk '{print $13}')
@@ -419,13 +431,12 @@ selfremove () {
 
 update_info () {
 
-  git fetch > /dev/null 2>&1
-  local loc=$(git rev-parse --short @)
-  local rem=$(git rev-parse --short @{u})
+  cd $basedir > /dev/null 2>&1
+  git_check
 
   echo -e -n "\n${cyan}core-control${nc} v${cyan}${version}${nc} hash: ${cyan}${loc}${nc} status: "
 
-  if [ "$loc" = "$rem" ]; then
+  if [ "$up2date" = "yes" ]; then
     echo -e "${green}current${nc}\n"
   else
     echo -e "${red}stale${nc}\n"
@@ -434,13 +445,11 @@ update_info () {
   if [ -d $core ]; then
 
     cd $core > /dev/null 2>&1
-    git fetch > /dev/null 2>&1
-    local loc=$(git rev-parse --short @)
-    local rem=$(git rev-parse --short @{u})
+    git_check
 
     echo -e -n "${cyan}${name}-core${nc} v${cyan}${corever}${nc} hash: ${cyan}${loc}${nc} status: "
 
-    if [ "$loc" = "$rem" ]; then
+    if [ "$up2date" = "yes" ]; then
       echo -e "${green}current${nc}\n"
     else
       echo -e "${red}stale${nc}\n"

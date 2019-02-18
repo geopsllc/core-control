@@ -9,6 +9,8 @@ elif [[ "$basedir" = "." && "$execdir" != "." ]]; then
   cd $PWD/$execdir
 fi
 
+basedir="$PWD"
+
 . "project.conf"
 . "functions.sh"
 . "misc.sh"
@@ -68,6 +70,21 @@ main () {
 
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\n${red}Core not installed. Please install first.${nc}\n"
+      exit 1
+    fi
+
+    cd $core > /dev/null 2>&1
+    git_check
+
+    if [ "$up2date" = "yes" ]; then
+      echo -e "\n${red}Already up to date.${nc}\n"
+      exit 1
+    fi
+
+    git pull > /dev/null 2>&1
+
+    if [ "$?" != "0" ]; then
+      echo -e "\n${red}git pull failed - check for conflicts${nc}\n"
       exit 1
     fi
 
