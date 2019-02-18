@@ -77,7 +77,7 @@ main () {
     git_check
 
     if [ "$up2date" = "yes" ]; then
-      echo -e "\n${red}Already up to date.${nc}\n"
+      echo -e "Already up-to-date."
       exit 1
     fi
 
