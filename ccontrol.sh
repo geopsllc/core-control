@@ -176,7 +176,7 @@ main () {
 
     stop $2
 
-    echo -e "\nAll Done!${nc}\n"
+    echo -e "\n${green}All Done!${nc}\n"
 
   elif [[ ( "$1" = "status" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
 
