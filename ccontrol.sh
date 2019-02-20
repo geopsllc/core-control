@@ -251,6 +251,8 @@ main () {
 
     selfremove
 
+    echo -e "\n${green}All Done!${nc}\n"
+
   elif [[ ( "$1" = "update" ) && ( "$2" = "check" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     update_info
