@@ -21,6 +21,6 @@ if [ -z "$ccc" ]; then
   echo "source $PWD/cccomp.bash" >> $HOME/.bashrc
 fi
 
-if [ -f "$core/packages/core/package.json" ]; then
-  corever=$(cat $core/packages/core/package.json | jq -r '.version')
+if [ -f "$core/core/package.json" ]; then
+  corever=$(cat $core/core/package.json | jq -r '.version')
 fi
