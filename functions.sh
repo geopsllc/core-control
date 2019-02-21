@@ -270,10 +270,10 @@ install_core () {
     mkdir $HOME/.config > /dev/null 2>&1
   fi
 
-  yarn global add $repo/$package
+  yarn global add $repo/$package > /dev/null 2>&1
   
   mkdir $data > /dev/null 2>&1
-  cp -rf "$core/packages/core/bin/config/$network" "$data" > /dev/null 2>&1
+  cp -rf "$core/core/bin/config/$network" "$data" > /dev/null 2>&1
   
   setefile
   
@@ -322,7 +322,7 @@ config_reset () {
 
   stop all > /dev/null 2>&1
   rm -rf $config > /dev/null 2>&1
-  cp -rf "$core/packages/core/src/config/$network" "$data" > /dev/null 2>&1 
+  cp -rf "$core/core/src/config/$network" "$data" > /dev/null 2>&1 
   setefile
 
 }
@@ -408,11 +408,11 @@ snapshot () {
     pg_restore -n public -O -j 8 -d ${name}_$network $HOME/snapshots/${name}_$network > /dev/null 2>&1
 
     if [ "$rstatus" = "online" ]; then
-      start relay $network > /dev/null 2>&1
+      start relay > /dev/null 2>&1
     fi
 
     if [ "$fstatus" = "online" ]; then
-      start forger $network > /dev/null 2>&1
+      start forger > /dev/null 2>&1
     fi
 
   else
