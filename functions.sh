@@ -449,7 +449,7 @@ update_info () {
 
   if [ -d $core ]; then
 
-    echo -e "${cyan}${name}-core${nc} v${cyan}${corever}${nc}"
+    echo -e "${cyan}${name}-core${nc} v${cyan}${corever}${nc}\n"
 
 fi
 
