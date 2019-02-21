@@ -284,7 +284,7 @@ install_core () {
 
 update () {
 
-  yarn setup > /dev/null 2>&1
+  yarn global upgrade $repo/$package > /dev/null 2>&1
 
   local fstatus=$(pm2status "${name}-forger" | awk '{print $13}')
   local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
@@ -304,7 +304,7 @@ remove () {
   pm2 delete ${name}-forger > /dev/null 2>&1
   pm2 delete ${name}-relay > /dev/null 2>&1
   pm2 save > /dev/null 2>&1
-  rm -rf $core > /dev/null 2>&1
+  yarn global remove $repo/core > /dev/null 2>&1
   rm -rf $data > /dev/null 2>&1
   rm -rf $HOME/.cache/${name}-core > /dev/null 2>&1
   rm -rf $HOME/.local/share/${name}-core > /dev/null 2>&1
