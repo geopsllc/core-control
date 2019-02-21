@@ -279,8 +279,6 @@ install_core () {
   
   echo 'export PATH=$(yarn global bin):$PATH' >> $HOME/.bashrc
   export PATH=$(yarn global bin):$PATH
-  
-  exec "$BASH"
 
 }
 
