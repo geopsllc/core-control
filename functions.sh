@@ -82,7 +82,7 @@ start () {
     local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
 
     if [ "$rstatus" != "online" ]; then
-      pm2 --name "${name}-relay" start $core/packages/core/bin/run -- relay:run > /dev/null 2>&1
+      ark relay:start > /dev/null 2>&1
     else
       echo -e "\n${red}Process relay already running. Skipping...${nc}"
     fi
@@ -90,7 +90,7 @@ start () {
     if [ "$secrets" = "[]" ]; then
       echo -e "\n${red}Delegate secret is missing. Forger start aborted!${nc}"
     elif [ "$fstatus" != "online" ]; then
-      pm2 --name "${name}-forger" start $core/packages/core/bin/run -- forger:run > /dev/null 2>&1
+      ark forger:start > /dev/null 2>&1
     else
       echo -e "\n${red}Process forger already running. Skipping...${nc}"
     fi
@@ -108,7 +108,7 @@ start () {
     if [[ "$secrets" = "[]" && "$1" = "forger" ]]; then
       echo -e "\n${red}Delegate secret is missing. Forger start aborted!${nc}"
     elif [ "$pstatus" != "online" ]; then
-      pm2 --name "${name}-$1" start $core/packages/core/bin/run -- ${1}:run > /dev/null 2>&1
+      ark ${1}:start > /dev/null 2>&1
     else
       echo -e "\n${red}Process $1 already running. Skipping...${nc}"
     fi
@@ -264,21 +264,23 @@ install_db () {
 
 install_core () {
 
-  git clone $repo $core -b $branch > /dev/null 2>&1
-
   if [ -d $HOME/.config ]; then
     sudo chown -R $USER:$USER $HOME/.config > /dev/null 2>&1
   else
     mkdir $HOME/.config > /dev/null 2>&1
   fi
 
+  yarn global add $repo/$package
+  
   mkdir $data > /dev/null 2>&1
-  cd $core > /dev/null 2>&1
-
-  yarn setup > /dev/null 2>&1
   cp -rf "$core/packages/core/bin/config/$network" "$data" > /dev/null 2>&1
-
+  
   setefile
+  
+  echo 'export PATH=$(yarn global bin):$PATH' >> $HOME/.bashrc
+  export PATH=$(yarn global bin):$PATH
+  
+  exec "$BASH"
 
 }
 
