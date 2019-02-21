@@ -73,21 +73,6 @@ main () {
       exit 1
     fi
 
-    cd $core > /dev/null 2>&1
-    git_check
-
-    if [ "$up2date" = "yes" ]; then
-      echo -e "Already up-to-date."
-      exit 1
-    fi
-
-    git pull > /dev/null 2>&1
-
-    if [ "$?" != "0" ]; then
-      echo -e "\n${red}git pull failed - check for conflicts${nc}\n"
-      exit 1
-    fi
-
     sysinfo
     update &
 
@@ -131,6 +116,7 @@ main () {
     echo -e "\n${cyan}Processes Stopped...${nc}"
     sleep 1
     echo -e "${cyan}Configs Replaced with Defaults...${nc}"
+    sleep 1
     echo -e "${green}All Done!${nc}\n"
 
   elif [[ ( "$1" = "start" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
