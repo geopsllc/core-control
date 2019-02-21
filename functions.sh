@@ -449,17 +449,8 @@ update_info () {
 
   if [ -d $core ]; then
 
-    cd $core > /dev/null 2>&1
-    git_check
+    echo -e "${cyan}${name}-core${nc} v${cyan}${corever}${nc}"
 
-    echo -e -n "${cyan}${name}-core${nc} v${cyan}${corever}${nc} hash: ${cyan}${loc}${nc} status: "
-
-    if [ "$up2date" = "yes" ]; then
-      echo -e "${green}current${nc}\n"
-    else
-      echo -e "${red}stale${nc}\n"
-    fi
-
-  fi
+fi
 
 }
