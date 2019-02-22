@@ -283,7 +283,7 @@ install_core () {
 
 update () {
 
-  $HOME/.yarn/bin/$name update > /dev/null 2>&1
+  yarn global add $repo/$package > /dev/null 2>&1
 
   local fstatus=$(pm2status "${name}-forger" | awk '{print $13}')
   local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
