@@ -448,7 +448,7 @@ update_info () {
 
   if [ -d $core ]; then
 
-    echo -e "${cyan}${name}-core${nc} v${cyan}${corever}${nc}\n"
+    echo -e "${cyan}${name}-core${nc} v${cyan}${corever}${nc} status: ${cyan}unavailable${nc}\n"
 
 fi
 
