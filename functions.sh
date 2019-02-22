@@ -278,13 +278,12 @@ install_core () {
   setefile
   
   echo 'export PATH=$(yarn global bin):$PATH' >> $HOME/.bashrc
-  export PATH=$(yarn global bin):$PATH
 
 }
 
 update () {
 
-  yarn global upgrade $repo/$package > /dev/null 2>&1
+  $HOME/.yarn/bin/$name update > /dev/null 2>&1
 
   local fstatus=$(pm2status "${name}-forger" | awk '{print $13}')
   local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
