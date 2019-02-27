@@ -65,8 +65,6 @@ setefile () {
   echo "CORE_API_PORT=$api_port" >> "$envFile" 2>&1
   echo "CORE_WEBHOOKS_HOST=0.0.0.0" >> "$envFile" 2>&1
   echo "CORE_WEBHOOKS_PORT=$wh_port" >> "$envFile" 2>&1
-  echo "CORE_GRAPHQL_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "CORE_GRAPHQL_PORT=$gql_port" >> "$envFile" 2>&1
   echo "CORE_JSONRPC_HOST=0.0.0.0" >> "$envFile" 2>&1
   echo "CORE_JSONRPC_PORT=$rpc_port" >> "$envFile" 2>&1
 
