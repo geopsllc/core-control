@@ -1,4 +1,4 @@
-# Core v2 Management Tool - Ark Devnet
+# Core v2 Management Tool - Ark Devnet (git install)
 
 ## Installation
 
