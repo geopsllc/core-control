@@ -80,7 +80,7 @@ start () {
     local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
 
     if [ "$rstatus" != "online" ]; then
-      $HOME/.yarn/bin/$name relay:start > /dev/null 2>&1
+      pm2 --name "${name}-relay" start $core/core/bin/run -- relay:run > /dev/null 2>&1
     else
       echo -e "\n${red}Process relay already running. Skipping...${nc}"
     fi
@@ -88,7 +88,7 @@ start () {
     if [ "$secrets" = "[]" ]; then
       echo -e "\n${red}Delegate secret is missing. Forger start aborted!${nc}"
     elif [ "$fstatus" != "online" ]; then
-      $HOME/.yarn/bin/$name forger:start > /dev/null 2>&1
+      pm2 --name "${name}-forger" start $core/core/bin/run -- forger:run > /dev/null 2>&1
     else
       echo -e "\n${red}Process forger already running. Skipping...${nc}"
     fi
@@ -106,7 +106,7 @@ start () {
     if [[ "$secrets" = "[]" && "$1" = "forger" ]]; then
       echo -e "\n${red}Delegate secret is missing. Forger start aborted!${nc}"
     elif [ "$pstatus" != "online" ]; then
-      $HOME/.yarn/bin/$name ${1}:start > /dev/null 2>&1
+      pm2 --name "${name}-$1" start $core/core/bin/run -- ${1}:run > /dev/null 2>&1
     else
       echo -e "\n${red}Process $1 already running. Skipping...${nc}"
     fi
