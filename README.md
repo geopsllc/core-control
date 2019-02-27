@@ -1,4 +1,4 @@
-# Core v2 Management Tool - Ark Devnet
+# Core v2 Management Tool - Ark Devnet (yarn pkg install)
 
 ## Installation
 
