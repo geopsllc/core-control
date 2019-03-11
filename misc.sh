@@ -9,7 +9,6 @@ magenta='\033[0;35m'
 cyan='\033[0;36m'
 nc='\033[0m'
 
-
 als="$(cat $HOME/.bashrc | grep ccontrol)"
 ccc="$(cat $HOME/.bashrc | grep cccomp)"
 
@@ -24,3 +23,5 @@ fi
 if [ -f "$core/core/package.json" ]; then
   corever=$(cat $core/core/package.json | jq -r '.version')
 fi
+
+npmver=$(npm view $repo/$package version)
