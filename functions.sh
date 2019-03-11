@@ -43,6 +43,16 @@ git_check () {
 
 }
 
+npm_check () {
+
+  if [ "$npmver" = "$corever" ]; then
+    up2date="yes"
+  else
+    up2date="no"
+  fi
+
+}
+
 setefile () {
 
   local envFile="$config/.env"
@@ -446,8 +456,16 @@ update_info () {
 
   if [ -d $core ]; then
 
-    echo -e "${cyan}${name}-core${nc} v${cyan}${corever}${nc} status: ${cyan}unavailable${nc}\n"
+    npm_check
 
-fi
+    echo -e -n "${cyan}${name}-core${nc} v${cyan}${corever}${nc} remote: v${cyan}${npmver}${nc} status: "
+
+    if [ "$up2date" = "yes" ]; then
+      echo -e "${green}current${nc}\n"
+    else
+      echo -e "${red}stale${nc}\n"
+    fi
+
+  fi
 
 }
