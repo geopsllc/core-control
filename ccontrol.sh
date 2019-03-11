@@ -84,6 +84,11 @@ main () {
     git pull > /dev/null 2>&1
 
     if [ "$?" != "0" ]; then
+      rm yarn.lock > /dev/null 2>&1
+      git pull > /dev/null 2>&1
+    fi
+    
+    if [ "$?" != "0" ]; then
       echo -e "\n${red}git pull failed - check for conflicts${nc}\n"
       exit 1
     fi
