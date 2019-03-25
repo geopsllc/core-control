@@ -22,6 +22,5 @@ fi
 
 if [ -f "$core/core/package.json" ]; then
   corever=$(cat $core/core/package.json | jq -r '.version')
+  npmver=$(npm view $repo/$package version)
 fi
-
-npmver=$(npm view $repo/$package version)
