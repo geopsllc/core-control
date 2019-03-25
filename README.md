@@ -43,6 +43,9 @@ If you're running a forger and/or have custom settings, you should add them agai
 
 ## Changelog
 
+### 2.3
+- updated for core 2.3
+
 ### 2.2
 - conversion for yarn package and core-cli
 - updated for core 2.2
