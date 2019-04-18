@@ -440,7 +440,7 @@ rollback () {
 
   stop all > /dev/null 2>&1
 
-  $HOME/${name}-core/packages/core/bin/run snapshot:rollback --height $1 --network $network --token $name
+  $core/packages/core/bin/run snapshot:rollback --height $1 --network $network --token $name
 
   if [ "$rstatus" = "online" ]; then
     start relay > /dev/null 2>&1
