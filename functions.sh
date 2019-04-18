@@ -18,6 +18,7 @@ wrong_arguments () {
   echo -e "| snapshot | create / restore     | Snapshot Create / Restore          |"
   echo -e "| system   | info / update        | System Info / Update               |"
   echo -e "| config   | reset                | Reset Config Files to Defaults     |"
+  echo -e "| rollback |                      | Rollback to Specified Height       |"
   echo -e " ----------------------------------------------------------------------\n"
   exit 1
 
@@ -46,11 +47,11 @@ git_check () {
 setefile () {
 
   local envFile="$config/.env"
-  
+
   if [ -f $envFile ]; then
     rm $envFile
   fi
-  
+
   touch "$envFile"
 
   echo "CORE_LOG_LEVEL=$log_level" >> "$envFile" 2>&1
@@ -80,7 +81,7 @@ start () {
     local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
 
     if [ "$rstatus" != "online" ]; then
-      pm2 --name "${name}-relay" start $core/packages/core/bin/run -- relay:run > /dev/null 2>&1
+      pm2 --name "${name}-relay" start $core/packages/core/bin/run -- relay:run --network $network --token $name > /dev/null 2>&1
     else
       echo -e "\n${red}Process relay already running. Skipping...${nc}"
     fi
@@ -88,7 +89,7 @@ start () {
     if [ "$secrets" = "[]" ]; then
       echo -e "\n${red}Delegate secret is missing. Forger start aborted!${nc}"
     elif [ "$fstatus" != "online" ]; then
-      pm2 --name "${name}-forger" start $core/packages/core/bin/run -- forger:run > /dev/null 2>&1
+      pm2 --name "${name}-forger" start $core/packages/core/bin/run -- forger:run --network $network --token $name > /dev/null 2>&1
     else
       echo -e "\n${red}Process forger already running. Skipping...${nc}"
     fi
@@ -106,7 +107,7 @@ start () {
     if [[ "$secrets" = "[]" && "$1" = "forger" ]]; then
       echo -e "\n${red}Delegate secret is missing. Forger start aborted!${nc}"
     elif [ "$pstatus" != "online" ]; then
-      pm2 --name "${name}-$1" start $core/packages/core/bin/run -- ${1}:run > /dev/null 2>&1
+      pm2 --name "${name}-$1" start $core/packages/core/bin/run -- ${1}:run --network $network --token $name > /dev/null 2>&1
     else
       echo -e "\n${red}Process $1 already running. Skipping...${nc}"
     fi
@@ -318,7 +319,7 @@ config_reset () {
 
   stop all > /dev/null 2>&1
   rm -rf $config > /dev/null 2>&1
-  cp -rf "$core/packages/core/src/config/$network" "$data" > /dev/null 2>&1 
+  cp -rf "$core/packages/core/src/config/$network" "$data" > /dev/null 2>&1
   setefile
 
 }
@@ -404,11 +405,11 @@ snapshot () {
     pg_restore -n public -O -j 8 -d ${name}_$network $HOME/snapshots/${name}_$network > /dev/null 2>&1
 
     if [ "$rstatus" = "online" ]; then
-      start relay $network > /dev/null 2>&1
+      start relay > /dev/null 2>&1
     fi
 
     if [ "$fstatus" = "online" ]; then
-      start forger $network > /dev/null 2>&1
+      start forger > /dev/null 2>&1
     fi
 
   else
@@ -429,6 +430,25 @@ selfremove () {
   rm -rf $basedir > /dev/null 2>&1
   sed -i '/ccontrol/d' $HOME/.bashrc > /dev/null 2>&1
   sed -i '/cccomp/d' $HOME/.bashrc > /dev/null 2>&1
+
+}
+
+rollback () {
+
+  local fstatus=$(pm2status "${name}-forger" | awk '{print $13}')
+  local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
+
+  stop all > /dev/null 2>&1
+
+  $HOME/${name}-core/packages/core/bin/run snapshot:rollback --height $1 --network $network --token $name
+
+  if [ "$rstatus" = "online" ]; then
+    start relay > /dev/null 2>&1
+  fi
+
+  if [ "$fstatus" = "online" ]; then
+    start forger > /dev/null 2>&1
+  fi
 
 }
 

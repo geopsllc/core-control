@@ -87,7 +87,7 @@ main () {
       rm yarn.lock > /dev/null 2>&1
       git pull > /dev/null 2>&1
     fi
-    
+
     if [ "$?" != "0" ]; then
       echo -e "\n${red}git pull failed - check for conflicts${nc}\n"
       exit 1
@@ -261,6 +261,10 @@ main () {
   elif [[ ( "$1" = "update" ) && ( "$2" = "check" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     update_info
+
+  elif [[ ( "$1" = "rollback" ) && ( ! -z "$2" ) && ( -z "$3" ) ]]; then
+
+    rollback $2
 
   else
 
