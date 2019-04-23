@@ -1,9 +1,9 @@
-# Core v2 Management Tool - Ark Devnet (yarn pkg install)
+# Core v2 Management Tool - Ark Mainnet (yarn pkg install)
 
 ## Installation
 
 ```sh
-git clone https://github.com/geopsllc/core-control -b ark-devnet
+git clone https://github.com/geopsllc/core-control
 cd core-control
 ./ccontrol.sh arg1 [arg2]
 ```
