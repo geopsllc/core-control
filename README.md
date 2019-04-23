@@ -22,6 +22,7 @@ cd core-control
 | `snapshot` | `create`/`restore` | Snapshot Create / Restore |
 | `system` | `info`/`update` | System Info / Update |
 | `config` | `reset` | Reset Config Files to Defaults |
+| `rollback` | | Rollback to Specified Height |
 
 ## General
 This is a Streamlined CLI-Based Core v2 Management Tool. 
@@ -31,6 +32,8 @@ This is a Streamlined CLI-Based Core v2 Management Tool.
 - For update you can skip the 'check' argument as it's the default.
 - For system you can skip the 'info' argument as it's the default.
 - When setting a delegate secret just paste your secret after the 'set' argument without quotes.
+- When doing a rollback just type the desired height after the 'rollback' argument.
+- Rollback will stop the running processes, do the rollback and start the processes that were online.
 - The snapshot is stored in the 'snapshots' folder in your home directory using the database name, e.g. ark_mainnet. 
 If you're using an external snapshot make sure to rename it accordingly and put it in the 'snapshots' folder.
 - Running with the 'remove' argument does not delete the 'snapshots' folder or the stored snapshot in order to allow you
@@ -42,6 +45,10 @@ If you're running a forger and/or have custom settings, you should add them agai
 - Do not run as root!
 
 ## Changelog
+
+### 2.3
+- added rollback functionality
+- updated for core 2.3
 
 ### 2.2
 - conversion for yarn package and core-cli

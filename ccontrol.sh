@@ -72,14 +72,14 @@ main () {
       echo -e "\n${red}Core not installed. Please install first.${nc}\n"
       exit 1
     fi
-    
+
     npm_check
 
     if [ "$up2date" = "yes" ]; then
       echo -e "Already up-to-date."
       exit 1
     fi
-    
+
     sysinfo
     update &
 
@@ -249,6 +249,10 @@ main () {
   elif [[ ( "$1" = "update" ) && ( "$2" = "check" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     update_info
+
+  elif [[ ( "$1" = "rollback" ) && ( ! -z "$2" ) && ( -z "$3" ) ]]; then
+
+    rollback $2
 
   else
 
