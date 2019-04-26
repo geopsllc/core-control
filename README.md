@@ -1,9 +1,9 @@
-# Core v2 Management Tool - Ark Devnet (git install)
+# Core v2 Management Tool - Ark Devnet (yarn pkg install)
 
 ## Installation
 
 ```sh
-git clone https://github.com/geopsllc/core-control -b ark-devnet-git
+git clone https://github.com/geopsllc/core-control -b ark-devnet
 cd core-control
 ./ccontrol.sh arg1 [arg2]
 ```
@@ -57,6 +57,7 @@ The end result is that your node will start syncing from 0.
 - updated for core 2.3
 
 ### 2.2
+- conversion for yarn package and core-cli
 - updated for core 2.2
 
 ### 2.1

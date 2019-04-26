@@ -9,7 +9,6 @@ magenta='\033[0;35m'
 cyan='\033[0;36m'
 nc='\033[0m'
 
-
 als="$(cat $HOME/.bashrc | grep ccontrol)"
 ccc="$(cat $HOME/.bashrc | grep cccomp)"
 aln="$(cat $HOME/.bashrc | grep $name)"
@@ -26,6 +25,7 @@ if [ -z "$ccc" ]; then
   echo "source $PWD/cccomp.bash" >> $HOME/.bashrc
 fi
 
-if [ -f "$core/packages/core/package.json" ]; then
-  corever=$(cat $core/packages/core/package.json | jq -r '.version')
+if [ -f "$core/core/package.json" ]; then
+  corever=$(cat $core/core/package.json | jq -r '.version')
+  npmver=$(npm view $repo/$package version)
 fi

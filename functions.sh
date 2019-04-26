@@ -45,6 +45,16 @@ git_check () {
 
 }
 
+npm_check () {
+
+  if [ "$npmver" = "$corever" ]; then
+    up2date="yes"
+  else
+    up2date="no"
+  fi
+
+}
+
 setefile () {
 
   local envFile="$config/.env"
@@ -82,7 +92,7 @@ start () {
     local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
 
     if [ "$rstatus" != "online" ]; then
-      pm2 --name "${name}-relay" start $core/packages/core/bin/run -- relay:run --network $network --token $name > /dev/null 2>&1
+      pm2 --name "${name}-relay" start $core/core/bin/run -- relay:run --network $network --token $name > /dev/null 2>&1
     else
       echo -e "\n${red}Process relay already running. Skipping...${nc}"
     fi
@@ -90,7 +100,7 @@ start () {
     if [ "$secrets" = "[]" ]; then
       echo -e "\n${red}Delegate secret is missing. Forger start aborted!${nc}"
     elif [ "$fstatus" != "online" ]; then
-      pm2 --name "${name}-forger" start $core/packages/core/bin/run -- forger:run --network $network --token $name > /dev/null 2>&1
+      pm2 --name "${name}-forger" start $core/core/bin/run -- forger:run --network $network --token $name > /dev/null 2>&1
     else
       echo -e "\n${red}Process forger already running. Skipping...${nc}"
     fi
@@ -108,7 +118,7 @@ start () {
     if [[ "$secrets" = "[]" && "$1" = "forger" ]]; then
       echo -e "\n${red}Delegate secret is missing. Forger start aborted!${nc}"
     elif [ "$pstatus" != "online" ]; then
-      pm2 --name "${name}-$1" start $core/packages/core/bin/run -- ${1}:run --network $network --token $name > /dev/null 2>&1
+      pm2 --name "${name}-$1" start $core/core/bin/run -- ${1}:run --network $network --token $name > /dev/null 2>&1
     else
       echo -e "\n${red}Process $1 already running. Skipping...${nc}"
     fi
@@ -264,27 +274,26 @@ install_db () {
 
 install_core () {
 
-  git clone $repo $core -b $branch > /dev/null 2>&1
-
   if [ -d $HOME/.config ]; then
     sudo chown -R $USER:$USER $HOME/.config > /dev/null 2>&1
   else
     mkdir $HOME/.config > /dev/null 2>&1
   fi
 
-  mkdir $data > /dev/null 2>&1
-  cd $core > /dev/null 2>&1
+  yarn global add $repo/$package > /dev/null 2>&1
 
-  yarn setup > /dev/null 2>&1
-  cp -rf "$core/packages/core/bin/config/$network" "$data" > /dev/null 2>&1
+  mkdir $data > /dev/null 2>&1
+  cp -rf "$core/core/bin/config/$network" "$data" > /dev/null 2>&1
 
   setefile
+
+  echo 'export PATH=$(yarn global bin):$PATH' >> $HOME/.bashrc
 
 }
 
 update () {
 
-  yarn setup > /dev/null 2>&1
+  yarn global add $repo/$package > /dev/null 2>&1
 
   local fstatus=$(pm2status "${name}-forger" | awk '{print $13}')
   local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
@@ -304,7 +313,7 @@ remove () {
   pm2 delete ${name}-forger > /dev/null 2>&1
   pm2 delete ${name}-relay > /dev/null 2>&1
   pm2 save > /dev/null 2>&1
-  rm -rf $core > /dev/null 2>&1
+  yarn global remove $repo/core > /dev/null 2>&1
   rm -rf $data > /dev/null 2>&1
   rm -rf $HOME/.cache/${name}-core > /dev/null 2>&1
   rm -rf $HOME/.local/share/${name}-core > /dev/null 2>&1
@@ -320,7 +329,7 @@ config_reset () {
 
   stop all > /dev/null 2>&1
   rm -rf $config > /dev/null 2>&1
-  cp -rf "$core/packages/core/src/config/$network" "$data" > /dev/null 2>&1
+  cp -rf "$core/core/src/config/$network" "$data" > /dev/null 2>&1
   setefile
 
 }
@@ -441,7 +450,7 @@ rollback () {
 
   stop all > /dev/null 2>&1
 
-  $core/packages/core/bin/run snapshot:rollback --height $1 --network $network --token $name
+  $core/core/bin/run snapshot:rollback --height $1 --network $network --token $name
 
   if [ "$rstatus" = "online" ]; then
     start relay > /dev/null 2>&1
@@ -468,10 +477,9 @@ update_info () {
 
   if [ -d $core ]; then
 
-    cd $core > /dev/null 2>&1
-    git_check
+    npm_check
 
-    echo -e -n "${cyan}${name}-core${nc} v${cyan}${corever}${nc} hash: ${cyan}${loc}${nc} status: "
+    echo -e -n "${cyan}${name}-core${nc} v${cyan}${corever}${nc} remote: v${cyan}${npmver}${nc} status: "
 
     if [ "$up2date" = "yes" ]; then
       echo -e "${green}current${nc}\n"
