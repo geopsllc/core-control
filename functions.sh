@@ -18,6 +18,7 @@ wrong_arguments () {
   echo -e "| snapshot | create / restore     | Snapshot Create / Restore          |"
   echo -e "| system   | info / update        | System Info / Update               |"
   echo -e "| config   | reset                | Reset Config Files to Defaults     |"
+  echo -e "| database | clear                | Clear the Database                 |"
   echo -e "| rollback |                      | Rollback to Specified Height       |"
   echo -e " ----------------------------------------------------------------------\n"
   exit 1
@@ -486,6 +487,26 @@ update_info () {
       echo -e "${red}stale${nc}\n"
     fi
 
+  fi
+
+}
+
+db_clear () {
+
+  local fstatus=$(pm2status "${name}-forger" | awk '{print $13}')
+  local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
+
+  stop all > /dev/null 2>&1
+
+  dropdb ${name}_$network > /dev/null 2>&1
+  createdb ${name}_$network > /dev/null 2>&1
+
+  if [ "$rstatus" = "online" ]; then
+    start relay > /dev/null 2>&1
+  fi
+
+  if [ "$fstatus" = "online" ]; then
+    start forger > /dev/null 2>&1
   fi
 
 }
