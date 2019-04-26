@@ -22,6 +22,7 @@ cd core-control
 | `snapshot` | `create`/`restore` | Snapshot Create / Restore |
 | `system` | `info`/`update` | System Info / Update |
 | `config` | `reset` | Reset Config Files to Defaults |
+| `database` | `clear` | Clear the Database |
 | `rollback` | | Rollback to Specified Height |
 
 ## General
@@ -42,12 +43,15 @@ to take a snapshot, do remove/install and restore it afterwards.
 using: ccontrol arg1 [arg2]. It also has autocomplete functionality for all possible arguments.
 - Using the 'config reset' arguments will stop the core processes, delete your existing configs and replace them with the defaults.
 If you're running a forger and/or have custom settings, you should add them again.
+- Using the 'database clear' arguments will stop the core processes, wipe the database clean, and start the processes that were online before.
+The end result is that your node will start syncing from 0.
 - On first run the tool exposes the core-cli with the project name, e.g. ark for project Ark. It will be accessible after logout.
 - Do not run as root!
 
 ## Changelog
 
 ### 2.3
+- added database clear functionality
 - expose the core-cli as the project name
 - added rollback functionality
 - updated for core 2.3
