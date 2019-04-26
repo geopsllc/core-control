@@ -266,6 +266,13 @@ main () {
 
     rollback $2
 
+  elif [[ ( "$1" = "database" ) && ( "$2" = "clear" ) && ( -z "$3" ) ]]; then
+
+    db_clear
+
+    echo -e "\n${green}All Done!${nc}\n"
+
+
   else
 
     wrong_arguments
