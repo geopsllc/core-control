@@ -1,9 +1,10 @@
-# Core v2 Management Tool - Qredit Mainnet v2.3
+
+# Core v2 Management Tool - Qredit Mainnet
 
 ## Installation
 
 ```sh
-git clone https://github.com/geopsllc/core-control -b qredit-mainnet-2.3
+git clone https://github.com/qredit/core-control
 cd core-control
 ./ccontrol.sh arg1 [arg2]
 ```
@@ -22,19 +23,14 @@ cd core-control
 | `snapshot` | `create`/`restore` | Snapshot Create / Restore |
 | `system` | `info`/`update` | System Info / Update |
 | `config` | `reset` | Reset Config Files to Defaults |
-| `database` | `clear` | Clear the Database |
-| `rollback` | | Rollback to Specified Height |
 
 ## General
-This is a Streamlined CLI-Based Core v2 Management Tool. 
 - Installs fail2ban for ssh, and ufw allowing only port 22(ssh) and the cores ports.
 - For start/restart/stop/status/logs you can skip the 'all' argument as it's the default.
 - For install/remove you can skip the 'core' argument as it's the default.
 - For update you can skip the 'check' argument as it's the default.
 - For system you can skip the 'info' argument as it's the default.
-- When setting a delegate secret just type your secret after the 'set' argument without quotes.
-- When doing a rollback just type the desired height after the 'rollback' argument.
-- Rollback will stop the running processes, do the rollback and start the processes that were online.
+- When setting a delegate secret just paste your secret after the 'set' argument without quotes.
 - The snapshot is stored in the 'snapshots' folder in your home directory using the database name, e.g. ark_mainnet. 
 If you're using an external snapshot make sure to rename it accordingly and put it in the 'snapshots' folder.
 - Running with the 'remove' argument does not delete the 'snapshots' folder or the stored snapshot in order to allow you
@@ -43,21 +39,9 @@ to take a snapshot, do remove/install and restore it afterwards.
 using: ccontrol arg1 [arg2]. It also has autocomplete functionality for all possible arguments.
 - Using the 'config reset' arguments will stop the core processes, delete your existing configs and replace them with the defaults.
 If you're running a forger and/or have custom settings, you should add them again.
-- Using the 'database clear' arguments will stop the core processes, wipe the database clean, and start the processes that were online before.
-The end result is that your node will start syncing from 0.
-- On first run the tool exposes the core-cli with the project name, e.g. ark for project Ark. It will be accessible after logout.
 - Do not run as root!
 
 ## Changelog
-
-### 2.3
-- added database clear functionality
-- expose the core-cli as the project name
-- added rollback functionality
-- updated for core 2.3
-
-### 2.2
-- updated for core 2.2
 
 ### 2.1
 - made 'update core' a lot smarter

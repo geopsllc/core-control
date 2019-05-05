@@ -84,11 +84,6 @@ main () {
     git pull > /dev/null 2>&1
 
     if [ "$?" != "0" ]; then
-      rm yarn.lock > /dev/null 2>&1
-      git pull > /dev/null 2>&1
-    fi
-
-    if [ "$?" != "0" ]; then
       echo -e "\n${red}git pull failed - check for conflicts${nc}\n"
       exit 1
     fi
@@ -261,17 +256,6 @@ main () {
   elif [[ ( "$1" = "update" ) && ( "$2" = "check" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     update_info
-
-  elif [[ ( "$1" = "rollback" ) && ( ! -z "$2" ) && ( -z "$3" ) ]]; then
-
-    rollback $2
-
-  elif [[ ( "$1" = "database" ) && ( "$2" = "clear" ) && ( -z "$3" ) ]]; then
-
-    db_clear
-
-    echo -e "\n${green}All Done!${nc}\n"
-
 
   else
 
