@@ -12,9 +12,14 @@ nc='\033[0m'
 
 als="$(cat $HOME/.bashrc | grep ccontrol)"
 ccc="$(cat $HOME/.bashrc | grep cccomp)"
+aln="$(cat $HOME/.bashrc | grep $name)"
 
 if [ -z "$als" ]; then
   echo "alias ccontrol=$PWD/ccontrol.sh" >> $HOME/.bashrc
+fi
+
+if [ -z "$aln" ]; then
+  echo "alias ${name}=$core/packages/core/bin/run" >> $HOME/.bashrc
 fi
 
 if [ -z "$ccc" ]; then
