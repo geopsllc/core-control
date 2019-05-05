@@ -329,7 +329,7 @@ config_reset () {
 
   stop all > /dev/null 2>&1
   rm -rf $config > /dev/null 2>&1
-  cp -rf "$core/core/src/config/$network" "$data" > /dev/null 2>&1
+  cp -rf "$core/core/bin/config/$network" "$data" > /dev/null 2>&1
   setefile
 
 }
