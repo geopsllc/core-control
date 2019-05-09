@@ -77,6 +77,8 @@ setefile () {
   echo "CORE_API_PORT=$api_port" >> "$envFile" 2>&1
   echo "CORE_WEBHOOKS_HOST=0.0.0.0" >> "$envFile" 2>&1
   echo "CORE_WEBHOOKS_PORT=$wh_port" >> "$envFile" 2>&1
+  echo "CORE_WALLET_API_HOST=0.0.0.0" >> "$envFile" 2>&1
+  echo "CORE_WALLET_API_PORT=$wapi_port" >> "$envFile" 2>&1
   echo "CORE_JSONRPC_HOST=0.0.0.0" >> "$envFile" 2>&1
   echo "CORE_JSONRPC_PORT=$rpc_port" >> "$envFile" 2>&1
 
@@ -257,6 +259,7 @@ secure () {
   sudo ufw allow 22/tcp > /dev/null 2>&1
   sudo ufw allow ${p2p_port}/tcp > /dev/null 2>&1
   sudo ufw allow ${api_port}/tcp > /dev/null 2>&1
+  sudo ufw allow ${wapi_port}/tcp > /dev/null 2>&1
   sudo ufw --force enable > /dev/null 2>&1
   sudo sed -i "/^PermitRootLogin/c PermitRootLogin prohibit-password" /etc/ssh/sshd_config > /dev/null 2>&1
   sudo systemctl restart sshd.service > /dev/null 2>&1
@@ -322,6 +325,7 @@ remove () {
   dropdb ${name}_$network > /dev/null 2>&1
   sudo ufw delete allow $p2p_port/tcp > /dev/null 2>&1
   sudo ufw delete allow $api_port/tcp > /dev/null 2>&1
+  sudo ufw delete allow $wapi_port/tcp > /dev/null 2>&1
 
 }
 
