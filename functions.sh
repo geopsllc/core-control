@@ -79,8 +79,8 @@ setefile () {
   echo "CORE_WEBHOOKS_PORT=$wh_port" >> "$envFile" 2>&1
   echo "CORE_WALLET_API_HOST=0.0.0.0" >> "$envFile" 2>&1
   echo "CORE_WALLET_API_PORT=$wapi_port" >> "$envFile" 2>&1
-  echo "CORE_JSONRPC_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "CORE_JSONRPC_PORT=$rpc_port" >> "$envFile" 2>&1
+  echo "CORE_EXCHANGE_JSON_RPC_HOST=0.0.0.0" >> "$envFile" 2>&1
+  echo "CORE_EXCHANGE_JSON_RPC_PORT=$rpc_port" >> "$envFile" 2>&1
 
 }
 
