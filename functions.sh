@@ -66,6 +66,7 @@ setefile () {
   touch "$envFile"
 
   echo "CORE_LOG_LEVEL=$log_level" >> "$envFile" 2>&1
+  echo "CORE_LOG_LEVEL_FILE=$log_level" >> "$envFile" 2>&1
   echo "CORE_DB_HOST=localhost" >> "$envFile" 2>&1
   echo "CORE_DB_PORT=5432" >> "$envFile" 2>&1
   echo "CORE_DB_USERNAME=$USER" >> "$envFile" 2>&1
