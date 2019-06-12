@@ -2,11 +2,13 @@
 
 basedir="$(dirname "$(cat $HOME/.bashrc | grep ccontrol | awk -F"=" '{print $2}')")"
 execdir="$(dirname "$0")"
+
 if [[ "$basedir" != "." && "$execdir" != "." ]]; then
   cd $basedir
 elif [[ "$basedir" = "." && "$execdir" != "." ]]; then
   cd $PWD/$execdir
 fi
+
 basedir="$PWD"
 
 . "project.conf"
