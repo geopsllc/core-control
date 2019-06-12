@@ -1,4 +1,4 @@
-# Core v2 Management Tool - Ark Mainnet (yarn pkg install)
+# Core v2 Management Tool - Ark Mainnet
 
 ## Installation
 
