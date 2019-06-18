@@ -50,6 +50,9 @@ The end result is that your node will start syncing from 0.
 
 ## Changelog
 
+### 2.5
+- updated for core 2.5
+
 ### 2.4
 - fixed a bug in config reset
 - added log level file
