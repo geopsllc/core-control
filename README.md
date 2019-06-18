@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-git clone https://github.com/Qredit/core-control
+git clone https://github.com/Qredit/core-control -b 2.4
 cd core-control
 ./ccontrol.sh arg1 [arg2]
 ```
