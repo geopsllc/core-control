@@ -50,6 +50,13 @@ The end result is that your node will start syncing from 0.
 
 ## Changelog
 
+### 2.4
+- fixed a bug in config reset
+- added log level file
+- renamed json rpc
+- added wallet api
+- updated for core 2.4
+
 ### 2.3
 - added database clear functionality
 - expose the core-cli as the project name
