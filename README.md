@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-git clone https://github.com/geopsllc/core-control -b qredit-mainnet
+git clone https://github.com/geopsllc/core-control -b qredit-2.5
 cd core-control
 ./ccontrol.sh arg1 [arg2]
 ```
