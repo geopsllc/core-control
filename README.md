@@ -1,4 +1,4 @@
-# Core v2 Management Tool - Ark Mainnet
+# Core v2 Management Tool - Ark Devnet
 
 ## Installation
 
@@ -49,6 +49,9 @@ The end result is that your node will start syncing from 0.
 - Do not run as root!
 
 ## Changelog
+
+### 2.5
+- updated for core 2.5
 
 ### 2.4
 - fixed a bug in config reset
