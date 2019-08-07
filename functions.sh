@@ -3,24 +3,25 @@
 wrong_arguments () {
 
   echo -e "\nMissing: arg1 [arg2]\n"
-  echo -e " ----------------------------------------------------------------------"
-  echo -e "| arg1     | arg2                 | Description                        |"
-  echo -e " ----------------------------------------------------------------------"
-  echo -e "| install  | core                 | Install Core                       |"
-  echo -e "| update   | core / self / check  | Update Core / Core-Control / Check |"
-  echo -e "| remove   | core / self          | Remove Core / Core-Control         |"
-  echo -e "| secret   | set / clear          | Delegate Secret Set / Clear        |"
-  echo -e "| start    | relay / forger / all | Start Core Services                |"
-  echo -e "| restart  | relay / forger / all | Restart Core Services              |"
-  echo -e "| stop     | relay / forger / all | Stop Core Services                 |"
-  echo -e "| status   | relay / forger / all | Show Core Services Status          |"
-  echo -e "| logs     | relay / forger / all | Show Core Logs                     |"
-  echo -e "| snapshot | create / restore     | Snapshot Create / Restore          |"
-  echo -e "| system   | info / update        | System Info / Update               |"
-  echo -e "| config   | reset                | Reset Config Files to Defaults     |"
-  echo -e "| database | clear                | Clear the Database                 |"
-  echo -e "| rollback |                      | Rollback to Specified Height       |"
-  echo -e " ----------------------------------------------------------------------\n"
+  echo -e " ------------------------------------------------------------------------------"
+  echo -e "| arg1     | arg2                         | Description                        |"
+  echo -e " ------------------------------------------------------------------------------"
+  echo -e "| install  | core                         | Install Core                       |"
+  echo -e "| update   | core / self / check          | Update Core / Core-Control / Check |"
+  echo -e "| remove   | core / self                  | Remove Core / Core-Control         |"
+  echo -e "| secret   | set / clear                  | Delegate Secret Set / Clear        |"
+  echo -e "| start    | relay / forger / all         | Start Core Services                |"
+  echo -e "| restart  | relay / forger / all         | Restart Core Services              |"
+  echo -e "| stop     | relay / forger / all         | Stop Core Services                 |"
+  echo -e "| status   | relay / forger / all         | Show Core Services Status          |"
+  echo -e "| logs     | relay / forger / all         | Show Core Logs                     |"
+  echo -e "| snapshot | create / restore             | Snapshot Create / Restore          |"
+  echo -e "| system   | info / update                | System Info / Update               |"
+  echo -e "| config   | reset                        | Reset Config Files to Defaults     |"
+  echo -e "| database | clear                        | Clear the Database                 |"
+  echo -e "| rollback |                              | Rollback to Specified Height       |"
+  echo -e "| plugin   | list / add / remove / update | Manage Core Plugins                |"
+  echo -e " ------------------------------------------------------------------------------\n"
   exit 1
 
 }
@@ -514,5 +515,126 @@ db_clear () {
   if [ "$fstatus" = "online" ]; then
     start forger > /dev/null 2>&1
   fi
+
+}
+
+plugin_list () {
+
+  echo -e "\nAvailable plugins:\n"
+
+  for plugin in $(ls plugins); do
+
+    . "plugins/$plugin"
+
+    if [ -z "$(cat $config/plugins.js | grep $plugin)" ]; then
+      echo -e "${cyan}$plugin${nc} - ${red}inactive${nc} [$desc]"
+    else
+      echo -e "${cyan}$plugin${nc} - ${green}active${nc} [$desc]"
+    fi
+
+  done
+
+  echo
+
+}
+
+plugin_manage () {
+
+    if [ ! -f plugins/$2 ]; then
+      echo -e "\n${red}Plugin not found.${nc}\n"
+      exit 1
+    else
+      . "plugins/$2"
+    fi
+
+    added="$(cat $config/plugins.js | grep $2)"
+    lastline='};'
+    blockend='},'
+    stab='    '
+
+
+    if [[ "$1" = "add" && -z "$added" ]]; then
+
+      alen=${#options[@]}
+      insert="$stab\"$npmrepo\/$2\": {\n"
+
+      for i in ${!options[@]}; do
+        insert="$insert\t${options[$i]}"
+        comp=$((i+1))
+        if [ "$comp" -lt "$alen" ]; then
+          insert="$insert,\n"
+        else
+          insert="$insert\n"
+        fi
+      done
+
+      insert="$insert$stab$blockend\n"
+      sed -i "s/$lastline/$insert$lastline/" $config/plugins.js
+      yarn global add $npmrepo/$2 > /dev/null 2>&1 &
+
+      echo -ne "\n${cyan}Installing $2...  ${red}"
+
+      while [ -d /proc/$! ]; do
+        printf "\b${sp:i++%${#sp}:1}" && sleep .1
+      done
+
+      echo -e "\b${green}Done${nc}"
+
+      echo -e "\n${green}Plugin $2 installed with default settings.${nc}\n"
+      echo -e "${red}Restart Core for the changes to take effect.${nc}\n"
+      echo -e "${cyan}For more information and custom configuration${nc}"
+      echo -e "${cyan}visit $gitrepo/$2${nc}\n"
+
+    elif [[ "$1" = "add" && ! -z "$added" ]]; then
+
+      echo -e "\n${red}Plugin already installed.${nc}\n"
+
+
+    elif [[ "$1" = "remove" && ! -z "$added" ]]; then
+
+      sed -i "/$2/,/$blockend/d" $config/plugins.js
+
+      yarn global remove $npmrepo/$2  > /dev/null 2>&1 &
+
+      echo -ne "\n${cyan}Removing $2...  ${red}"
+
+      while [ -d /proc/$! ]; do
+        printf "\b${sp:i++%${#sp}:1}" && sleep .1
+      done
+
+      echo -e "\b${green}Done${nc}\n"
+
+      echo -e "${red}Restart Core for the changes to take effect.${nc}\n"
+
+    elif [[ "$1" = "remove" && -z "$added" ]]; then
+
+      echo -e "\n${red}Plugin not installed.${nc}\n"
+
+    elif [[ "$1" = "update" && ! -z "$added" ]]; then
+
+      rem=$(npm view $npmrepo/$2 version)
+      loc=$(cat $HOME/.config/yarn/global/node_modules/$npmrepo/$2/package.json | jq -r '.version')
+
+      if [ "$rem" = "$loc" ]; then
+        echo -e "Already up-to-date."
+        exit 1
+      fi
+
+      yarn global add $npmrepo/$2 > /dev/null 2>&1 &
+
+      echo -ne "\n${cyan}Installing $2...  ${red}"
+
+      while [ -d /proc/$! ]; do
+        printf "\b${sp:i++%${#sp}:1}" && sleep .1
+      done
+
+      echo -e "\b${green}Done${nc}"
+      echo -e "\n${red}Restart Core for the changes to take effect.${nc}\n"
+
+    else
+
+      echo -e "\n${red}Plugin not installed.${nc}\n"
+
+    fi
 
 }
