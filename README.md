@@ -24,6 +24,7 @@ cd core-control
 | `config` | `reset` | Reset Config Files to Defaults |
 | `database` | `clear` | Clear the Database |
 | `rollback` | | Rollback to Specified Height |
+| `plugin` | `list`/`add`/`remove`/`update` | Manage Core Plugins |
 
 ## General
 This is a Streamlined CLI-Based Core v2 Management Tool. 
@@ -32,6 +33,7 @@ This is a Streamlined CLI-Based Core v2 Management Tool.
 - For install/remove you can skip the 'core' argument as it's the default.
 - For update you can skip the 'check' argument as it's the default.
 - For system you can skip the 'info' argument as it's the default.
+- For plugin you can skip the 'list' argument as it's the default.
 - When setting a delegate secret just type your secret after the 'set' argument without quotes.
 - When doing a rollback just type the desired height after the 'rollback' argument.
 - Rollback will stop the running processes, do the rollback and start the processes that were online.
@@ -45,10 +47,14 @@ using: ccontrol arg1 [arg2]. It also has autocomplete functionality for all poss
 If you're running a forger and/or have custom settings, you should add them again.
 - Using the 'database clear' arguments will stop the core processes, wipe the database clean, and start the processes that were online before.
 The end result is that your node will start syncing from 0.
+- For plugin management just type the name of the plugin after 'plugin add/remove/update' as it appears in the list.
 - On first run the tool exposes the core-cli with the project name, e.g. ark for project Ark. It will be accessible after logout.
 - Do not run as root!
 
 ## Changelog
+
+### 2.5.1
+- added plugin manager
 
 ### 2.5
 - updated for core 2.5

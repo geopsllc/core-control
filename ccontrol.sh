@@ -272,6 +272,25 @@ main () {
 
     echo -e "\n${green}All Done!${nc}\n"
 
+  elif [[ ( "$1" = "plugin" ) && ( ( ( "$2" = "add" || "$2" = "remove" || "$2" = "update" ) && ! -z "$3" && -z "$4" ) || ( ( "$2" = "list" || -z "$2" ) && -z "$3" ) ) ]]; then
+
+    if [[ ! -d $data || ! -d $core ]]; then
+      echo -e "\n${red}Core not installed. Please install first.${nc}\n"
+      exit 1
+    elif [[ ! -d plugins || -z "$(ls plugins)" ]]; then
+      echo -e "\n${red}No plugins found.${nc}\n"
+      exit 1
+    fi
+
+    if [ -z "$2" ]; then
+      set -- "$2" "list"
+    fi
+
+    if [ "$2" = "list" ]; then
+      plugin_list
+    else
+      plugin_manage $2 $3
+    fi
 
   else
 
