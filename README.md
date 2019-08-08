@@ -37,10 +37,6 @@ This is a Streamlined CLI-Based Core v2 Management Tool.
 - When setting a delegate secret just type your secret after the 'set' argument without quotes.
 - When doing a rollback just type the desired height after the 'rollback' argument.
 - Rollback will stop the running processes, do the rollback and start the processes that were online.
-- The snapshot is stored in the 'snapshots' folder in your home directory using the database name, e.g. ark_mainnet. 
-If you're using an external snapshot make sure to rename it accordingly and put it in the 'snapshots' folder.
-- Running with the 'remove' argument does not delete the 'snapshots' folder or the stored snapshot in order to allow you
-to take a snapshot, do remove/install and restore it afterwards.
 - The script adds an alias named 'ccontrol' on first run. On your next shell login you'll be able to call the script from anywhere
 using: ccontrol arg1 [arg2]. It also has autocomplete functionality for all possible arguments.
 - Using the 'config reset' arguments will stop the core processes, delete your existing configs and replace them with the defaults.
@@ -55,6 +51,7 @@ The end result is that your node will start syncing from 0.
 
 ### 2.5.1
 - added plugin manager
+- snapshot now uses the core-snapshot interface
 
 ### 2.5
 - updated for core 2.5

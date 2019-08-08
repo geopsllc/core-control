@@ -232,21 +232,15 @@ main () {
       exit 1
     fi
 
-    if [[ "$2" = "restore" && ! -f $HOME/snapshots/${name}_$network ]]; then
-      echo -e "\n${red}File $HOME/snapshots/${name}_$network Not Found!${nc}\n"
+    if [[ "$2" = "restore" && ! -d "$HOME/.local/share/$name-core/$network/snapshots" ]]; then
+      echo -e "\n${red}No Snapshot Found!${nc}\n"
+      exit 1
+    elif [[ "$2" = "restore" && -z "$(ls $HOME/.local/share/$name-core/$network/snapshots)" ]]; then
+      echo -e "\n${red}No Snapshot Found!${nc}\n"
       exit 1
     fi
 
-    sysinfo
-    snapshot $2 &
-
-    echo -ne "${cyan}Processing Snapshot...  ${red}"
-
-    while [ -d /proc/$! ]; do
-      printf "\b${sp:i++%${#sp}:1}" && sleep .1
-    done
-
-    echo -e "\b${green}Done${nc}\n"
+    snapshot $2
 
   elif [[ ( "$1" = "update" ) && ( "$2" = "self" ) && ( -z "$3" ) ]]; then
 
