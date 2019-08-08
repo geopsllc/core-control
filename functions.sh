@@ -419,7 +419,8 @@ snapshot () {
 
     dropdb ${name}_$network > /dev/null 2>&1
     createdb ${name}_$network > /dev/null 2>&1
-    pg_restore -n public -O -j 8 -d ${name}_$network $HOME/snapshots/${name}_$network > /dev/null 2>&1
+
+    $core/core/bin/run snapshot:restore --network $network --token $name
 
     if [ "$rstatus" = "online" ]; then
       start relay > /dev/null 2>&1
@@ -431,11 +432,7 @@ snapshot () {
 
   else
 
-    if [ ! -d $HOME/snapshots ]; then
-      mkdir $HOME/snapshots
-    fi
-
-    pg_dump -Fc ${name}_$network > $HOME/snapshots/${name}_$network
+    $core/core/bin/run snapshot:dump --network $network --token $name
 
   fi
 
