@@ -2,4 +2,4 @@ desc='Round Monitor for Ark-powered blockchains'
 npmrepo='@alessiodf'
 gitrepo='https://github.com/alessiodf'
 options[0]='enabled: true'
-options[1]='delegate: \"del_name\"'
+options[1]="restartCommand: \'\/bin\/bash -ci \"ccontrol restart forger ; ccontrol restart relay\"\'"

@@ -562,6 +562,8 @@ plugin_manage () {
 
       mkdir $core/node_modules/$npmrepo > /dev/null 2>&1
       git clone $gitrepo/$2 $core/node_modules/$npmrepo/$2 > /dev/null 2>&1
+      cd $core/node_modules/$npmrepo/$2
+      yarn install > /dev/null 2>&1
 
       echo -e "\n${green}Plugin $2 installed with default settings.${nc}\n"
       echo -e "${red}Restart Core for the changes to take effect.${nc}\n"
