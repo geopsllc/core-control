@@ -597,9 +597,11 @@ plugin_manage () {
         exit 1
       fi
 
-      git pull
+      git pull > /dev/null 2>&1
+      yarn install > /dev/null 2>&1
 
-      echo -e "\n${red}Restart Core for the changes to take effect.${nc}\n"
+      echo -e "\n${green}Plugin $2 updated successfully.${nc}\n"
+      echo -e "${red}Restart Core for the changes to take effect.${nc}\n"
 
     else
 
