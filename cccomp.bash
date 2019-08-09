@@ -24,8 +24,11 @@ ccontrol_completions () {
       "secret")
         COMPREPLY=( $(compgen -W "set clear" -- $cur) )
         ;;
-      "start"|"restart"|"stop"|"status"|"logs")
+      "start"|"stop"|"status"|"logs")
         COMPREPLY=( $(compgen -W "relay forger all" -- $cur) )
+        ;;
+      "restart")
+        COMPREPLY=( $(compgen -W "relay forger all safe" -- $cur) )
         ;;
       "snapshot")
         COMPREPLY=( $(compgen -W "create restore" -- $cur) )

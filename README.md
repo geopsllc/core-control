@@ -15,7 +15,7 @@ cd core-control
 | `remove` | `core`/`self` | Remove Core / Core-Control |
 | `secret` | `set`/`clear` | Delegate Secret Set / Clear |
 | `start` | `relay`/`forger`/`all` | Start Core Services |
-| `restart` | `relay`/`forger`/`all` | Restart Core Services |
+| `restart` | `relay`/`forger`/`all`/`safe` | Restart Core Services |
 | `stop` | `relay`/`forger`/`all` | Stop Core Services |
 | `status` | `relay`/`forger`/`all` | Show Core Services Status |
 | `logs` | `relay`/`forger`/`all` | Show Core Logs |
@@ -34,6 +34,8 @@ This is a Streamlined CLI-Based Core v2 Management Tool.
 - For update you can skip the 'check' argument as it's the default.
 - For system you can skip the 'info' argument as it's the default.
 - For plugin you can skip the 'list' argument as it's the default.
+- Using the 'restart safe' arguments requires the round-monitor core plugin and restarts the core services when safe to do so in 
+order to avoid missing a block.
 - When setting a delegate secret just type your secret after the 'set' argument without quotes.
 - When doing a rollback just type the desired height after the 'rollback' argument.
 - Rollback will stop the running processes, do the rollback and start the processes that were online.
@@ -50,6 +52,7 @@ The end result is that your node will start syncing from 0.
 ## Changelog
 
 ### 2.5.1
+- added restart safe option
 - added plugin manager
 - snapshot now uses the core-snapshot interface
 
