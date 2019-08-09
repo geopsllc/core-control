@@ -11,7 +11,7 @@ wrong_arguments () {
   echo -e "| remove   | core / self                  | Remove Core / Core-Control         |"
   echo -e "| secret   | set / clear                  | Delegate Secret Set / Clear        |"
   echo -e "| start    | relay / forger / all         | Start Core Services                |"
-  echo -e "| restart  | relay / forger / all         | Restart Core Services              |"
+  echo -e "| restart  | relay / forger / all / safe  | Restart Core Services              |"
   echo -e "| stop     | relay / forger / all         | Stop Core Services                 |"
   echo -e "| status   | relay / forger / all         | Show Core Services Status          |"
   echo -e "| logs     | relay / forger / all         | Show Core Logs                     |"
@@ -156,6 +156,23 @@ restart () {
       pm2 restart ${name}-forger > /dev/null 2>&1
     else
       echo -e "\n${red}Process forger not running. Skipping...${nc}"
+    fi
+
+  elif [ "$1" = "safe" ]; then
+
+    local api=$(curl -Is http://127.0.0.1:5001)
+    local fstatus=$(pm2status "${name}-forger" | awk '{print $13}')
+    local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
+
+    if [[ "$rstatus" != "online" || "$fstatus" != "online" ]]; then
+      echo -e "\n${red}Core processes not online!${nc}\n"
+      exit 1
+    elif [ -z "$api" ]; then
+      echo -e "\n${red}Plugin round-monitor not active!${nc}\n"
+      exit 1
+    else
+      curl -X POST http://127.0.0.1:5001/restart > /dev/null 2>&1
+      echo -e "\n${green}Restart requested. Check logs to monitor progress.${nc}"
     fi
 
   else

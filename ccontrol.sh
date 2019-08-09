@@ -141,7 +141,7 @@ main () {
 
     echo -e "\n${green}All Done!${nc}\n"
 
-  elif [[ ( "$1" = "restart" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
+  elif [[ ( "$1" = "restart" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || "$2" = "safe" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\n${red}Core not installed. Please install first.${nc}\n"
