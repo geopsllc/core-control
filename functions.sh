@@ -3,24 +3,25 @@
 wrong_arguments () {
 
   echo -e "\nMissing: arg1 [arg2]\n"
-  echo -e " ----------------------------------------------------------------------"
-  echo -e "| arg1     | arg2                 | Description                        |"
-  echo -e " ----------------------------------------------------------------------"
-  echo -e "| install  | core                 | Install Core                       |"
-  echo -e "| update   | core / self / check  | Update Core / Core-Control / Check |"
-  echo -e "| remove   | core / self          | Remove Core / Core-Control         |"
-  echo -e "| secret   | set / clear          | Delegate Secret Set / Clear        |"
-  echo -e "| start    | relay / forger / all | Start Core Services                |"
-  echo -e "| restart  | relay / forger / all | Restart Core Services              |"
-  echo -e "| stop     | relay / forger / all | Stop Core Services                 |"
-  echo -e "| status   | relay / forger / all | Show Core Services Status          |"
-  echo -e "| logs     | relay / forger / all | Show Core Logs                     |"
-  echo -e "| snapshot | create / restore     | Snapshot Create / Restore          |"
-  echo -e "| system   | info / update        | System Info / Update               |"
-  echo -e "| config   | reset                | Reset Config Files to Defaults     |"
-  echo -e "| database | clear                | Clear the Database                 |"
-  echo -e "| rollback |                      | Rollback to Specified Height       |"
-  echo -e " ----------------------------------------------------------------------\n"
+  echo -e " ------------------------------------------------------------------------------"
+  echo -e "| arg1     | arg2                         | Description                        |"
+  echo -e " ------------------------------------------------------------------------------"
+  echo -e "| install  | core                         | Install Core                       |"
+  echo -e "| update   | core / self / check          | Update Core / Core-Control / Check |"
+  echo -e "| remove   | core / self                  | Remove Core / Core-Control         |"
+  echo -e "| secret   | set / clear                  | Delegate Secret Set / Clear        |"
+  echo -e "| start    | relay / forger / all         | Start Core Services                |"
+  echo -e "| restart  | relay / forger / all / safe  | Restart Core Services              |"
+  echo -e "| stop     | relay / forger / all         | Stop Core Services                 |"
+  echo -e "| status   | relay / forger / all         | Show Core Services Status          |"
+  echo -e "| logs     | relay / forger / all         | Show Core Logs                     |"
+  echo -e "| snapshot | create / restore             | Snapshot Create / Restore          |"
+  echo -e "| system   | info / update                | System Info / Update               |"
+  echo -e "| config   | reset                        | Reset Config Files to Defaults     |"
+  echo -e "| database | clear                        | Clear the Database                 |"
+  echo -e "| rollback |                              | Rollback to Specified Height       |"
+  echo -e "| plugin   | list / add / remove / update | Manage Core Plugins                |"
+  echo -e " ------------------------------------------------------------------------------\n"
   exit 1
 
 }
@@ -145,6 +146,23 @@ restart () {
       pm2 restart ${name}-forger > /dev/null 2>&1
     else
       echo -e "\n${red}Process forger not running. Skipping...${nc}"
+    fi
+
+  elif [ "$1" = "safe" ]; then
+
+    local api=$(curl -Is http://127.0.0.1:5001)
+    local fstatus=$(pm2status "${name}-forger" | awk '{print $13}')
+    local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
+
+    if [[ "$rstatus" != "online" || "$fstatus" != "online" ]]; then
+      echo -e "\n${red}Core processes not online!${nc}\n"
+      exit 1
+    elif [ -z "$api" ]; then
+      echo -e "\n${red}Plugin round-monitor not active!${nc}\n"
+      exit 1
+    else
+      curl -X POST http://127.0.0.1:5001/restart > /dev/null 2>&1
+      echo -e "\n${green}Restart requested. Check logs to monitor progress.${nc}"
     fi
 
   else
@@ -291,16 +309,24 @@ update () {
 
   yarn setup > /dev/null 2>&1
 
+  local api=$(curl -Is http://127.0.0.1:5001)
+  local added="$(cat $config/plugins.js | grep round-monitor)"
   local fstatus=$(pm2status "${name}-forger" | awk '{print $13}')
   local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
 
-  if [ "$rstatus" = "online" ]; then
-    pm2 restart ${name}-relay > /dev/null 2>&1
-  fi
+  if [[ "$rstatus" = "online" && "$fstatus" = "online" && ! -z "$api" && ! -z "added" ]]; then
 
-  if [ "$fstatus" = "online" ]; then
-    pm2 restart ${name}-forger > /dev/null 2>&1
-  fi
+    curl -X POST http://127.0.0.1:5001/restart > /dev/null 2>&1
+
+  else
+
+    if [ "$rstatus" = "online" ]; then
+      pm2 restart ${name}-relay > /dev/null 2>&1
+    fi
+
+    if [ "$fstatus" = "online" ]; then
+      pm2 restart ${name}-forger > /dev/null 2>&1
+    fi
 
 }
 
@@ -409,7 +435,8 @@ snapshot () {
 
     dropdb ${name}_$network > /dev/null 2>&1
     createdb ${name}_$network > /dev/null 2>&1
-    pg_restore -n public -O -j 8 -d ${name}_$network $HOME/snapshots/${name}_$network > /dev/null 2>&1
+
+    $core/packages/core/bin/run snapshot:restore --network $network --token $name
 
     if [ "$rstatus" = "online" ]; then
       start relay > /dev/null 2>&1
@@ -421,11 +448,7 @@ snapshot () {
 
   else
 
-    if [ ! -d $HOME/snapshots ]; then
-      mkdir $HOME/snapshots
-    fi
-
-    pg_dump -Fc ${name}_$network > $HOME/snapshots/${name}_$network
+    $core/packages/core/bin/run snapshot:dump --network $network --token $name
 
   fi
 
@@ -506,5 +529,109 @@ db_clear () {
   if [ "$fstatus" = "online" ]; then
     start forger > /dev/null 2>&1
   fi
+
+}
+
+plugin_list () {
+
+  echo -e "\nAvailable plugins:\n"
+
+  for plugin in $(ls plugins); do
+
+    . "plugins/$plugin"
+
+    if [ -z "$(cat $config/plugins.js | grep $plugin)" ]; then
+      echo -e "${cyan}$plugin${nc} - ${red}inactive${nc} [$desc]"
+    else
+      echo -e "${cyan}$plugin${nc} - ${green}active${nc} [$desc]"
+    fi
+
+  done
+
+  echo
+
+}
+
+plugin_manage () {
+
+    if [ ! -f plugins/$2 ]; then
+      echo -e "\n${red}Plugin not found.${nc}\n"
+      exit 1
+    else
+      . "plugins/$2"
+    fi
+
+    added="$(cat $config/plugins.js | grep $2)"
+    lastline='};'
+    blockend='},'
+    stab='    '
+
+
+    if [[ "$1" = "add" && -z "$added" ]]; then
+
+      alen=${#options[@]}
+      insert="$stab\"$npmrepo\/$2\": {\n"
+
+      for i in ${!options[@]}; do
+        insert="$insert\t${options[$i]}"
+        comp=$((i+1))
+        if [ "$comp" -lt "$alen" ]; then
+          insert="$insert,\n"
+        else
+          insert="$insert\n"
+        fi
+      done
+
+      insert="$insert$stab$blockend\n"
+      sed -i "s/$lastline/$insert$lastline/" $config/plugins.js
+
+      mkdir $core/node_modules/$npmrepo > /dev/null 2>&1
+      git clone $gitrepo/$2 $core/node_modules/$npmrepo/$2 > /dev/null 2>&1
+      cd $core/node_modules/$npmrepo/$2
+      yarn install > /dev/null 2>&1
+
+      echo -e "\n${green}Plugin $2 installed with default settings.${nc}\n"
+      echo -e "${red}Restart Core for the changes to take effect.${nc}\n"
+      echo -e "${cyan}For more information and custom configuration${nc}"
+      echo -e "${cyan}visit $gitrepo/$2${nc}\n"
+
+    elif [[ "$1" = "add" && ! -z "$added" ]]; then
+
+      echo -e "\n${red}Plugin already installed.${nc}\n"
+
+
+    elif [[ "$1" = "remove" && ! -z "$added" ]]; then
+
+      sed -i "/$2/,/$blockend/d" $config/plugins.js
+      rm -rf $core/node_modules/$npmrepo/$2 > /dev/null 2>&1
+
+      echo -e "\n${green}Plugin $2 removed successfully.${nc}\n"
+      echo -e "${red}Restart Core for the changes to take effect.${nc}\n"
+
+    elif [[ "$1" = "remove" && -z "$added" ]]; then
+
+      echo -e "\n${red}Plugin not installed.${nc}\n"
+
+    elif [[ "$1" = "update" && ! -z "$added" ]]; then
+
+      cd $core/node_modules/$npmrepo/$2 > /dev/null 2>&1
+      git_check
+
+      if [ "$up2date" = "yes" ]; then
+        echo -e "Already up-to-date."
+        exit 1
+      fi
+
+      git pull > /dev/null 2>&1
+      yarn install > /dev/null 2>&1
+
+      echo -e "\n${green}Plugin $2 updated successfully.${nc}\n"
+      echo -e "${red}Restart Core for the changes to take effect.${nc}\n"
+
+    else
+
+      echo -e "\n${red}Plugin not installed.${nc}\n"
+
+    fi
 
 }

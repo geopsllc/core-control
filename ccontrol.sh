@@ -153,7 +153,7 @@ main () {
 
     echo -e "\n${green}All Done!${nc}\n"
 
-  elif [[ ( "$1" = "restart" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || -z "$2" ) && ( -z "$3" ) ]]; then
+  elif [[ ( "$1" = "restart" ) && ( "$2" = "relay" || "$2" = "forger" || "$2" = "all" || "$2" = "safe" || -z "$2" ) && ( -z "$3" ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\n${red}Core not installed. Please install first.${nc}\n"
@@ -232,21 +232,15 @@ main () {
       exit 1
     fi
 
-    if [[ "$2" = "restore" && ! -f $HOME/snapshots/${name}_$network ]]; then
-      echo -e "\n${red}File $HOME/snapshots/${name}_$network Not Found!${nc}\n"
+    if [[ "$2" = "restore" && ! -d "$HOME/.local/share/$name-core/$network/snapshots" ]]; then
+      echo -e "\n${red}No Snapshot Found!${nc}\n"
+      exit 1
+    elif [[ "$2" = "restore" && -z "$(ls $HOME/.local/share/$name-core/$network/snapshots)" ]]; then
+      echo -e "\n${red}No Snapshot Found!${nc}\n"
       exit 1
     fi
 
-    sysinfo
-    snapshot $2 &
-
-    echo -ne "${cyan}Processing Snapshot...  ${red}"
-
-    while [ -d /proc/$! ]; do
-      printf "\b${sp:i++%${#sp}:1}" && sleep .1
-    done
-
-    echo -e "\b${green}Done${nc}\n"
+    snapshot $2
 
   elif [[ ( "$1" = "update" ) && ( "$2" = "self" ) && ( -z "$3" ) ]]; then
 
@@ -272,6 +266,25 @@ main () {
 
     echo -e "\n${green}All Done!${nc}\n"
 
+  elif [[ ( "$1" = "plugin" ) && ( ( ( "$2" = "add" || "$2" = "remove" || "$2" = "update" ) && ! -z "$3" && -z "$4" ) || ( ( "$2" = "list" || -z "$2" ) && -z "$3" ) ) ]]; then
+
+    if [[ ! -d $data || ! -d $core ]]; then
+      echo -e "\n${red}Core not installed. Please install first.${nc}\n"
+      exit 1
+    elif [[ ! -d plugins || -z "$(ls plugins)" ]]; then
+      echo -e "\n${red}No plugins found.${nc}\n"
+      exit 1
+    fi
+
+    if [ -z "$2" ]; then
+      set -- "$2" "list"
+    fi
+
+    if [ "$2" = "list" ]; then
+      plugin_list
+    else
+      plugin_manage $2 $3
+    fi
 
   else
 
