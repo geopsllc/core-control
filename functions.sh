@@ -314,6 +314,8 @@ update () {
   local fstatus=$(pm2status "${name}-forger" | awk '{print $13}')
   local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
 
+  cd $basedir > /dev/null 2>&1
+  
   for plugin in $(ls plugins); do
 
     if [ ! -z "$(cat $config/plugins.js | grep $plugin)" ]; then
