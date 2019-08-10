@@ -53,6 +53,7 @@ The end result is that your node will start syncing from 0.
 
 ### 2.5.1
 - added restart safe option
+- use restart safe on update if all requirements are met
 - added plugin manager
 - snapshot now uses the core-snapshot interface
 

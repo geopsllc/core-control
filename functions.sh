@@ -309,16 +309,24 @@ update () {
 
   yarn setup > /dev/null 2>&1
 
+  local api=$(curl -Is http://127.0.0.1:5001)
+  local added="$(cat $config/plugins.js | grep round-monitor)"
   local fstatus=$(pm2status "${name}-forger" | awk '{print $13}')
   local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
 
-  if [ "$rstatus" = "online" ]; then
-    pm2 restart ${name}-relay > /dev/null 2>&1
-  fi
+  if [[ "$rstatus" = "online" && "$fstatus" = "online" && ! -z "$api" && ! -z "added" ]]; then
 
-  if [ "$fstatus" = "online" ]; then
-    pm2 restart ${name}-forger > /dev/null 2>&1
-  fi
+    curl -X POST http://127.0.0.1:5001/restart > /dev/null 2>&1
+
+  else
+
+    if [ "$rstatus" = "online" ]; then
+      pm2 restart ${name}-relay > /dev/null 2>&1
+    fi
+
+    if [ "$fstatus" = "online" ]; then
+      pm2 restart ${name}-forger > /dev/null 2>&1
+    fi
 
 }
 
