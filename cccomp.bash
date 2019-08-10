@@ -9,7 +9,7 @@ ccontrol_completions () {
   prev=${COMP_WORDS[COMP_CWORD-1]}
 
   if [ $COMP_CWORD -eq 1 ]; then
-    COMPREPLY=( $(compgen -W "install update remove secret start restart stop status logs snapshot system config database rollback" -- $cur) )
+    COMPREPLY=( $(compgen -W "install update remove secret start restart stop status logs snapshot system config database rollback plugin" -- $cur) )
   elif [ $COMP_CWORD -eq 2 ]; then
     case "$prev" in
       "install")
@@ -24,8 +24,11 @@ ccontrol_completions () {
       "secret")
         COMPREPLY=( $(compgen -W "set clear" -- $cur) )
         ;;
-      "start"|"restart"|"stop"|"status"|"logs")
+      "start"|"stop"|"status"|"logs")
         COMPREPLY=( $(compgen -W "relay forger all" -- $cur) )
+        ;;
+      "restart")
+        COMPREPLY=( $(compgen -W "relay forger all safe" -- $cur) )
         ;;
       "snapshot")
         COMPREPLY=( $(compgen -W "create restore" -- $cur) )
@@ -38,6 +41,9 @@ ccontrol_completions () {
         ;;
       "database")
         COMPREPLY=( $(compgen -W "clear" -- $cur) )
+        ;;
+      "plugin")
+        COMPREPLY=( $(compgen -W "list add remove update" -- $cur) )
         ;;
       *)
         ;;

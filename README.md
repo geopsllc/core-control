@@ -15,7 +15,7 @@ cd core-control
 | `remove` | `core`/`self` | Remove Core / Core-Control |
 | `secret` | `set`/`clear` | Delegate Secret Set / Clear |
 | `start` | `relay`/`forger`/`all` | Start Core Services |
-| `restart` | `relay`/`forger`/`all` | Restart Core Services |
+| `restart` | `relay`/`forger`/`all`/`safe` | Restart Core Services |
 | `stop` | `relay`/`forger`/`all` | Stop Core Services |
 | `status` | `relay`/`forger`/`all` | Show Core Services Status |
 | `logs` | `relay`/`forger`/`all` | Show Core Logs |
@@ -24,6 +24,7 @@ cd core-control
 | `config` | `reset` | Reset Config Files to Defaults |
 | `database` | `clear` | Clear the Database |
 | `rollback` | | Rollback to Specified Height |
+| `plugin` | `list`/`add`/`remove`/`update` | Manage Core Plugins |
 
 ## General
 This is a Streamlined CLI-Based Core v2 Management Tool. 
@@ -32,23 +33,29 @@ This is a Streamlined CLI-Based Core v2 Management Tool.
 - For install/remove you can skip the 'core' argument as it's the default.
 - For update you can skip the 'check' argument as it's the default.
 - For system you can skip the 'info' argument as it's the default.
+- For plugin you can skip the 'list' argument as it's the default.
+- Using the 'restart safe' arguments requires the round-monitor core plugin and restarts the core services when safe to do so in 
+order to avoid missing a block.
 - When setting a delegate secret just type your secret after the 'set' argument without quotes.
 - When doing a rollback just type the desired height after the 'rollback' argument.
 - Rollback will stop the running processes, do the rollback and start the processes that were online.
-- The snapshot is stored in the 'snapshots' folder in your home directory using the database name, e.g. ark_mainnet. 
-If you're using an external snapshot make sure to rename it accordingly and put it in the 'snapshots' folder.
-- Running with the 'remove' argument does not delete the 'snapshots' folder or the stored snapshot in order to allow you
-to take a snapshot, do remove/install and restore it afterwards.
 - The script adds an alias named 'ccontrol' on first run. On your next shell login you'll be able to call the script from anywhere
 using: ccontrol arg1 [arg2]. It also has autocomplete functionality for all possible arguments.
 - Using the 'config reset' arguments will stop the core processes, delete your existing configs and replace them with the defaults.
 If you're running a forger and/or have custom settings, you should add them again.
 - Using the 'database clear' arguments will stop the core processes, wipe the database clean, and start the processes that were online before.
 The end result is that your node will start syncing from 0.
+- For plugin management just type the name of the plugin after 'plugin add/remove/update' as it appears in the list.
 - On first run the tool exposes the core-cli with the project name, e.g. ark for project Ark. It will be accessible after logout.
 - Do not run as root!
 
 ## Changelog
+
+### 2.5.1
+- added restart safe option
+- use restart safe on update if all requirements are met
+- added plugin manager
+- snapshot now uses the core-snapshot interface
 
 ### 2.5
 - updated for core 2.5
