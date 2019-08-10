@@ -327,6 +327,8 @@ update () {
     if [ "$fstatus" = "online" ]; then
       pm2 restart ${name}-forger > /dev/null 2>&1
     fi
+    
+  fi
 
 }
 
