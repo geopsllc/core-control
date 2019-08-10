@@ -314,6 +314,20 @@ update () {
   local fstatus=$(pm2status "${name}-forger" | awk '{print $13}')
   local rstatus=$(pm2status "${name}-relay" | awk '{print $13}')
 
+  for plugin in $(ls plugins); do
+
+    if [ ! -z "$(cat $config/plugins.js | grep $plugin)" ]; then
+
+      . "plugins/$plugin"
+      mkdir $core/node_modules/$npmrepo > /dev/null 2>&1
+      git clone $gitrepo/$plugin $core/node_modules/$npmrepo/$plugin > /dev/null 2>&1
+      cd $core/node_modules/$npmrepo/$plugin > /dev/null 2>&1
+      yarn install > /dev/null 2>&1
+
+    fi
+
+  done
+
   if [[ "$rstatus" = "online" && "$fstatus" = "online" && ! -z "$api" && ! -z "added" ]]; then
 
     curl -X POST http://127.0.0.1:5001/restart > /dev/null 2>&1
@@ -327,7 +341,7 @@ update () {
     if [ "$fstatus" = "online" ]; then
       pm2 restart ${name}-forger > /dev/null 2>&1
     fi
-    
+
   fi
 
 }
