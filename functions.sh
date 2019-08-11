@@ -28,7 +28,7 @@ wrong_arguments () {
 
 pm2status () {
 
-   echo $(pm2 describe $1 | grep "status" 2>/dev/null)
+   echo $(pm2 describe $1 2>/dev/null | grep "status")
 
 }
 
