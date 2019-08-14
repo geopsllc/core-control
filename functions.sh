@@ -314,13 +314,11 @@ update () {
   local fstatus=$(pm2status "${name}-forger" | awk '{print $4}')
   local rstatus=$(pm2status "${name}-relay" | awk '{print $4}')
 
-  cd $basedir > /dev/null 2>&1
-
-  for plugin in $(ls plugins); do
+  for plugin in $(ls $basedir/plugins); do
 
     if [ ! -z "$(cat $config/plugins.js | grep $plugin)" ]; then
 
-      . "plugins/$plugin"
+      . "$basedir/plugins/$plugin"
       mkdir $core/node_modules/$npmrepo > /dev/null 2>&1
       git clone $gitrepo/$plugin $core/node_modules/$npmrepo/$plugin > /dev/null 2>&1
       cd $core/node_modules/$npmrepo/$plugin > /dev/null 2>&1
