@@ -323,7 +323,7 @@ update () {
   local fstatus=$(pm2status "${name}-forger" | awk '{print $4}')
   local rstatus=$(pm2status "${name}-relay" | awk '{print $4}')
 
-  if [[ "$rstatus" = "online" && "$fstatus" = "online" && ! -z "$api" && ! -z "added" ]]; then
+  if [[ "$rstatus" = "online" && "$fstatus" = "online" && ! -z "$api" && ! -z "$added" ]]; then
 
     curl -X POST http://127.0.0.1:5001/restart > /dev/null 2>&1
 
