@@ -328,7 +328,7 @@ update () {
 
   done
 
-  if [[ "$rstatus" = "online" && "$fstatus" = "online" && ! -z "$api" && ! -z "added" ]]; then
+  if [[ "$rstatus" = "online" && "$fstatus" = "online" && ! -z "$api" && ! -z "$added" ]]; then
 
     curl -X POST http://127.0.0.1:5001/restart > /dev/null 2>&1
 
