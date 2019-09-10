@@ -1,0 +1,4 @@
+desc='Productivity Statistics of delegates for ARK-powered blockchains'
+npmrepo='@alessiodf'
+gitrepo='https://github.com/alessiodf'
+options[0]='enabled: true'
