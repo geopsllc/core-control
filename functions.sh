@@ -264,7 +264,7 @@ install_deps () {
   sudo timedatectl set-ntp no > /dev/null 2>&1
   sudo apt install -y htop curl build-essential python git nodejs npm libpq-dev ntp gawk jq > /dev/null 2>&1
   sudo npm install -g n grunt-cli pm2 yarn lerna > /dev/null 2>&1
-  sudo n 10 > /dev/null 2>&1
+  sudo n 12 > /dev/null 2>&1
   pm2 install pm2-logrotate > /dev/null 2>&1
 
   local pm2startup="$(pm2 startup | tail -n1)"
@@ -316,6 +316,7 @@ install_core () {
 
 update () {
 
+  sudo n 12 > /dev/null 2>&1
   yarn global add $repo/$package > /dev/null 2>&1
 
   local api=$(curl -Is http://127.0.0.1:5001)
