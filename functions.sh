@@ -316,6 +316,7 @@ install_core () {
 
 update () {
 
+  yarn global remove $repo/core > /dev/null 2>&1
   sudo n 12 > /dev/null 2>&1
   yarn global add $repo/$package > /dev/null 2>&1
 
