@@ -51,6 +51,10 @@ The end result is that your node will start syncing from 0.
 
 ## Changelog
 
+### 2.6
+- updated for core 2.6
+- updated nodejs to v12
+
 ### 2.5.1
 - added restart safe option
 - use restart safe on update if all requirements are met
