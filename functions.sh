@@ -443,30 +443,24 @@ secret () {
 
 snapshot () {
 
+  local fstatus=$(pm2status "${name}-forger" | awk '{print $4}')
+  local rstatus=$(pm2status "${name}-relay" | awk '{print $4}')
+  stop all > /dev/null 2>&1
+
   if [ "$1" = "restore" ]; then
-
-    local fstatus=$(pm2status "${name}-forger" | awk '{print $4}')
-    local rstatus=$(pm2status "${name}-relay" | awk '{print $4}')
-
-    stop all > /dev/null 2>&1
-
     dropdb ${name}_$network > /dev/null 2>&1
     createdb ${name}_$network > /dev/null 2>&1
-
     $core/packages/core/bin/run snapshot:restore --network $network --token $name
-
-    if [ "$rstatus" = "online" ]; then
-      start relay > /dev/null 2>&1
-    fi
-
-    if [ "$fstatus" = "online" ]; then
-      start forger > /dev/null 2>&1
-    fi
-
   else
-
     $core/packages/core/bin/run snapshot:dump --network $network --token $name
+  fi
 
+  if [ "$rstatus" = "online" ]; then
+    start relay > /dev/null 2>&1
+  fi
+
+  if [ "$fstatus" = "online" ]; then
+    start forger > /dev/null 2>&1
   fi
 
 }
