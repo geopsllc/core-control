@@ -54,6 +54,7 @@ The end result is that your node will start syncing from 0.
 ### 2.6
 - updated for core 2.6
 - updated nodejs to v12
+- 'snapshot create' stops the core until done - enforced by ARK code change
 
 ### 2.5.1
 - added restart safe option
