@@ -320,10 +320,16 @@ update () {
     if [ ! -z "$(cat $config/plugins.js | grep $plugin)" ]; then
 
       . "$basedir/plugins/$plugin"
-      mkdir $core/node_modules/$npmrepo > /dev/null 2>&1
-      git clone $gitrepo/$plugin $core/node_modules/$npmrepo/$plugin > /dev/null 2>&1
-      cd $core/node_modules/$npmrepo/$plugin > /dev/null 2>&1
-      yarn install > /dev/null 2>&1
+      
+      if [ ! -d $core/node_modules/$npmrepo ]; then
+        mkdir $core/node_modules/$npmrepo > /dev/null 2>&1
+      fi
+      
+      if [ ! -d $core/node_modules/$npmrepo/$plugin ]; then
+        git clone $gitrepo/$plugin $core/node_modules/$npmrepo/$plugin > /dev/null 2>&1
+        cd $core/node_modules/$npmrepo/$plugin > /dev/null 2>&1
+        yarn install > /dev/null 2>&1
+      fi
 
     fi
 
