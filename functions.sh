@@ -404,7 +404,7 @@ sysinfo () {
   free -h
 
   echo -e "${magenta}"
-  df -h /
+  df -h | grep -v tmpfs | grep -v udev | grep -v loop
 
   echo -e "${nc}"
 
