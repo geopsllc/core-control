@@ -265,8 +265,14 @@ install_deps () {
 
 secure () {
 
+  local ssh_port="22"
+  local ssh_sys_port=$(cat /etc/ssh/sshd_config | grep Port | awk '{print $2}')
+  if [[ "$ssh_port" != "$ssh_sys_port" && ! -z "$ssh_sys_port" ]]; then
+    ssh_port=$ssh_sys_port
+  fi
+  
   sudo apt install -y ufw fail2ban > /dev/null 2>&1
-  sudo ufw allow 22/tcp > /dev/null 2>&1
+  sudo ufw allow ${ssh_port}/tcp > /dev/null 2>&1
   sudo ufw allow ${p2p_port}/tcp > /dev/null 2>&1
   sudo ufw allow ${api_port}/tcp > /dev/null 2>&1
   sudo ufw allow ${wapi_port}/tcp > /dev/null 2>&1
