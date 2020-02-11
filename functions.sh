@@ -263,8 +263,8 @@ install_deps () {
 
   sudo timedatectl set-ntp no > /dev/null 2>&1
   sudo apt install -y htop curl build-essential python git nodejs npm libpq-dev ntp gawk jq > /dev/null 2>&1
-  sudo npm install -g n grunt-cli pm2 yarn lerna > /dev/null 2>&1
-  sudo n 10 > /dev/null 2>&1
+  sudo npm install -g n grunt-cli pm2@3 yarn lerna > /dev/null 2>&1
+  sudo n 12 > /dev/null 2>&1
   pm2 install pm2-logrotate > /dev/null 2>&1
 
   local pm2startup="$(pm2 startup | tail -n1)"
@@ -275,8 +275,14 @@ install_deps () {
 
 secure () {
 
+  local ssh_port="22"
+  local ssh_sys_port=$(cat /etc/ssh/sshd_config | grep Port | awk '{print $2}')
+  if [[ "$ssh_port" != "$ssh_sys_port" && ! -z "$ssh_sys_port" ]]; then
+    ssh_port=$ssh_sys_port
+  fi
+  
   sudo apt install -y ufw fail2ban > /dev/null 2>&1
-  sudo ufw allow 22/tcp > /dev/null 2>&1
+  sudo ufw allow ${ssh_port}/tcp > /dev/null 2>&1
   sudo ufw allow ${p2p_port}/tcp > /dev/null 2>&1
   sudo ufw allow ${api_port}/tcp > /dev/null 2>&1
   sudo ufw allow ${wapi_port}/tcp > /dev/null 2>&1
@@ -316,6 +322,8 @@ install_core () {
 
 update () {
 
+  yarn global remove $repo/core > /dev/null 2>&1
+  sudo n 12 > /dev/null 2>&1
   yarn global add $repo/$package > /dev/null 2>&1
 
   local api=$(curl -Is http://127.0.0.1:5001)
@@ -398,7 +406,7 @@ sysinfo () {
   free -h
 
   echo -e "${magenta}"
-  df -h /
+  df -h | grep -v tmpfs | grep -v udev | grep -v loop
 
   echo -e "${nc}"
 
@@ -437,32 +445,26 @@ secret () {
 
 snapshot () {
 
+  local fstatus=$(pm2status "${name}-forger" | awk '{print $4}')
+  local rstatus=$(pm2status "${name}-relay" | awk '{print $4}')
+  stop all > /dev/null 2>&1
+
   if [ "$1" = "restore" ]; then
-
-    local fstatus=$(pm2status "${name}-forger" | awk '{print $4}')
-    local rstatus=$(pm2status "${name}-relay" | awk '{print $4}')
-
-    stop all > /dev/null 2>&1
-
     dropdb ${name}_$network > /dev/null 2>&1
     createdb ${name}_$network > /dev/null 2>&1
-
     $core/core/bin/run snapshot:restore --network $network --token $name
-
-    if [ "$rstatus" = "online" ]; then
-      start relay > /dev/null 2>&1
-    fi
-
-    if [ "$fstatus" = "online" ]; then
-      start forger > /dev/null 2>&1
-    fi
-
   else
-
     $core/core/bin/run snapshot:dump --network $network --token $name
-
   fi
 
+  if [ "$rstatus" = "online" ]; then
+    start relay > /dev/null 2>&1
+  fi
+
+  if [ "$fstatus" = "online" ]; then
+    start forger > /dev/null 2>&1
+  fi
+    
 }
 
 selfremove () {
