@@ -28,7 +28,7 @@ cd core-control
 
 ## General
 This is a Streamlined CLI-Based Core v2 Management Tool. 
-- Installs fail2ban for ssh, and ufw allowing only port 22(ssh) and the cores ports.
+- Installs fail2ban for ssh, and ufw allowing only ssh and the cores ports.
 - For start/restart/stop/status/logs you can skip the 'all' argument as it's the default.
 - For install/remove you can skip the 'core' argument as it's the default.
 - For update you can skip the 'check' argument as it's the default.
@@ -50,6 +50,11 @@ The end result is that your node will start syncing from 0.
 - Do not run as root!
 
 ## Changelog
+
+### 2.6
+- updated for core 2.6
+- updated nodejs to v12
+- 'snapshot create' stops the core until done - enforced by ARK code change
 
 ### 2.5.1
 - added restart safe option
