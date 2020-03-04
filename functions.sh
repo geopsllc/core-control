@@ -266,7 +266,7 @@ install_deps () {
 secure () {
 
   local ssh_port="22"
-  local ssh_sys_port=$(cat /etc/ssh/sshd_config | grep Port | awk '{print $2}')
+  local ssh_sys_port=$(cat /etc/ssh/sshd_config | grep ^Port | tail -1 | awk '{print $2}')
   if [[ "$ssh_port" != "$ssh_sys_port" && ! -z "$ssh_sys_port" ]]; then
     ssh_port=$ssh_sys_port
   fi
