@@ -252,7 +252,7 @@ status () {
 install_deps () {
 
   sudo timedatectl set-ntp no > /dev/null 2>&1
-  sudo apt install -y htop curl build-essential python git nodejs npm libpq-dev ntp gawk jq > /dev/null 2>&1
+  sudo apt install -y htop curl build-essential python git nodejs npm libpq-dev ntp gawk jq libjemalloc-dev > /dev/null 2>&1
   sudo npm install -g n grunt-cli pm2@3 yarn lerna > /dev/null 2>&1
   sudo n 12 > /dev/null 2>&1
   pm2 install pm2-logrotate > /dev/null 2>&1
