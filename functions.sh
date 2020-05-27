@@ -609,6 +609,7 @@ plugin_manage () {
       git clone $gitrepo/$2 $core/plugins/$2 > /dev/null 2>&1
       cd $core/plugins/$2
       if [ -f tsconfig.json ]; then
+        yarn install > /dev/null 2>&1
         yarn build > /dev/null 2>&1
       fi
       lerna bootstrap > /dev/null 2>&1
