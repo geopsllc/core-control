@@ -51,6 +51,10 @@ The end result is that your node will start syncing from 0.
 
 ## Changelog
 
+### 2.6.1
+- add plugin core-chameleon
+- remove plugin block-propagator
+
 ### 2.6
 - updated for core 2.6
 - updated nodejs to v12
