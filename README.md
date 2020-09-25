@@ -51,6 +51,9 @@ The end result is that your node will start syncing from 0.
 
 ## Changelog
 
+### 2.7
+- minor fixes for 2.7
+
 ### 2.6.1
 - add plugin core-chameleon
 - remove plugin block-propagator
