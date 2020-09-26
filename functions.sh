@@ -313,7 +313,6 @@ install_core () {
 
 update () {
 
-  sudo n 12 > /dev/null 2>&1
   yarn setup > /dev/null 2>&1
 
   local api=$(curl -Is http://127.0.0.1:5001)
