@@ -274,6 +274,8 @@ secure () {
   sudo apt install -y ufw fail2ban > /dev/null 2>&1
   sudo ufw allow ${ssh_port}/tcp > /dev/null 2>&1
   sudo ufw allow ${p2p_port}/tcp > /dev/null 2>&1
+  sudo ufw allow $(($p2p_port+10))/tcp > /dev/null 2>&1
+  sudo ufw allow $(($p2p_port+20))/tcp > /dev/null 2>&1
   sudo ufw allow ${api_port}/tcp > /dev/null 2>&1
   sudo ufw allow ${wapi_port}/tcp > /dev/null 2>&1
   sudo ufw --force enable > /dev/null 2>&1
@@ -366,6 +368,8 @@ remove () {
   rm -rf /tmp/$USER/${name}-core > /dev/null 2>&1
   dropdb ${name}_$network > /dev/null 2>&1
   sudo ufw delete allow $p2p_port/tcp > /dev/null 2>&1
+  sudo ufw delete allow $(($p2p_port+10))/tcp > /dev/null 2>&1
+  sudo ufw delete allow $(($p2p_port+20))/tcp > /dev/null 2>&1
   sudo ufw delete allow $api_port/tcp > /dev/null 2>&1
   sudo ufw delete allow $wapi_port/tcp > /dev/null 2>&1
 
