@@ -1,4 +1,4 @@
-# Core v2 Management Tool - Ark Devnet
+# Core v3 Management Tool - Ark Devnet
 
 ## Installation
 
@@ -27,7 +27,7 @@ cd core-control
 | `plugin` | `list`/`add`/`remove`/`update` | Manage Core Plugins |
 
 ## General
-This is a Streamlined CLI-Based Core v2 Management Tool. 
+This is a Streamlined CLI-Based Core v3 Management Tool. 
 - Installs fail2ban for ssh, and ufw allowing only ssh and the cores ports.
 - For start/restart/stop/status/logs you can skip the 'all' argument as it's the default.
 - For install/remove you can skip the 'core' argument as it's the default.
