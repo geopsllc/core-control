@@ -81,8 +81,6 @@ setefile () {
   echo "CORE_WEBHOOKS_PORT=$wh_port" >> "$envFile" 2>&1
   echo "CORE_WALLET_API_HOST=0.0.0.0" >> "$envFile" 2>&1
   echo "CORE_WALLET_API_PORT=$wapi_port" >> "$envFile" 2>&1
-  echo "CORE_EXCHANGE_JSON_RPC_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "CORE_EXCHANGE_JSON_RPC_PORT=$rpc_port" >> "$envFile" 2>&1
 
 }
 
@@ -160,7 +158,7 @@ restart () {
 
   elif [ "$1" = "safe" ]; then
 
-    local api=$(curl -Is http://127.0.0.1:5001)
+    local api=$(curl -Is http://127.0.0.1:$(($p2p_port+1000)))
     local fstatus=$(pm2status "${name}-forger" | awk '{print $4}')
     local rstatus=$(pm2status "${name}-relay" | awk '{print $4}')
 
@@ -171,7 +169,7 @@ restart () {
       echo -e "\n${red}Plugin round-monitor not active. Use '${cyan}ccontrol restart${red}' instead.${nc}\n"
       exit 1
     else
-      curl -X POST http://127.0.0.1:5001/restart > /dev/null 2>&1
+      curl -X POST http://127.0.0.1:$(($p2p_port+1000))/restart > /dev/null 2>&1
       echo -e "\n${green}Restart requested. Check logs to monitor progress.${nc}"
     fi
 
@@ -331,14 +329,14 @@ update () {
   yarn global remove $repo/core > /dev/null 2>&1
   yarn global add $repo/$package > /dev/null 2>&1
 
-  local api=$(curl -Is http://127.0.0.1:5001)
-  local added="$(cat $config/plugins.js | grep round-monitor)"
+  local api=$(curl -Is http://127.0.0.1:$(($p2p_port+1000)))
+  local added="$(cat $config/app.json | grep round-monitor)"
   local fstatus=$(pm2status "${name}-forger" | awk '{print $4}')
   local rstatus=$(pm2status "${name}-relay" | awk '{print $4}')
 
   if [[ "$rstatus" = "online" && "$fstatus" = "online" && ! -z "$api" && ! -z "$added" ]]; then
 
-    curl -X POST http://127.0.0.1:5001/restart > /dev/null 2>&1
+    curl -X POST http://127.0.0.1:$(($p2p_port+1000))/restart > /dev/null 2>&1
 
   else
 
@@ -559,7 +557,7 @@ plugin_list () {
 
     . "plugins/$plugin"
 
-    if [ -z "$(cat $config/plugins.js | grep $plugin)" ]; then
+    if [ -z "$(cat $config/app.json | grep $plugin)" ]; then
       echo -e "${cyan}$plugin${nc} - ${red}inactive${nc} [$desc]"
     else
       echo -e "${cyan}$plugin${nc} - ${green}active${nc} [$desc]"
@@ -580,7 +578,7 @@ plugin_manage () {
       . "plugins/$2"
     fi
 
-    added="$(cat $config/plugins.js | grep $2)"
+    added="$(cat $config/app.json | grep $2)"
     lastline='};'
     blockend='},'
     stab='    '
