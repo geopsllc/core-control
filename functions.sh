@@ -584,7 +584,7 @@ plugin_manage () {
       . "plugins/$2"
     fi
 
-    added="$(cat $config/plugins.js | grep $2)"
+    added="$(cat $config/app.json | grep $2)"
     lastline='};'
     blockend='},'
     stab='    '
