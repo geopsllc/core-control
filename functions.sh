@@ -280,7 +280,7 @@ secure () {
   if [[ "$ssh_port" != "$ssh_sys_port" && ! -z "$ssh_sys_port" ]]; then
     ssh_port=$ssh_sys_port
   fi
-  
+
   sudo apt install -y ufw fail2ban > /dev/null 2>&1
   sudo ufw allow ${ssh_port}/tcp > /dev/null 2>&1
   sudo ufw allow ${p2p_port}/tcp > /dev/null 2>&1
@@ -344,7 +344,7 @@ update () {
     if [ "$fstatus" = "online" ]; then
       pm2 restart ${name}-forger > /dev/null 2>&1
     fi
-    
+
   fi
 
 }
@@ -465,7 +465,7 @@ snapshot () {
   if [ "$fstatus" = "online" ]; then
     start forger > /dev/null 2>&1
   fi
-    
+
 }
 
 selfremove () {
@@ -575,29 +575,16 @@ plugin_manage () {
     fi
 
     added="$(cat $config/app.json | grep $2)"
-    lastline='};'
-    blockend='},'
-    stab='    '
-
+    insert="$npmrepo/$2"
 
     if [[ "$1" = "add" && -z "$added" ]]; then
 
-      alen=${#options[@]}
-      insert="$stab\"$npmrepo\/$2\": {\n"
-
-      for i in ${!options[@]}; do
-        insert="$insert\t${options[$i]}"
-        comp=$((i+1))
-        if [ "$comp" -lt "$alen" ]; then
-          insert="$insert,\n"
-        else
-          insert="$insert\n"
-        fi
+      for i in ${!process[@]}; do
+        jq --arg proc "${process[$i]}" --arg pkg "$insert" '.[$proc].plugins |= . + [{package: $pkg}]' $config/app.json > app.tmp
+        mv app.tmp $config/app.json
       done
 
-      insert="$insert$stab$blockend\n"
-      sed -i "s/$lastline/$insert$lastline/" $config/plugins.js
-      yarn global add $npmrepo/$2 > /dev/null 2>&1 &
+      yarn global add $npmrepo/$2@next > /dev/null 2>&1 &
 
       echo -ne "\n${cyan}Installing $2...  ${red}"
 
@@ -619,7 +606,10 @@ plugin_manage () {
 
     elif [[ "$1" = "remove" && ! -z "$added" ]]; then
 
-      sed -i "/$2/,/$blockend/d" $config/plugins.js
+      for i in ${!process[@]}; do
+        jq --arg proc "${process[$i]}" --arg pkg "$insert" '.[$proc].plugins |= . - [{package: $pkg}]' $config/app.json > app.tmp
+        mv app.tmp $config/app.json
+      done
 
       yarn global remove $npmrepo/$2  > /dev/null 2>&1 &
 
@@ -639,7 +629,7 @@ plugin_manage () {
 
     elif [[ "$1" = "update" && ! -z "$added" ]]; then
 
-      rem=$(npm view $npmrepo/$2 version)
+      rem=$(npm view $npmrepo/$2@next version)
       loc=$(cat $HOME/.config/yarn/global/node_modules/$npmrepo/$2/package.json | jq -r '.version')
 
       if [ "$rem" = "$loc" ]; then
@@ -647,7 +637,7 @@ plugin_manage () {
         exit 1
       fi
 
-      yarn global add $npmrepo/$2 > /dev/null 2>&1 &
+      yarn global add $npmrepo/$2@next > /dev/null 2>&1 &
 
       echo -ne "\n${cyan}Installing $2...  ${red}"
 
