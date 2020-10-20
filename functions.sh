@@ -270,7 +270,7 @@ secure () {
   if [[ "$ssh_port" != "$ssh_sys_port" && ! -z "$ssh_sys_port" ]]; then
     ssh_port=$ssh_sys_port
   fi
-  
+
   sudo apt install -y ufw fail2ban > /dev/null 2>&1
   sudo ufw allow ${ssh_port}/tcp > /dev/null 2>&1
   sudo ufw allow ${p2p_port}/tcp > /dev/null 2>&1
@@ -320,21 +320,6 @@ update () {
   local added="$(cat $config/app.json | grep round-monitor)"
   local fstatus=$(pm2status "${name}-forger" | awk '{print $4}')
   local rstatus=$(pm2status "${name}-relay" | awk '{print $4}')
-
-  for plugin in $(ls $basedir/plugins); do
-
-    if [ ! -z "$(cat $config/app.json | grep $plugin)" ]; then
-
-      . "$basedir/plugins/$plugin"
-
-      if [ ! -d $core/node_modules/$npmrepo/$plugin ]; then
-        cd $core/plugins/$plugin > /dev/null 2>&1
-        lerna bootstrap > /dev/null 2>&1
-      fi
-
-    fi
-
-  done
 
   if [[ "$rstatus" = "online" && "$fstatus" = "online" && ! -z "$api" && ! -z "$added" ]]; then
 
@@ -581,34 +566,22 @@ plugin_manage () {
     fi
 
     added="$(cat $config/app.json | grep $2)"
-    lastline='};'
-    blockend='},'
-    stab='    '
-
+    insert="$npmrepo/$2"
 
     if [[ "$1" = "add" && -z "$added" ]]; then
 
-      alen=${#options[@]}
-      insert="$stab\"$npmrepo\/$2\": {\n"
-
-      for i in ${!options[@]}; do
-        insert="$insert\t${options[$i]}"
-        comp=$((i+1))
-        if [ "$comp" -lt "$alen" ]; then
-          insert="$insert,\n"
-        else
-          insert="$insert\n"
-        fi
+      for i in ${!process[@]}; do
+        jq --arg proc "${process[$i]}" --arg pkg "$insert" '.[$proc].plugins |= . + [{package: $pkg}]' $config/app.json > app.tmp
+        mv app.tmp $config/app.json
       done
-
-      insert="$insert$stab$blockend\n"
-      sed -i "s/$lastline/$insert$lastline/" $config/plugins.js
 
       if [ ! -d $core/plugins ]; then
         mkdir $core/plugins > /dev/null 2>&1
       fi
-      git clone $gitrepo/$2 $core/plugins/$2 > /dev/null 2>&1
+
+      git clone $gitrepo/$2 -b core-3.0 $core/plugins/$2 > /dev/null 2>&1
       cd $core/plugins/$2
+
       if [ -f tsconfig.json ]; then
         yarn install > /dev/null 2>&1
         yarn build > /dev/null 2>&1
@@ -627,7 +600,11 @@ plugin_manage () {
 
     elif [[ "$1" = "remove" && ! -z "$added" ]]; then
 
-      sed -i "/$2/,/$blockend/d" $config/plugins.js
+      for i in ${!process[@]}; do
+        jq --arg proc "${process[$i]}" --arg pkg "$insert" '.[$proc].plugins |= . - [{package: $pkg}]' $config/app.json > app.tmp
+        mv app.tmp $config/app.json
+      done
+
       rm -rf $core/node_modules/$npmrepo/$2 > /dev/null 2>&1
       rm -rf $core/plugins/$2 > /dev/null 2>&1
 
@@ -650,6 +627,7 @@ plugin_manage () {
 
       git pull > /dev/null 2>&1
       if [ -f tsconfig.json ]; then
+        yarn install > /dev/null 2>&1
         yarn build > /dev/null 2>&1
       fi
       lerna bootstrap > /dev/null 2>&1
