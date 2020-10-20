@@ -268,9 +268,6 @@ main () {
 
   elif [[ ( "$1" = "plugin" ) && ( ( ( "$2" = "add" || "$2" = "remove" || "$2" = "update" ) && ! -z "$3" && -z "$4" ) || ( ( "$2" = "list" || -z "$2" ) && -z "$3" ) ) ]]; then
 
-    echo -e "\n${red}Plugin Manager temporarily disabled.${nc}\n"
-    exit 1
-    
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\n${red}Core not installed. Please install first.${nc}\n"
       exit 1
