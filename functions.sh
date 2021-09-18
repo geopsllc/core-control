@@ -79,10 +79,6 @@ setefile () {
   echo "CORE_API_PORT=$api_port" >> "$envFile" 2>&1
   echo "CORE_WEBHOOKS_HOST=0.0.0.0" >> "$envFile" 2>&1
   echo "CORE_WEBHOOKS_PORT=$wh_port" >> "$envFile" 2>&1
-  echo "CORE_WALLET_API_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "CORE_WALLET_API_PORT=$wapi_port" >> "$envFile" 2>&1
-  echo "CORE_EXCHANGE_JSON_RPC_HOST=0.0.0.0" >> "$envFile" 2>&1
-  echo "CORE_EXCHANGE_JSON_RPC_PORT=$rpc_port" >> "$envFile" 2>&1
 
 }
 
@@ -160,7 +156,7 @@ restart () {
 
   elif [ "$1" = "safe" ]; then
 
-    local api=$(curl -Is http://127.0.0.1:5001)
+    local api=$(curl -Is http://127.0.0.1:$(($p2p_port+1000)))
     local fstatus=$(pm2status "${name}-forger" | awk '{print $4}')
     local rstatus=$(pm2status "${name}-relay" | awk '{print $4}')
 
@@ -171,7 +167,7 @@ restart () {
       echo -e "\n${red}Plugin round-monitor not active. Use '${cyan}ccontrol restart${red}' instead.${nc}\n"
       exit 1
     else
-      curl -X POST http://127.0.0.1:5001/restart > /dev/null 2>&1
+      curl -X POST http://127.0.0.1:$(($p2p_port+1000))/restart > /dev/null 2>&1
       echo -e "\n${green}Restart requested. Check logs to monitor progress.${nc}"
     fi
 
@@ -263,8 +259,12 @@ install_deps () {
 
   sudo timedatectl set-ntp no > /dev/null 2>&1
   sudo apt install -y htop curl build-essential python git nodejs npm libpq-dev ntp gawk jq libjemalloc-dev > /dev/null 2>&1
-  sudo npm install -g n grunt-cli pm2@3 yarn lerna > /dev/null 2>&1
-  sudo n 12 > /dev/null 2>&1
+  sudo npm install -g n > /dev/null 2>&1
+  sudo n 14 > /dev/null 2>&1
+  sudo npm install -g grunt-cli > /dev/null 2>&1
+  sudo npm install -g pm2@3 > /dev/null 2>&1
+  sudo npm install -g yarn > /dev/null 2>&1
+  sudo npm install -g lerna > /dev/null 2>&1
   pm2 install pm2-logrotate > /dev/null 2>&1
 
   local pm2startup="$(pm2 startup | tail -n1)"
@@ -280,12 +280,11 @@ secure () {
   if [[ "$ssh_port" != "$ssh_sys_port" && ! -z "$ssh_sys_port" ]]; then
     ssh_port=$ssh_sys_port
   fi
-  
+
   sudo apt install -y ufw fail2ban > /dev/null 2>&1
   sudo ufw allow ${ssh_port}/tcp > /dev/null 2>&1
   sudo ufw allow ${p2p_port}/tcp > /dev/null 2>&1
   sudo ufw allow ${api_port}/tcp > /dev/null 2>&1
-  sudo ufw allow ${wapi_port}/tcp > /dev/null 2>&1
   sudo ufw --force enable > /dev/null 2>&1
   sudo sed -i "/^PermitRootLogin/c PermitRootLogin prohibit-password" /etc/ssh/sshd_config > /dev/null 2>&1
   sudo systemctl restart sshd.service > /dev/null 2>&1
@@ -325,14 +324,14 @@ update () {
   yarn global remove $repo/core > /dev/null 2>&1
   yarn global add $repo/$package > /dev/null 2>&1
 
-  local api=$(curl -Is http://127.0.0.1:5001)
-  local added="$(cat $config/plugins.js | grep round-monitor)"
+  local api=$(curl -Is http://127.0.0.1:$(($p2p_port+1000)))
+  local added="$(cat $config/app.json | grep round-monitor)"
   local fstatus=$(pm2status "${name}-forger" | awk '{print $4}')
   local rstatus=$(pm2status "${name}-relay" | awk '{print $4}')
 
   if [[ "$rstatus" = "online" && "$fstatus" = "online" && ! -z "$api" && ! -z "$added" ]]; then
 
-    curl -X POST http://127.0.0.1:5001/restart > /dev/null 2>&1
+    curl -X POST http://127.0.0.1:$(($p2p_port+1000))/restart > /dev/null 2>&1
 
   else
 
@@ -343,7 +342,7 @@ update () {
     if [ "$fstatus" = "online" ]; then
       pm2 restart ${name}-forger > /dev/null 2>&1
     fi
-    
+
   fi
 
 }
@@ -362,7 +361,6 @@ remove () {
   dropdb ${name}_$network > /dev/null 2>&1
   sudo ufw delete allow $p2p_port/tcp > /dev/null 2>&1
   sudo ufw delete allow $api_port/tcp > /dev/null 2>&1
-  sudo ufw delete allow $wapi_port/tcp > /dev/null 2>&1
 
 }
 
@@ -463,7 +461,7 @@ snapshot () {
   if [ "$fstatus" = "online" ]; then
     start forger > /dev/null 2>&1
   fi
-    
+
 }
 
 selfremove () {
@@ -551,7 +549,7 @@ plugin_list () {
 
     . "plugins/$plugin"
 
-    if [ -z "$(cat $config/plugins.js | grep $plugin)" ]; then
+    if [ -z "$(cat $config/app.json | grep $plugin)" ]; then
       echo -e "${cyan}$plugin${nc} - ${red}inactive${nc} [$desc]"
     else
       echo -e "${cyan}$plugin${nc} - ${green}active${nc} [$desc]"
@@ -572,30 +570,17 @@ plugin_manage () {
       . "plugins/$2"
     fi
 
-    added="$(cat $config/plugins.js | grep $2)"
-    lastline='};'
-    blockend='},'
-    stab='    '
-
+    added="$(cat $config/app.json | grep $2)"
+    insert="$npmrepo/$2"
 
     if [[ "$1" = "add" && -z "$added" ]]; then
 
-      alen=${#options[@]}
-      insert="$stab\"$npmrepo\/$2\": {\n"
-
-      for i in ${!options[@]}; do
-        insert="$insert\t${options[$i]}"
-        comp=$((i+1))
-        if [ "$comp" -lt "$alen" ]; then
-          insert="$insert,\n"
-        else
-          insert="$insert\n"
-        fi
+      for i in ${!process[@]}; do
+        jq --arg proc "${process[$i]}" --arg pkg "$insert" '.[$proc].plugins |= . + [{package: $pkg}]' $config/app.json > app.tmp
+        mv app.tmp $config/app.json
       done
 
-      insert="$insert$stab$blockend\n"
-      sed -i "s/$lastline/$insert$lastline/" $config/plugins.js
-      yarn global add $npmrepo/$2 > /dev/null 2>&1 &
+      yarn global add $npmrepo/$2@next > /dev/null 2>&1 &
 
       echo -ne "\n${cyan}Installing $2...  ${red}"
 
@@ -617,7 +602,10 @@ plugin_manage () {
 
     elif [[ "$1" = "remove" && ! -z "$added" ]]; then
 
-      sed -i "/$2/,/$blockend/d" $config/plugins.js
+      for i in ${!process[@]}; do
+        jq --arg proc "${process[$i]}" --arg pkg "$insert" '.[$proc].plugins |= . - [{package: $pkg}]' $config/app.json > app.tmp
+        mv app.tmp $config/app.json
+      done
 
       yarn global remove $npmrepo/$2  > /dev/null 2>&1 &
 
@@ -637,7 +625,7 @@ plugin_manage () {
 
     elif [[ "$1" = "update" && ! -z "$added" ]]; then
 
-      rem=$(npm view $npmrepo/$2 version)
+      rem=$(npm view $npmrepo/$2@next version)
       loc=$(cat $HOME/.config/yarn/global/node_modules/$npmrepo/$2/package.json | jq -r '.version')
 
       if [ "$rem" = "$loc" ]; then
@@ -645,7 +633,7 @@ plugin_manage () {
         exit 1
       fi
 
-      yarn global add $npmrepo/$2 > /dev/null 2>&1 &
+      yarn global add $npmrepo/$2@next > /dev/null 2>&1 &
 
       echo -ne "\n${cyan}Installing $2...  ${red}"
 
