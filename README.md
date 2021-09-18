@@ -54,7 +54,6 @@ The end result is that your node will start syncing from 0.
 ### 3.0
 - updated for Core 3.0
 - fixes for Ubuntu 20.04
-- fixes for additional P2P ports
 - fixes for plugin manager
 
 #### 2.7
