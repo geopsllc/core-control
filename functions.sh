@@ -260,7 +260,7 @@ install_deps () {
   sudo timedatectl set-ntp no > /dev/null 2>&1
   sudo apt install -y htop curl build-essential python git nodejs npm libpq-dev ntp gawk jq libjemalloc-dev > /dev/null 2>&1
   sudo npm install -g n > /dev/null 2>&1
-  sudo n 12 > /dev/null 2>&1
+  sudo n 14 > /dev/null 2>&1
   sudo npm install -g grunt-cli > /dev/null 2>&1
   sudo npm install -g pm2@3 > /dev/null 2>&1
   sudo npm install -g yarn > /dev/null 2>&1
