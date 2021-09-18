@@ -1,4 +1,4 @@
-# Core v2 Management Tool - Ark Mainnet (git install)
+# Core v3 Management Tool - Ark Mainnet (git install)
 
 ## Installation
 
@@ -27,7 +27,7 @@ cd core-control
 | `plugin` | `list`/`add`/`remove`/`update` | Manage Core Plugins |
 
 ## General
-This is a Streamlined CLI-Based Core v2 Management Tool. 
+This is a Streamlined CLI-Based Core v3 Management Tool. 
 - Installs fail2ban for ssh, and ufw allowing only ssh and the cores ports.
 - For start/restart/stop/status/logs you can skip the 'all' argument as it's the default.
 - For install/remove you can skip the 'core' argument as it's the default.
@@ -50,6 +50,11 @@ The end result is that your node will start syncing from 0.
 - Do not run as root!
 
 ## Changelog
+
+### 3.0
+- updated for Core 3.0
+- fixes for Ubuntu 20.04
+- fixes for plugin manager
 
 ### 2.7
 - minor fixes for 2.7

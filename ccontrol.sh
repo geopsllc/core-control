@@ -24,8 +24,8 @@ main () {
       exit 1
     fi
 
-    sudo apt update > /dev/null 2>&1
     sysinfo
+    sudo apt update > /dev/null 2>&1
     install_deps &
 
     echo -ne "${cyan}Installing Dependencies...  ${red}"
@@ -93,7 +93,6 @@ main () {
       exit 1
     fi
 
-    sudo apt update > /dev/null 2>&1
     sysinfo
     update &
 
@@ -112,8 +111,8 @@ main () {
       exit 1
     fi
 
-    sudo apt update > /dev/null 2>&1
     sysinfo
+    sudo apt update > /dev/null 2>&1
     remove &
 
     echo -ne "${cyan}Removing Core...  ${red}"
