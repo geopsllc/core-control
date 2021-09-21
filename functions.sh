@@ -580,7 +580,7 @@ plugin_manage () {
         mv app.tmp $config/app.json
       done
 
-      yarn global add $npmrepo/$2@next > /dev/null 2>&1 &
+      yarn global add $npmrepo/$2 > /dev/null 2>&1 &
 
       echo -ne "\n${cyan}Installing $2...  ${red}"
 
@@ -625,7 +625,7 @@ plugin_manage () {
 
     elif [[ "$1" = "update" && ! -z "$added" ]]; then
 
-      rem=$(npm view $npmrepo/$2@next version)
+      rem=$(npm view $npmrepo/$2 version)
       loc=$(cat $HOME/.config/yarn/global/node_modules/$npmrepo/$2/package.json | jq -r '.version')
 
       if [ "$rem" = "$loc" ]; then
@@ -633,7 +633,7 @@ plugin_manage () {
         exit 1
       fi
 
-      yarn global add $npmrepo/$2@next > /dev/null 2>&1 &
+      yarn global add $npmrepo/$2 > /dev/null 2>&1 &
 
       echo -ne "\n${cyan}Installing $2...  ${red}"
 
