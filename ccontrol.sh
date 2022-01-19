@@ -202,14 +202,20 @@ main () {
 
     logs $2
 
-  elif [[ ( "$1" = "secret" ) && ( ( "$2" = "set" && ! -z "${14}" && -z "${15}" ) || ( "$2" = "clear" && -z "$3" ) ) ]]; then
+ elif [[ ( "$1" = "secret" ) && ( ( "$2" = "set" && ! -z "${14}" && -z "${15}" ) || ( "$2" = "set" && ! -z "${26}" && -z "${27}" ) || ( "$2" = "clear" && -z "$3" ) ) ]]; then
 
     if [[ ! -d $data || ! -d $core ]]; then
       echo -e "\n${red}Core not installed. Please install first.${nc}\n"
       exit 1
     fi
 
-    secret $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14}
+    if [[ "$2" = "set" && -z "${15}" ]]; then
+      secret_set12 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14}
+    elif [[ "$2" = "set" && -z "${27}" ]]; then
+      secret_set24 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14} ${15} ${16} ${17} ${18} ${19} ${20} ${21} ${22} ${23} ${24} ${25} ${26}
+    else
+      secret_clear
+    fi
 
     echo -e "\n${green}All Done!${nc}\n"
 
