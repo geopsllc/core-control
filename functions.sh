@@ -417,15 +417,25 @@ logs () {
 
 }
 
-secret () {
+secret_clear () {
 
-  if [ "$1" = "set" ]; then
-    local scrt="$2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}"
-    jq --arg scrt "$scrt" '.secrets = [$scrt]' $config/delegates.json > delegates.tmp
-  else
-    jq '.secrets = []' $config/delegates.json > delegates.tmp
-  fi
+  jq '.secrets = []' $config/delegates.json > delegates.tmp
+  mv delegates.tmp $config/delegates.json
 
+}
+
+secret_set12 () {
+
+  local scrt="$1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12}"
+  jq --arg scrt "$scrt" '.secrets = [$scrt]' $config/delegates.json > delegates.tmp
+  mv delegates.tmp $config/delegates.json
+
+}
+
+secret_set24 () {
+  
+  local scrt="$1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14} ${15} ${16} ${17} ${18} ${19} ${20} ${21} ${22} ${23} ${24}"
+  jq --arg scrt "$scrt" '.secrets = [$scrt]' $config/delegates.json > delegates.tmp
   mv delegates.tmp $config/delegates.json
 
 }
