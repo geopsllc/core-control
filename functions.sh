@@ -262,7 +262,7 @@ install_deps () {
   sudo npm install -g n > /dev/null 2>&1
   sudo n 14 > /dev/null 2>&1
   sudo npm install -g grunt-cli > /dev/null 2>&1
-  sudo npm install -g pm2@3 > /dev/null 2>&1
+  sudo npm install -g pm2 > /dev/null 2>&1
   sudo npm install -g yarn > /dev/null 2>&1
   sudo npm install -g lerna > /dev/null 2>&1
   pm2 install pm2-logrotate > /dev/null 2>&1
