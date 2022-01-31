@@ -585,7 +585,7 @@ plugin_manage () {
         mkdir $core/plugins > /dev/null 2>&1
       fi
 
-      git clone $gitrepo/$2 -b core-3.0 $core/plugins/$2 > /dev/null 2>&1
+      git clone $gitrepo/$2 $core/plugins/$2 > /dev/null 2>&1
       cd $core/plugins/$2
 
       if [ -f tsconfig.json ]; then
