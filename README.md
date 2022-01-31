@@ -54,6 +54,7 @@ The end result is that your node will start syncing from 0.
 ### 3.1
 - updated for Core 3.1
 - removed plugin core-chameleon
+- removed plugin productivity-statistics
 - added plugin rocket-boot
 
 ### 3.0
