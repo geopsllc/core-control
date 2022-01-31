@@ -1,5 +1,4 @@
-desc='Stealth Node for Ark-powered blockchains'
+desc='Fast Boot for Ark-powered blockchains'
 npmrepo='@alessiodf'
 gitrepo='https://github.com/alessiodf'
 process[0]='relay'
-process[1]='forger'
