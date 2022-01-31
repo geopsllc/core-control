@@ -1,4 +1,0 @@
-desc='Productivity Statistics of delegates for ARK-powered blockchains'
-npmrepo='@alessiodf'
-gitrepo='https://github.com/alessiodf'
-process[0]='relay'
