@@ -51,6 +51,11 @@ The end result is that your node will start syncing from 0.
 
 ## Changelog
 
+### 3.1
+- updated for Core 3.1
+- removed plugin core-chameleon
+- added plugin rocket-boot
+
 ### 3.0
 - updated for Core 3.0
 - fixes for Ubuntu 20.04
