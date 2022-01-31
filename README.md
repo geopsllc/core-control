@@ -1,9 +1,9 @@
-# Core v3 Management Tool - Ark Mainnet (git install)
+# Core v3 Management Tool - SXP Devnet (git install)
 
 ## Installation
 
 ```sh
-git clone https://github.com/geopsllc/core-control -b ark-mainnet-git
+git clone https://github.com/geopsllc/core-control -b sxp-devnet
 cd core-control
 ./ccontrol.sh arg1 [arg2]
 ```
