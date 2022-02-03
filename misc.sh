@@ -20,7 +20,7 @@ if [ -z "$als" ]; then
 fi
 
 if [ -z "$aln" ]; then
-  echo "alias ${name}=$core/packages/core/bin/run" >> $HOME/.bashrc
+  echo "alias ${name}=\"$core/packages/core/bin/run \$@ --token=$name\"" >> $HOME/.bashrc
 fi
 
 if [ -z "$ccc" ]; then
