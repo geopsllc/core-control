@@ -631,6 +631,8 @@ plugin_manage () {
         exit 1
       fi
 
+      rm -rf $core/node_modules/$npmrepo/$2 > /dev/null 2>&1
+      
       git pull > /dev/null 2>&1
       if [ -f tsconfig.json ]; then
         yarn install > /dev/null 2>&1
