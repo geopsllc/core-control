@@ -577,23 +577,24 @@ plugin_manage () {
 
     if [[ "$1" = "add" && -z "$added" ]]; then
 
+      if [ ! -d $HOME/.local/share/${name}-core/$network/plugins ]; then
+        ln -s $HOME/.config/yarn/global/node_modules $HOME/.local/share/${name}-core/$network/plugins > /dev/null 2>&1
+      fi
+
       for i in ${!process[@]}; do
         jq --arg proc "${process[$i]}" --arg pkg "$insert" '.[$proc].plugins |= . + [{package: $pkg}]' $config/app.json > app.tmp
         mv app.tmp $config/app.json
       done
 
-      if [ ! -d $core/plugins ]; then
-        mkdir $core/plugins > /dev/null 2>&1
-      fi
+      yarn global add $npmrepo/$2 > /dev/null 2>&1 &
 
-      git clone $gitrepo/$2 $core/plugins/$2 > /dev/null 2>&1
-      cd $core/plugins/$2
+      echo -ne "\n${cyan}Installing $2...  ${red}"
 
-      if [ -f tsconfig.json ]; then
-        yarn install > /dev/null 2>&1
-        yarn build > /dev/null 2>&1
-      fi
-      lerna bootstrap > /dev/null 2>&1
+      while [ -d /proc/$! ]; do
+        printf "\b${sp:i++%${#sp}:1}" && sleep .1
+      done
+
+      echo -e "\b${green}Done${nc}"
 
       echo -e "\n${green}Plugin $2 installed with default settings.${nc}\n"
       echo -e "${red}Restart Core for the changes to take effect.${nc}\n"
@@ -612,10 +613,16 @@ plugin_manage () {
         mv app.tmp $config/app.json
       done
 
-      rm -rf $core/node_modules/$npmrepo/$2 > /dev/null 2>&1
-      rm -rf $core/plugins/$2 > /dev/null 2>&1
+      yarn global remove $npmrepo/$2  > /dev/null 2>&1 &
 
-      echo -e "\n${green}Plugin $2 removed successfully.${nc}\n"
+      echo -ne "\n${cyan}Removing $2...  ${red}"
+
+      while [ -d /proc/$! ]; do
+        printf "\b${sp:i++%${#sp}:1}" && sleep .1
+      done
+
+      echo -e "\b${green}Done${nc}\n"
+
       echo -e "${red}Restart Core for the changes to take effect.${nc}\n"
 
     elif [[ "$1" = "remove" && -z "$added" ]]; then
@@ -624,25 +631,24 @@ plugin_manage () {
 
     elif [[ "$1" = "update" && ! -z "$added" ]]; then
 
-      cd $core/plugins/$2 > /dev/null 2>&1
-      git_check
+      rem=$(npm view $npmrepo/$2 version)
+      loc=$(cat $HOME/.config/yarn/global/node_modules/$npmrepo/$2/package.json | jq -r '.version')
 
-      if [ "$up2date" = "yes" ]; then
+      if [ "$rem" = "$loc" ]; then
         echo -e "Already up-to-date."
         exit 1
       fi
 
-      rm -rf $core/node_modules/$npmrepo/$2 > /dev/null 2>&1
-      
-      git pull > /dev/null 2>&1
-      if [ -f tsconfig.json ]; then
-        yarn install > /dev/null 2>&1
-        yarn build > /dev/null 2>&1
-      fi
-      lerna bootstrap > /dev/null 2>&1
+      yarn global add $npmrepo/$2 > /dev/null 2>&1 &
 
-      echo -e "\n${green}Plugin $2 updated successfully.${nc}\n"
-      echo -e "${red}Restart Core for the changes to take effect.${nc}\n"
+      echo -ne "\n${cyan}Installing $2...  ${red}"
+
+      while [ -d /proc/$! ]; do
+        printf "\b${sp:i++%${#sp}:1}" && sleep .1
+      done
+
+      echo -e "\b${green}Done${nc}"
+      echo -e "\n${red}Restart Core for the changes to take effect.${nc}\n"
 
     else
 
