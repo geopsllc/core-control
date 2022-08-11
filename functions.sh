@@ -15,7 +15,6 @@ wrong_arguments () {
   echo -e "| stop     | relay / forger / all         | Stop Core Services                 |"
   echo -e "| status   | relay / forger / all         | Show Core Services Status          |"
   echo -e "| logs     | relay / forger / all         | Show Core Logs                     |"
-  echo -e "| snapshot | create / restore             | Snapshot Create / Restore          |"
   echo -e "| system   | info / update                | System Info / Update               |"
   echo -e "| config   | reset                        | Reset Config Files to Defaults     |"
   echo -e "| database | clear                        | Clear the Database                 |"
@@ -265,6 +264,7 @@ install_deps () {
   sudo npm install -g pm2 > /dev/null 2>&1
   sudo npm install -g yarn > /dev/null 2>&1
   sudo npm install -g lerna > /dev/null 2>&1
+  sudo npm install -g pnpm > /dev/null 2>&1
   pm2 install pm2-logrotate > /dev/null 2>&1
 
   local pm2startup="$(pm2 startup | tail -n1)"
@@ -443,34 +443,10 @@ secret_set12 () {
 }
 
 secret_set24 () {
-  
+
   local scrt="$1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14} ${15} ${16} ${17} ${18} ${19} ${20} ${21} ${22} ${23} ${24}"
   jq --arg scrt "$scrt" '.secrets = [$scrt]' $config/delegates.json > delegates.tmp
   mv delegates.tmp $config/delegates.json
-
-}
-
-snapshot () {
-
-  local fstatus=$(pm2status "${name}-forger" | awk '{print $4}')
-  local rstatus=$(pm2status "${name}-relay" | awk '{print $4}')
-  stop all > /dev/null 2>&1
-
-  if [ "$1" = "restore" ]; then
-    dropdb ${name}_$network > /dev/null 2>&1
-    createdb ${name}_$network > /dev/null 2>&1
-    $core/core/bin/run snapshot:restore --network $network --token $name
-  else
-    $core/core/bin/run snapshot:dump --network $network --token $name
-  fi
-
-  if [ "$rstatus" = "online" ]; then
-    start relay > /dev/null 2>&1
-  fi
-
-  if [ "$fstatus" = "online" ]; then
-    start forger > /dev/null 2>&1
-  fi
 
 }
 
