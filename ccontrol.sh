@@ -219,23 +219,6 @@ main () {
 
     echo -e "\n${green}All Done!${nc}\n"
 
-  elif [[ ( "$1" = "snapshot" ) && ( "$2" = "create" || "$2" = "restore" ) && ( -z "$3" ) ]]; then
-
-    if [[ ! -d $data || ! -d $core ]]; then
-      echo -e "\n${red}Core not installed. Please install first.${nc}\n"
-      exit 1
-    fi
-
-    if [[ "$2" = "restore" && ! -d "$HOME/.local/share/$name-core/$network/snapshots" ]]; then
-      echo -e "\n${red}No Snapshot Found!${nc}\n"
-      exit 1
-    elif [[ "$2" = "restore" && -z "$(ls $HOME/.local/share/$name-core/$network/snapshots)" ]]; then
-      echo -e "\n${red}No Snapshot Found!${nc}\n"
-      exit 1
-    fi
-
-    snapshot $2
-
   elif [[ ( "$1" = "update" ) && ( "$2" = "self" ) && ( -z "$3" ) ]]; then
 
     git pull
